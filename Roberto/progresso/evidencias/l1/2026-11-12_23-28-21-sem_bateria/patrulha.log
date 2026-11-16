@@ -1,9 +1,0 @@
-[INFO] [launch]: All log files can be found below /root/.ros/log/2026-11-13-02-28-42-216188-62cabddc6e01-235
-[INFO] [launch]: Default logging verbosity is set to INFO
-[INFO] [patrulha-1]: process started with pid [244]
-[patrulha-1] [INFO] [1794536922.685862743] [patrulha_monitor]: Log da patrulha: /evidencias/2026-11-13_02-28-42.jsonl
-[patrulha-1] [INFO] [1794536922.775652291] [basic_navigator]: Publishing Initial Pose
-[patrulha-1] [INFO] [1794536927.033468206] [basic_navigator]: Nav2 is ready for use!
-[patrulha-1] [INFO] [1794536953.055972035] [patrulha_monitor]: [encerrando] sem_bateria
-[patrulha-1] [INFO] [1794536953.059517658] [patrulha_monitor]: Patrulha encerrada com o código 3.
-[ERROR] [patrulha-1]: process has died [pid 244, exit code 3, cmd '/workspace/meu_ws/install/patrulha_tb4/lib/patrulha_tb4/patrulha --ros-args --params-file /tmp/launch_params_1i51t4eu'].

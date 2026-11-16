@@ -1,3 +1,0 @@
-{"t": null, "t_parede": 1794537050.2698045, "evento": "inicio", "estado": "iniciando", "bateria": null, "versao": "0.1.0", "hash_codigo": "d588709ac9def5adb828a540cf25ce7c8c347675917001fc44684bc43afb892f", "hash_config": "ecd2c5160650631c0639e230c07373e368c64b1a101ad873c3b26ddf3f328133", "ambiente": "leve", "modelo": "standard"}
-{"t": 1794537080.8247297, "t_parede": 1794537080.8965302, "evento": "servidor_indisponivel", "estado": "encerrando", "bateria": 1.0, "detalhe": "acoes"}
-{"t": 1794537080.8247297, "t_parede": 1794537080.9023802, "evento": "resumo", "estado": "encerrando", "bateria": 1.0, "voltas": 0, "destinos_falhos": 0, "docks_confirmados": 0, "tentativas_dock": 0, "bateria_minima": 1.0, "duracao_s": 30.64, "codigo_saida": 8}

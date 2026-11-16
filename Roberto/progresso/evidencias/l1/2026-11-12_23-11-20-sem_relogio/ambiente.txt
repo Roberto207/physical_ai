@@ -1,3 +1,0 @@
-parada: a patrulha encerrou sozinha
-rviz2: nenhum processo (AMB-03)
-nos: 

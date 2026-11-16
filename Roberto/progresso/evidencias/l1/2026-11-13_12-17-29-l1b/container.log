@@ -1,2 +1,0 @@
-config: /workspace/meu_ws/install/patrulha_tb4/share/patrulha_tb4/config/leve_reduzido.yaml
-mapa: /opt/ros/jazzy/share/turtlebot4_navigation/maps/maze.yaml

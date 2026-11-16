@@ -1,7 +1,0 @@
-  3 eventos; código de saída no resumo: 8
-  hash_codigo: d588709ac9def5ad...
-REPROVADO (falhas_seguidas):
-  - código de saída 8, esperado 7
-  - faltou o evento falhas_seguidas
-  - menos de 3 destino_falhou
-  - não encerrou depois do dock confirmado (PAT-08)

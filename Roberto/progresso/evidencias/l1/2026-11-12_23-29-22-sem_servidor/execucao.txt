@@ -1,7 +1,0 @@
-cenario: sem_servidor
-config: leve_reduzido.yaml
-base_falsa: -p battery_start:=0.90 -p drain_per_s:=0.002 -p charge_per_s:=0.05 -p simular_doca:=false
-teto_mb: 2048
-memoria_disponivel_antes_mb: 5085
-oom_killed: false
-pico_ram: 412 MiB

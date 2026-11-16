@@ -1,6 +1,0 @@
-  3 eventos; código de saída no resumo: 8
-  hash_codigo: d588709ac9def5ad...
-REPROVADO (sigint):
-  - código de saída 8, esperado 0
-  - faltou o evento encerrado
-  - o sinal chegou antes de qualquer destino: não prova o cancelamento

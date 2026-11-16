@@ -1,7 +1,0 @@
-cenario: falhas_seguidas
-config: teste_tempo_curto.yaml
-base_falsa: -p battery_start:=0.99 -p drain_per_s:=0.0005
-teto_mb: 2048
-memoria_disponivel_antes_mb: 4515
-oom_killed: false
-pico_ram: 388 MiB

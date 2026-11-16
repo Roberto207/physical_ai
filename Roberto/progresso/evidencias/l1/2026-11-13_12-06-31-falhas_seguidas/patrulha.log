@@ -1,8 +1,0 @@
-[INFO] [launch]: All log files can be found below /root/.ros/log/2026-11-13-15-06-53-131569-5fb566eda7fe-235
-[INFO] [launch]: Default logging verbosity is set to INFO
-[INFO] [patrulha-1]: process started with pid [244]
-[patrulha-1] [INFO] [1794582414.344554412] [patrulha_monitor]: Log da patrulha: /evidencias/2026-11-13_15-06-54.jsonl
-[patrulha-1] [INFO] [1794582415.162859018] [basic_navigator]: Publishing Initial Pose
-[patrulha-1] [INFO] [1794582445.325658423] [patrulha_monitor]: [encerrando] servidor_indisponivel detalhe=acoes
-[patrulha-1] [INFO] [1794582445.329446173] [patrulha_monitor]: Patrulha encerrada com o código 8.
-[ERROR] [patrulha-1]: process has died [pid 244, exit code 8, cmd '/workspace/meu_ws/install/patrulha_tb4/lib/patrulha_tb4/patrulha --ros-args --params-file /tmp/launch_params_ct9o_xo4'].
