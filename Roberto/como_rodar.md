@@ -47,3 +47,38 @@ cd ~/dev/physical_ai/infra/docker
 ./teste_l1.sh dock_falha              # o dock falha 1 vez e a patrulha tenta de novo
 
 Cada execução deixa uma pasta em progresso/evidencias/l1/ com o log JSONL, os logs do Nav2 e o veredito (APROVADO ou REPROVADO). O que foi feito e por quê está em docs/registro-de-mudancas.md.
+
+
+Modo laboratório: Docker Compose (desde 2026-11-16)
+
+Só no PC do laboratório. No notebook, o Gazebo e o docker build não cabem na memória.
+Os serviços ficam em infra/compose/sim.yaml (Gazebo) e infra/compose/robo.yaml (robô real).
+O atalho infra/docker/lab.sh chama o arquivo certo e confere a rede antes.
+
+cd ~/dev/physical_ai/Roberto/infra/docker
+./construir_imagem.sh robo sim        # 1ª vez no PC (recusa com menos de 12 GiB de RAM)
+./construir_imagem.sh apelidos        # SÓ NO NOTEBOOK: dá à physical-ai:jazzy os nomes base, robo e sim
+
+Treino do mapa no Gazebo (rede isolada e domínio 42, não alcança o robô real):
+
+./lab.sh sim subir gazebo slam rviz   # espere cerca de 1 min (./lab.sh sim logs gazebo)
+./lab.sh sim undock                   # tira o robô simulado da doca
+./lab.sh sim teleop                   # dirige pelo teclado, a 0,15 m/s
+./lab.sh sim salvar teste_maze        # grava em workspace/mapas/ e confere
+./lab.sh sim parar
+
+Mapa no robô real, só depois das etapas 1 a 3 do kit de campo (specs/patrol-inf/kit-de-campo.md):
+
+./lab.sh robo checar-rede             # só lê: /scan, /tf e /odom chegam?
+./lab.sh robo subir slam rviz         # confere a rede e sobe (não move o robô)
+./lab.sh robo teleop                  # move o robô REAL: pede que você digite SIM
+./lab.sh robo salvar lab
+./lab.sh robo parar
+
+Patrulha no robô real (kit de campo, etapas 5 a 8):
+
+MAPA=/mapas/lab.yaml ./lab.sh robo subir localizacao nav2 rviz
+CONFIG=/mapas/inf_lab_preenchido.yaml ./lab.sh robo patrulha   # config ao lado do mapa; validar_pontos + SIM antes de andar
+
+Ver o que está rodando: ./lab.sh robo estado. Conferir um mapa: ./lab.sh conferir ../../workspace/mapas/lab.yaml
+A rede do PC fica em infra/lab/rede_lab.env. Explicação: docs/tarefas/2026-11-16-compose-e-alvos.md

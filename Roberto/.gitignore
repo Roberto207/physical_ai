@@ -1,3 +1,15 @@
 #Pastas pessoais
 estudo/
 progresso/
+
+# Saída do colcon: refeita em cada máquina (tem caminhos de quem compilou)
+workspace/meu_ws/build/
+workspace/meu_ws/install/
+workspace/meu_ws/log/
+
+# Cache do Python e do pytest
+__pycache__/
+.pytest_cache/
+
+# Logs da patrulha gravados pelos containers (copie o que importa para progresso/evidencias/)
+workspace/logs/

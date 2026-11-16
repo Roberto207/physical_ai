@@ -24,6 +24,7 @@ setup(
         'console_scripts': [
             'patrulha = patrulha_tb4.no_patrulha:main',
             'validar_pontos = patrulha_tb4.pontos:main',
+            'conferir_mapa = patrulha_tb4.mapa_slam:main',
         ],
     },
 )

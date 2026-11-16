@@ -41,7 +41,9 @@ Spec `patrol-inf` (execução iniciada em 2026-11-12, ver `docs/registro-de-muda
 - [x] L1b aprovado em 2026-11-13: H4 confirmada, desde que o simulador leve receba `enable_stamped_cmd_vel: true`
 - [ ] Falha do Nav2 ao subir no leve ("transform from base_link to odom did not become available"), vista 2 vezes em 16 subidas (12 e 13/nov), com e sem carga no notebook. Pode ser a mesma falha intermitente de 5/nov. Causa não confirmada (hipótese: corrida com a pose inicial). O `teste_l1.sh` tenta de novo sozinho, mas isso ainda não foi exercitado
 - [ ] Revisar as decisões tomadas onde a spec não dizia (tabela em `docs/registro-de-mudancas.md`), e decidir se entram no DEFINE e no DESIGN
-- [ ] Como o notebook fala com o robô real: o container atual usa a rede isolada do Docker. Falta um script com a rede do computador e a configuração de discovery do laboratório
+- [ ] Como o PC fala com o robô real: **feito em 2026-11-16** (`infra/compose/robo.yaml`, com `network_mode: host` e `infra/lab/rede_lab.env`, pelo atalho `infra/docker/lab.sh robo`). Falta testar no laboratório e perguntar à equipe do INF o modo de discovery e o `ROS_DOMAIN_ID` do robô
+- [ ] Modo SLAM (2026-11-16): testar no PC do laboratório, primeiro `lab.sh sim` (Gazebo) e depois `lab.sh robo`. Detalhes e o que não foi verificado: `docs/tarefas/2026-11-16-modo-slam.md` e `docs/tarefas/2026-11-16-compose-e-alvos.md`
+- [ ] Construir as imagens no PC do lab (`construir_imagem.sh robo sim`) e anotar o tamanho de cada uma (`docker images physical-ai`), para confirmar que o Gazebo é a parte pesada
 - [ ] Tela do TurtleBot 4 com ruído (foto `erro_tela.jpeg`, 2026-11-12): não investigado
 - [ ] `git init`: recomendado no DESIGN, decisão do Roberto
 - [ ] L1 com um destino abortado pelo próprio Nav2 (ponto livre, mas inalcançável): hoje só o L0 prova esse caminho

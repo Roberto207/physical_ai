@@ -2,6 +2,40 @@
 
 Tudo o que foi alterado no projeto, o que foi feito e com que objetivo. A entrada mais nova fica em cima. Cada linha diz também como a mudança foi verificada: "medido" é o que eu rodei e vi; "não verificado" é o que ainda depende de um teste.
 
+## 2026-11-16 (tarde): Docker Compose e imagens em camadas
+
+Pedido do Roberto: trocar a imagem única por imagens menores e passar a rodar as tarefas por Docker Compose, um serviço por tarefa. Explicação completa: `docs/tarefas/2026-11-16-compose-e-alvos.md`. **Nada rodou com o Docker de verdade** (desligado no notebook, 1,5 GiB livres), nem no robô.
+
+| # | O que mudou | Arquivos | Objetivo | Como foi verificado |
+|---|---|---|---|---|
+| 38 | Dockerfile em alvos: `base`, `robo`, `sim`, `llm` e `completa` (a antiga imagem única, que mantém o nome `physical-ai:jazzy`) | `infra/docker/Dockerfile` | Quem só vai mapear ou patrulhar no robô não constrói o Gazebo | **Não construído** |
+| 39 | Build por alvo, e `apelidos` para o notebook | `infra/docker/construir_imagem.sh` | Construir só o que a tarefa usa. No notebook, dar nomes à imagem que já existe, sem build | Medido: recusa no notebook pela RAM e recusa alvo desconhecido. `apelidos` **não rodado** (Docker desligado) |
+| 40 | Serviços do robô real: `slam`, `localizacao`, `nav2`, `rviz`, `teleop`, `patrulha` e `ferramentas` | `infra/compose/robo.yaml` | Um serviço por tarefa, com a rede do PC, legível para a equipe | Medido: `docker compose config` aceita o arquivo e as variáveis entram certo. **Não rodado** |
+| 41 | Os mesmos serviços no Gazebo, mais `gazebo` e `undock` | `infra/compose/sim.yaml` | Treinar no lab com os mesmos nomes do robô real. Rede isolada e domínio 42 | Medido: `docker compose config`. **Não rodado** |
+| 42 | Atalho `lab.sh` no lugar do `slam.sh` (que foi apagado; nunca chegou ao git) | `infra/docker/lab.sh` | Fazer só o que o Compose não faz: checar a rede, liberar a tela, salvar o mapa com a ficha e impedir o sim e o robo juntos | Medido com um `docker` falso: rede aprova e reprova, nada sobe com a rede reprovada, recusa robo com o sim ligado, `salvar` com e sem `slam` rodando, `parar` |
+| 43 | `workspace/logs/` no `.gitignore` | `.gitignore` | Logs da patrulha gravados pelos containers | |
+| 44 | Kit de campo (etapas 4, 5 e 7), uso, pendências, README dos mapas e comentário da rede apontam o Compose. A configuração preenchida passa a morar ao lado do mapa | `specs/patrol-inf/kit-de-campo.md`, `como_rodar.md`, `contexto/pendencias.md`, `workspace/mapas/README.md`, `infra/lab/rede_lab.env` | Um caminho só para o dia no laboratório | `config.py:141` confirma que o `mapa` é relativo ao arquivo |
+| 45 | Documento da tarefa e aviso no documento do modo SLAM | `docs/tarefas/2026-11-16-compose-e-alvos.md`, `docs/tarefas/2026-11-16-modo-slam.md` | Regra de entrega (AGENTES.md, seção 6) | |
+
+A mudança 31 abaixo (`slam.sh`) foi substituída pelas 40 a 42. O resto da entrada da manhã continua valendo.
+
+## 2026-11-16: modo SLAM para mapear o laboratório
+
+Pedido do Roberto: um modo SLAM para fazer o mapa do laboratório onde a patrulha vai rodar, no PC do lab, que recebe o projeto pelo GitHub e roda a imagem Docker. Explicação completa do pipeline: `docs/tarefas/2026-11-16-modo-slam.md`. **Nada rodou no robô físico, nem no Gazebo**: o notebook não tinha memória livre (1,5 GiB) e o Docker estava desligado.
+
+| # | O que mudou | Arquivos | Objetivo | Como foi verificado |
+|---|---|---|---|---|
+| 28 | `slam-toolbox` e `teleop-twist-keyboard` explícitos na imagem, e o cabeçalho separa o notebook (sem build) do PC do lab | `infra/docker/Dockerfile` | O PC do lab constrói a imagem do zero | **Não construído** (o notebook não pode). O `package.xml` do `turtlebot4_navigation` (ramo `jazzy`) já depende do `slam_toolbox` |
+| 29 | Script de build com conferência de RAM | `infra/docker/construir_imagem.sh` | Construir no PC do lab sem arriscar travar uma máquina pequena | Medido: no notebook, recusou (7 GiB, mínimo de 12) |
+| 30 | Configuração de rede do lado do PC | `infra/lab/rede_lab.env` | Domínio 0, FastDDS e Discovery Server opcional, como no manual (aba Jazzy) | Lido nas páginas oficiais. **Não testado** com o robô |
+| 31 | Modo SLAM: `sim` (Gazebo `maze`, rede isolada) e `robo` (rede do PC), com rede, SLAM, RViz, teleop a 0,15 m/s, salvar e parar | `infra/docker/slam.sh` | Fazer o mapa com os comandos oficiais, sem decorar nada no dia | Medido sem Docker, com um `docker` falso: ajuda, recusas, `checar-rede` (aprova e reprova), `salvar` (grava a ficha e recusa nome repetido). **Não rodado** com o Docker de verdade |
+| 32 | Comando `conferir_mapa` e 6 testes L0 | `patrulha_tb4/mapa_slam.py`, `test/test_mapa_slam.py`, `setup.py` | Dizer se o mapa saído do SLAM é utilizável antes do `validar_pontos` | Medido: `130 passed in 0.70s`, e o rastreio continua OK (31 requisitos) |
+| 33 | Pasta dos mapas, versionada | `workspace/mapas/README.md` | O mapa feito no lab chega ao notebook pelo git (a `progresso/` é ignorada) | |
+| 34 | `build/`, `install/`, `log/` e caches do Python fora do git | `.gitignore` e `git rm -r --cached` (184 arquivos saem do índice; continuam no disco) | Decisão do Roberto: são refeitos em cada máquina | Medido: `git status` |
+| 35 | Etapa 4 do kit com os comandos conferidos e o script, e as linhas da rede e do PC atualizadas | `specs/patrol-inf/kit-de-campo.md` | Os comandos estavam "escritos de memória" | Conferidos na aba Jazzy e no código-fonte dos ramos `jazzy` |
+| 36 | Regras de entrega (documento por tarefa, código comentado, documentação oficial) | `contexto/AGENTES.md`, memória do Claude Code | Regra nova do Roberto, que também vale para o agente do PC do lab | |
+| 37 | Documentos de uso e estado | `como_rodar.md`, `contexto/pendencias.md`, `docs/tarefas/2026-11-16-modo-slam.md` | | |
+
 ## 2026-11-13: fim dos passos 3, 4 e 5 (L1 completo e L1b)
 
 Continuação do dia anterior, com o navegador fechado (4,1 a 4,9 GiB disponíveis) e o Docker ligado pelo Roberto. **Os passos 1 a 6 da spec estão concluídos.** Nada rodou em robô físico.

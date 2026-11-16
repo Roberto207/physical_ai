@@ -37,7 +37,7 @@ Uma parada pelo protocolo de segurança **invalida** a execução de aceite (INF
 |---|---|
 | Suíte L0 passando | `cd workspace/meu_ws/src/patrulha_tb4 && python3 -m pytest -q` sem falhas |
 | L1 passando no simulador leve | `infra/docker/teste_l1.sh ciclo` diz APROVADO |
-| Notebook com o ROS 2 Jazzy e os pacotes `turtlebot4_navigation` e `irobot_create_msgs` | Hoje isso só existe dentro do container `physical-ai:jazzy`, que **não** foi testado falando com um robô real pela rede. Ver "O que falta decidir" |
+| PC do laboratório com a imagem `physical-ai:jazzy` | `infra/docker/construir_imagem.sh` terminou e `docker images physical-ai:jazzy` lista a imagem. Ela ainda **não** foi testada falando com um robô real pela rede |
 | Perguntas ao coordenador respondidas | Modelo (Standard ou Lite), números do aceite, rede do laboratório |
 | Bateria do robô carregada e doca ligada na tomada | A doca precisa de energia para o robô enxergá-la ([Docking, Create 3](https://iroboteducation.github.io/create3_docs/api/docking/)) |
 
@@ -99,20 +99,22 @@ Página: [Generating a map](https://turtlebot.github.io/turtlebot4-user-manual/t
 
 Comece com o robô **encaixado na doca** (hipótese H3): assim a doca fica perto da origem do mapa, e a pose inicial fica fácil.
 
-```bash
-ros2 launch turtlebot4_navigation slam.launch.py
-ros2 launch turtlebot4_viz view_navigation.launch.py     # RViz, em outro terminal
-```
+**Atualizado em 2026-11-16:** os comandos abaixo foram conferidos na aba Jazzy da página e no código-fonte oficial (ramos `jazzy`). Cada um é um serviço do Docker Compose (`infra/compose/robo.yaml`), chamado pelo atalho `infra/docker/lab.sh`, com a rede do PC. A explicação está em `docs/tarefas/2026-11-16-modo-slam.md` e `docs/tarefas/2026-11-16-compose-e-alvos.md`.
 
-Faça o undock (etapa 3), dirija devagar pelo laboratório com o teleop (etapa 2) até o mapa fechar, e salve:
+Antes, no mesmo PC, treine o roteiro no Gazebo, com os mesmos serviços: `lab.sh sim subir gazebo slam rviz`, `lab.sh sim undock`, `lab.sh sim teleop` e `lab.sh sim salvar`.
 
-```bash
-ros2 service call /slam_toolbox/save_map slam_toolbox/srv/SaveMap "name: {data: 'lab'}"
-```
+| Passo | Pelo script (no PC do lab) | Comando oficial que ele roda |
+|---|---|---|
+| Rede | `infra/docker/lab.sh robo checar-rede` | `ros2 topic list` (precisa ter `/scan`, `/tf` e `/odom`) |
+| SLAM | `infra/docker/lab.sh robo subir slam` (confere a rede antes) | `ros2 launch turtlebot4_navigation slam.launch.py` (síncrono, o recomendado no PC) |
+| RViz | `infra/docker/lab.sh robo subir rviz` | `ros2 launch turtlebot4_viz view_navigation.launch.py` |
+| Undock | **À mão, pela etapa 3** | O script não faz dock nem undock no robô real |
+| Dirigir | `infra/docker/lab.sh robo teleop` (pede `SIM`) | `teleop_twist_keyboard` com `stamped:=true`, `speed:=0.15` e `turn:=0.5` |
+| Salvar | `infra/docker/lab.sh robo salvar lab` | `ros2 service call /slam_toolbox/save_map slam_toolbox/srv/SaveMap "{name: {data: '/mapas/lab'}}"` |
 
-O nome do launch do RViz (`view_navigation.launch.py`) e o formato exato do comando de salvar devem ser conferidos na página: escrevi de memória, e a busca só confirmou o serviço `/slam_toolbox/save_map`.
+Dirija devagar pelo laboratório até o mapa fechar no RViz. Com a área livre de obstáculos soltos e sem gente andando, o manual diz que o mapa sai melhor. Ao salvar, o script pergunta se o mapeamento começou na doca, grava a ficha `.info.txt` e roda o `conferir_mapa`.
 
-**Feito quando:** existem `lab.yaml` e `lab.pgm`, e a imagem mostra as paredes do laboratório sem "fantasmas" (paredes duplicadas). Guarde os dois arquivos em `progresso/evidencias/`.
+**Feito quando:** existem `workspace/mapas/lab.yaml` e `lab.pgm`, o `conferir_mapa` diz `UTILIZÁVEL`, e a imagem mostra as paredes do laboratório sem "fantasmas" (paredes duplicadas). A pasta `workspace/mapas/` vai para o git (a `progresso/` não vai).
 
 Esse par de arquivos é o formato que o nosso `validar_pontos` lê. Qualquer mapa nosso, feito por SLAM ou por outro método, serve, desde que saia nesse formato (`.yaml` com `image`, `resolution` e `origin`, e a imagem em `.pgm`).
 
@@ -126,9 +128,11 @@ ros2 launch turtlebot4_navigation nav2.launch.py params_file:=<caminho>/nav2_inf
 ros2 launch turtlebot4_viz view_navigation.launch.py
 ```
 
+Pelo Compose (2026-11-16), os mesmos três: `MAPA=/mapas/lab.yaml infra/docker/lab.sh robo subir localizacao nav2 rviz`. O `nav2` já usa o `nav2_inf_devagar.yaml`. Desligue o `slam` antes (`lab.sh robo compose stop slam`): SLAM e localização publicam a mesma transformação `map → odom`.
+
 No RViz, marque a pose inicial ("2D Pose Estimate") e mande um destino próximo ("Nav2 Goal"), com a pessoa de segurança ao lado.
 
-O arquivo `nav2_inf_devagar.yaml` é uma cópia do `nav2.yaml` oficial com a velocidade máxima em 0,15 m/s (INF-02). **Pendente:** ele é gerado a partir do arquivo da imagem Docker e ainda não existe (ver `docs/registro-de-mudancas.md`).
+O arquivo `nav2_inf_devagar.yaml` é uma cópia do `nav2.yaml` oficial com a velocidade máxima em 0,15 m/s (INF-02). Ele existe desde 12/nov, em `workspace/meu_ws/src/patrulha_tb4/config/` (mudança 19 do registro).
 
 **Feito quando:** um destino marcado no RViz chega, e o robô não passa de 0,15 m/s.
 
@@ -158,7 +162,9 @@ Deixe só 1 ponto na lista `pontos`, perto da doca, e rode de novo o `validar_po
 ros2 launch patrulha_tb4 patrulha.launch.py config:=<caminho>/inf_lab_preenchido.yaml
 ```
 
-O nó faz o undock, vai ao ponto e repete. Pare com `Ctrl+C` depois de 2 ou 3 idas. O log fica em `~/.ros/patrulha/`.
+Pelo Compose (2026-11-16): guarde a configuração preenchida **ao lado do mapa**, em `workspace/mapas/inf_lab_preenchido.yaml`, e deixe `mapa: lab.yaml`. O caminho é relativo ao arquivo, então funciona igual no container (`/mapas/`) e no notebook. Depois: `CONFIG=/mapas/inf_lab_preenchido.yaml infra/docker/lab.sh robo patrulha`. O serviço compila o pacote, roda o `validar_pontos`, pede `SIM` e só então sobe a patrulha.
+
+O nó faz o undock, vai ao ponto e repete. Pare com `Ctrl+C` depois de 2 ou 3 idas. O log fica em `~/.ros/patrulha/`, ou em `workspace/logs/` se a patrulha rodou pelo Compose.
 
 **Feito quando:** o log tem `undock_ok` e pelo menos 2 `destino_ok`, e o `Ctrl+C` gravou `encerrado` e `resumo`.
 
@@ -215,7 +221,7 @@ A execução é **invalidada** por qualquer comando manual, reposicionamento à 
 
 | Item | Situação |
 |---|---|
-| Como o notebook fala com o robô | O container atual (`treino_leve.sh`, `ros.sh`) usa a rede isolada do Docker. Para o robô real, ele precisaria da rede do computador (`--network host`) e da configuração de discovery do laboratório. **Não foi feito nem testado** |
+| Como o PC fala com o robô | **Feito em 2026-11-16, não testado com o robô:** os serviços do `infra/compose/robo.yaml` usam `network_mode: host`, `ipc: host` e o `infra/lab/rede_lab.env` (domínio, FastDDS e, se for o caso, Discovery Server). SLAM, localização, Nav2, RViz, teleop e patrulha usam todos o mesmo modelo. Os containers `treino_leve.sh` e `ros.sh` continuam na rede isolada |
 | Patrulha no PC ou no Raspberry Pi | Decisão aberta (DESIGN, seção 7). Este kit supõe o PC |
 | `nav2_inf_devagar.yaml` | A gerar a partir do `nav2.yaml` da imagem |
 | Tela do robô com ruído (foto `erro_tela.jpeg`, de 2026-11-12) | Não investigado. Não faz parte da patrulha, mas vale perguntar à equipe do INF antes de usar esse robô |

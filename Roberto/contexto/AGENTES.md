@@ -2,7 +2,7 @@
 
 Este arquivo reúne as regras que o Roberto já definiu para o Claude Code na máquina dele e que agentes de IA em outra máquina também precisam seguir. Leia inteiro antes de agir. Se uma regra aqui conflitar com um pedido, pare e pergunte ao Roberto.
 
-Origem: memória do Claude Code do Roberto, copiada em 2026-11-16. Se a memória mudar, este arquivo pode ficar desatualizado.
+Origem: memória do Claude Code do Roberto, copiada em 2026-11-16 (seção 6 acrescentada no mesmo dia). Se a memória mudar, este arquivo pode ficar desatualizado.
 
 ## 1. Guardrails do TurtleBot 4 físico (obrigatórios)
 
@@ -59,7 +59,16 @@ Ele é iniciante em robótica. Um plano com termos soltos e sem links já foi cr
 - Diga o que foi e o que não foi verificado em cada fonte.
 - Defina todo termo técnico na primeira vez que usar.
 
-## 6. Onde achar o resto
+## 6. Regras de entrega (desde 2026-11-16)
+
+Pedido do Roberto, que vale para toda tarefa, nesta máquina e no PC do laboratório:
+
+- **Documento por tarefa.** Ao fim de cada tarefa, crie `Roberto/docs/tarefas/AAAA-MM-DD-<nome>.md` com a data e a explicação detalhada do pipeline: o que foi feito, em qual arquivo, para que serve, como foi verificado e o que não foi. Abra com a resposta direta, use um exemplo do dia a dia e termine com o efeito prático. O primeiro é `docs/tarefas/2026-11-16-modo-slam.md`.
+- **Registro de mudanças.** Continue acrescentando a entrada do dia em `docs/registro-de-mudancas.md`.
+- **Código comentado na medida certa.** Comente o porquê das escolhas e o que não é óbvio. Não comente o que o código já diz.
+- **Documentação oficial.** Siga a documentação oficial (TurtleBot 4, ROS 2, Nav2, Create 3, slam_toolbox) e cite a página no código ou no documento quando um comando vier dela.
+
+## 7. Onde achar o resto
 
 Os caminhos abaixo são relativos a `Roberto/contexto/`.
 
