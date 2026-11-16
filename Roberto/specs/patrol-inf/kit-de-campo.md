@@ -55,11 +55,21 @@ O que o manual diz, e que muda o nosso plano:
 
 Pergunte à equipe do INF qual dos dois modos o robô usa. **Não mude a configuração de rede do robô sem autorização.**
 
+**Atenção:** os nós Jazzy do PC derrubam este robô, que é Humble (falta de memória no serviço `turtlebot4`, medido em 2026-11-16). Não use o `lab.sh robo` até o modo `robo` do PC ir para Humble (`docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md`, seção 8).
+
+**O robô do laboratório, conferido em 2026-11-16** (detalhes em `docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md`):
+
+- Roda **ROS 2 Humble** (Ubuntu 22.04). O PC precisa falar Humble com ele (ver o aviso acima). No robô, o `cmd_vel` é `geometry_msgs/msg/Twist`, sem carimbo (ver a etapa 2).
+- Usa **Discovery Server**: o servidor roda no próprio robô (id 1, porta 11811). O PC usa `ROS_DISCOVERY_SERVER=;<IP do robô>:11811;` e `ROS_SUPER_CLIENT=True` (em `infra/lab/rede_lab.env`).
+- Publica tudo no namespace **`/robot1`**: `/robot1/scan`, `/robot1/battery_state`, `/robot1/dock` etc.
+- O PC precisa de rotas para `192.168.186.0/24` (Create 3) e `192.168.185.0/24` (cabo) **pelo IP do robô**. Sem elas, o PC não completa a descoberta e não vê nenhum tópico. O `lab.sh robo checar-rede` confere isso e mostra o comando.
+- `ROS_DOMAIN_ID=0` nos dois.
+
 ```bash
-ros2 topic list                          # deve listar /battery_state, /dock_status, /scan
-ros2 topic echo /battery_state --once
-ros2 topic echo /dock_status --once
-ros2 topic hz /battery_state             # deixe rodar 1 minuto e anote
+ros2 topic list                          # deve listar /robot1/battery_state, /robot1/dock_status, /robot1/scan
+ros2 topic echo /robot1/battery_state --once
+ros2 topic echo /robot1/dock_status --once
+ros2 topic hz /robot1/battery_state      # deixe rodar 1 minuto e anote
 ```
 
 Se o `ros2 topic hz` disser que o tópico não é publicado, tente com `--qos-profile sensor_data` (esses tópicos usam QoS de sensor; foi o que vimos no simulador, em `progresso/testes.md`).
@@ -71,10 +81,10 @@ Se o `ros2 topic hz` disser que o tópico não é publicado, tente com `--qos-pr
 Página: [Driving your TurtleBot 4](https://turtlebot.github.io/turtlebot4-user-manual/tutorials/driving.html).
 
 ```bash
-ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -p stamped:=true
+ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r __ns:=/robot1 -p stamped:=false
 ```
 
-O manual diz que, no Jazzy, o parâmetro `stamped` precisa ser ligado à mão. Tire o robô da doca pela etapa 3 antes de andar: a documentação da Create 3 desaconselha comandar movimento com o robô encaixado.
+O manual diz que, no Jazzy, o parâmetro `stamped` precisa ser ligado à mão. **No robô do laboratório, não:** ele é Humble, e o `/robot1/cmd_vel` dele é `geometry_msgs/msg/Twist`. Com `stamped:=true`, o teleop publicaria `TwistStamped`, e o robô ignoraria o comando. O `__ns` põe o `cmd_vel` dentro do namespace do robô. O `lab.sh robo teleop` já faz as duas coisas. Tire o robô da doca pela etapa 3 antes de andar: a documentação da Create 3 desaconselha comandar movimento com o robô encaixado.
 
 **Feito quando:** o robô anda para frente, gira e para quando você solta a tecla.
 
@@ -83,11 +93,13 @@ O manual diz que, no Jazzy, o parâmetro `stamped` precisa ser ligado à mão. T
 Página: [Docking, Create 3](https://iroboteducation.github.io/create3_docs/api/docking/).
 
 ```bash
-ros2 action send_goal /undock irobot_create_msgs/action/Undock "{}"
-ros2 topic echo /dock_status --once      # is_docked: false
-ros2 action send_goal /dock irobot_create_msgs/action/Dock "{}"
-ros2 topic echo /dock_status --once      # is_docked: true
+ros2 action send_goal /robot1/undock irobot_create_msgs/action/Undock "{}"
+ros2 topic echo /robot1/dock_status --once      # is_docked: false
+ros2 action send_goal /robot1/dock irobot_create_msgs/action/Dock "{}"
+ros2 topic echo /robot1/dock_status --once      # is_docked: true
 ```
+
+Os nomes com `/robot1` são os do robô do laboratório (as ações `/robot1/dock` e `/robot1/undock` foram listadas nele em 2026-11-16). Um robô sem namespace usa `/undock`, `/dock` e `/dock_status`.
 
 No undock, o robô recua e gira 180 graus. O dock falha se o robô estiver longe demais da doca.
 
@@ -105,11 +117,11 @@ Antes, no mesmo PC, treine o roteiro no Gazebo, com os mesmos serviços: `lab.sh
 
 | Passo | Pelo script (no PC do lab) | Comando oficial que ele roda |
 |---|---|---|
-| Rede | `infra/docker/lab.sh robo checar-rede` | `ros2 topic list` (precisa ter `/scan`, `/tf` e `/odom`) |
-| SLAM | `infra/docker/lab.sh robo subir slam` (confere a rede antes) | `ros2 launch turtlebot4_navigation slam.launch.py` (síncrono, o recomendado no PC) |
-| RViz | `infra/docker/lab.sh robo subir rviz` | `ros2 launch turtlebot4_viz view_navigation.launch.py` |
+| Rede | `infra/docker/lab.sh robo checar-rede` | Confere as rotas e roda `ros2 topic list` (precisa ter `/robot1/scan`, `/robot1/tf` e `/robot1/odom`) |
+| SLAM | `infra/docker/lab.sh robo subir slam` (confere a rede antes) | `ros2 launch turtlebot4_navigation slam.launch.py namespace:=/robot1` (síncrono, o recomendado no PC) |
+| RViz | `infra/docker/lab.sh robo subir rviz` | `ros2 launch turtlebot4_viz view_navigation.launch.py namespace:=/robot1` |
 | Undock | **À mão, pela etapa 3** | O script não faz dock nem undock no robô real |
-| Dirigir | `infra/docker/lab.sh robo teleop` (pede `SIM`) | `teleop_twist_keyboard` com `stamped:=true`, `speed:=0.15` e `turn:=0.5` |
+| Dirigir | `infra/docker/lab.sh robo teleop` (pede `SIM`) | `teleop_twist_keyboard` com `__ns:=/robot1`, `stamped:=false` (robô Humble), `speed:=0.15` e `turn:=0.5` |
 | Salvar | `infra/docker/lab.sh robo salvar lab` | `ros2 service call /slam_toolbox/save_map slam_toolbox/srv/SaveMap "{name: {data: '/mapas/lab'}}"` |
 
 Dirija devagar pelo laboratório até o mapa fechar no RViz. Com a área livre de obstáculos soltos e sem gente andando, o manual diz que o mapa sai melhor. Ao salvar, o script pergunta se o mapeamento começou na doca, grava a ficha `.info.txt` e roda o `conferir_mapa`.
@@ -196,7 +208,7 @@ Se a leitura da bateria oscilar e o robô voltar à doca cedo demais, aumente `d
 Com os números combinados com o coordenador (padrão proposto: 2 voltas e 1 ciclo de recarga, INF-03). Grave um rosbag durante toda a execução (INF-04):
 
 ```bash
-ros2 bag record -o aceite_$(date +%F_%H-%M) /battery_state /dock_status /scan /odom /tf /tf_static /amcl_pose /cmd_vel /plan
+ros2 bag record -o aceite_$(date +%F_%H-%M) /robot1/battery_state /robot1/dock_status /robot1/scan /robot1/odom /robot1/tf /robot1/tf_static /robot1/amcl_pose /robot1/cmd_vel /robot1/plan
 ```
 
 Página: [Recording and playing back data](https://docs.ros.org/en/jazzy/Tutorials/Beginner-CLI-Tools/Recording-And-Playing-Back-Data/Recording-And-Playing-Back-Data.html). A lista de tópicos é uma proposta: confira os nomes com `ros2 topic list` no dia.
@@ -209,8 +221,8 @@ A execução é **invalidada** por qualquer comando manual, reposicionamento à 
 
 | O que anotar | Etapa | Valor |
 |---|---|---|
-| Modo de rede (Simple Discovery ou Discovery Server) e `ROS_DOMAIN_ID` | 1 | |
-| Frequência do `/battery_state` e maior intervalo | 1 | |
+| Modo de rede (Simple Discovery ou Discovery Server) e `ROS_DOMAIN_ID` | 1 | Discovery Server no robô (id 1, porta 11811), domínio 0, namespace `/robot1`. Robô em ROS 2 Humble (lido em 2026-11-16) |
+| Frequência do `/battery_state` e maior intervalo | 1 | 0,2 Hz, uma a cada 5 s, medido no PC em 2026-11-16 (então `bateria_perdida_s` ≥ 15 s). Maior intervalo: falta a medição de 1 minuto |
 | Tempo até `is_docked: true` depois do dock | 3 | |
 | Carga da bateria no início e no fim | 1 e 10 | |
 | Pose da doca no mapa | 4 e 6 | |
@@ -221,7 +233,7 @@ A execução é **invalidada** por qualquer comando manual, reposicionamento à 
 
 | Item | Situação |
 |---|---|
-| Como o PC fala com o robô | **Feito em 2026-11-16, não testado com o robô:** os serviços do `infra/compose/robo.yaml` usam `network_mode: host`, `ipc: host` e o `infra/lab/rede_lab.env` (domínio, FastDDS e, se for o caso, Discovery Server). SLAM, localização, Nav2, RViz, teleop e patrulha usam todos o mesmo modelo. Os containers `treino_leve.sh` e `ros.sh` continuam na rede isolada |
+| Como o PC fala com o robô | **Funcionando desde 2026-11-16** (`REDE OK`, dados chegando). Os serviços do `infra/compose/robo.yaml` usam `network_mode: host`, `ipc: host`, o `infra/lab/rede_lab.env` (domínio 0, FastDDS, Discovery Server do robô, super cliente) e `namespace:=/robot1`. O PC tem rotas para `192.168.186.0/24` e `192.168.185.0/24` pelo robô (`docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md`). Os containers `treino_leve.sh` e `ros.sh` continuam na rede isolada |
 | Patrulha no PC ou no Raspberry Pi | Decisão aberta (DESIGN, seção 7). Este kit supõe o PC |
 | `nav2_inf_devagar.yaml` | A gerar a partir do `nav2.yaml` da imagem |
 | Tela do robô com ruído (foto `erro_tela.jpeg`, de 2026-11-12) | Não investigado. Não faz parte da patrulha, mas vale perguntar à equipe do INF antes de usar esse robô |

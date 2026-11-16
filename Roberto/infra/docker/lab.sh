@@ -4,7 +4,7 @@
 # impedir o sim e o robo de rodarem juntos.
 #
 #   ./lab.sh <sim|robo> subir <serviço...>   sobe em segundo plano (ex.: subir gazebo slam rviz)
-#   ./lab.sh robo checar-rede                só lê: /scan, /tf e /odom do robô chegam ao PC?
+#   ./lab.sh robo checar-rede                só lê: rotas, e /scan, /tf e /odom do robô chegam ao PC?
 #   ./lab.sh sim undock                      tira o robô SIMULADO da doca
 #   ./lab.sh <modo> teleop                   dirige pelo teclado (no robo, pede SIM)
 #   ./lab.sh <modo> patrulha                 a nossa patrulha (validar_pontos antes; no robo, pede SIM)
@@ -15,15 +15,17 @@
 #   ./lab.sh conferir <mapa.yaml>            confere um mapa salvo (sem ROS, sem Docker)
 #
 # Serviços: gazebo (só sim), slam, localizacao, nav2, rviz, teleop, patrulha, undock (só sim),
-# ferramentas. Variáveis: MAPA, CONFIG, SYNC, VEL, GIRO, STAMPED, NAV2_PARAMS, MEM_GAZEBO.
-# Explicação: docs/tarefas/2026-11-16-compose-e-alvos.md
+# ferramentas. Variáveis: MAPA, CONFIG, SYNC, VEL, GIRO, STAMPED, NAV2_PARAMS, MEM_GAZEBO,
+# ROBO_NS (namespace do robô real; padrão /robot1, ROBO_NS= vazio para nenhum).
+# Explicação: docs/tarefas/2026-11-16-compose-e-alvos.md e
+# docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md
 set -euo pipefail
 ESTE=$(readlink -f "$0")
 cd "$(dirname "$ESTE")/../.."   # raiz do projeto (pasta Roberto/)
 # Pastas montadas nos containers: criadas aqui para não nascerem como root.
 mkdir -p workspace/mapas workspace/logs
 
-uso() { sed -n 2,19p "$ESTE"; }
+uso() { sed -n 2,21p "$ESTE"; }
 
 if [ "${1:-}" = conferir ]; then
   [ -n "${2:-}" ] || { echo "Uso: ./lab.sh conferir <mapa.yaml>"; exit 1; }
@@ -52,20 +54,56 @@ exigir_sozinho() {
   fi
 }
 
+# Com o Discovery Server, o DDS do robô anuncia TODOS os endereços dele: o do Wi-Fi, o do cabo
+# (192.168.185.3) e o da USB com a Create 3 (192.168.186.x). O PC responde em todos. Sem rota
+# para esses dois pelo robô, as respostas saem pelo roteador, se perdem, e o PC nunca completa
+# a descoberta (medido em 2026-11-16 com tcpdump: 545 pacotes para cada um, 33 para o Wi-Fi).
+# O manual pede a rota da 192.168.186.0/24 pelo IP do robô (setup/discovery_server.html).
+checar_rotas() {
+  local ip rota dev con faltam=""
+  ip=$(sed -nE 's/^ROS_DISCOVERY_SERVER=;*([0-9.]+):.*/\1/p' infra/lab/rede_lab.env)
+  [ -n "$ip" ] || return 0   # Simple Discovery: não há servidor nem rota a conferir
+  for alvo in 192.168.186.2 192.168.185.3; do
+    rota=$(ip route get "$alvo" 2>/dev/null || true)
+    # Ligado direto (o cabo na enp86s0, sem "via") ou pelo robô: ok. Pelo roteador: falta.
+    if grep -q " via " <<<"$rota" && ! grep -q " via $ip " <<<"$rota"; then
+      faltam+=" ${alvo%.*}.0/24"
+    fi
+  done
+  [ -n "$faltam" ] || return 0
+  dev=$(ip route get "$ip" 2>/dev/null | grep -oE 'dev [^ ]+' | cut -d' ' -f2)
+  con=$(nmcli -g GENERAL.CONNECTION device show "$dev" 2>/dev/null || echo '<nome do Wi-Fi>')
+  echo "REDE REPROVADA: o PC não tem rota pelo robô ($ip) para:$faltam."
+  echo "O DDS do robô anuncia esses endereços, e sem a rota o PC não completa a descoberta."
+  echo "Rode uma vez (fica salvo na conexão $con; explicação em docs/acesso-ao-robo-por-cabo.md):"
+  echo "  sudo nmcli connection modify \"$con\" +ipv4.routes \"192.168.186.0/24 $ip 500, 192.168.185.0/24 $ip 500\""
+  echo "  sudo nmcli connection up \"$con\""
+  return 2
+}
+
 checar_rede() {
   # Só leitura (manual, setup/simple_discovery.html: "ros2 topic list" no PC e no robô).
-  # Junta 3 listagens com 3 s entre elas: a descoberta do DDS leva alguns segundos.
-  local topicos faltando=""
-  topicos=$(ferramenta 'for i in 1 2 3; do ros2 topic list; sleep 3; done | sort -u' 2>/dev/null || true)
-  for t in /scan /tf /odom; do grep -qx "$t" <<<"$topicos" || faltando+=" $t"; done
-  for t in /battery_state /dock_status; do   # a patrulha precisa; o SLAM não
-    grep -qx "$t" <<<"$topicos" && echo "  ok   $t" || echo "  aviso: $t não apareceu (a patrulha vai precisar)"
+  # Junta 4 listagens com 4 s entre elas: pelo Discovery Server, a descoberta leva alguns
+  # segundos (no próprio robô, cerca de 10 s até os 31 tópicos aparecerem).
+  local ns=${ROBO_NS-/robot1} topicos erro faltando=""
+  checar_rotas || return 2
+  erro=$(mktemp)
+  # Se o container nem sobe (imagem faltando, Docker sem permissão), o erro aparece aqui, e
+  # não disfarçado de "rede reprovada".
+  if ! topicos=$(ferramenta 'for i in 1 2 3 4; do ros2 topic list; sleep 4; done | sort -u' 2>"$erro"); then
+    echo "O container de teste não rodou:"; tail -3 "$erro"; rm -f "$erro"; return 2
+  fi
+  rm -f "$erro"
+  for t in scan tf odom; do grep -qx "$ns/$t" <<<"$topicos" || faltando+=" $ns/$t"; done
+  for t in battery_state dock_status; do   # a patrulha precisa; o SLAM não
+    grep -qx "$ns/$t" <<<"$topicos" && echo "  ok   $ns/$t" || echo "  aviso: $ns/$t não apareceu (a patrulha vai precisar)"
   done
   if [ -n "$faltando" ]; then
-    echo "REDE REPROVADA: faltam$faltando. Confira ROS_DOMAIN_ID, RMW e o discovery em infra/lab/rede_lab.env."
+    echo "REDE REPROVADA: faltam$faltando. Confira ROS_DOMAIN_ID, RMW e o discovery em infra/lab/rede_lab.env,"
+    echo "e o namespace do robô (ROBO_NS, hoje '${ns:-nenhum}')."
     return 2
   fi
-  echo "REDE OK: /scan, /tf e /odom do robô chegam ao PC."
+  echo "REDE OK: $ns/scan, $ns/tf e $ns/odom do robô chegam ao PC."
 }
 
 liberar_tela() {

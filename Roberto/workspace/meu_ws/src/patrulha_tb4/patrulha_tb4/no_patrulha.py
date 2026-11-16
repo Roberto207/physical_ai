@@ -158,7 +158,12 @@ class Patrulha:
                 f'use_sim_time={self.monitor.usa_sim_time} ambiente={config.ambiente}')
 
         self.cfg = config
-        self.nav = TurtleBot4Navigator()
+        # O navegador é outro nó e precisa do mesmo namespace do monitor para achar
+        # /robot1/navigate_to_pose, /robot1/dock e o AMCL. Pelo launch, o __ns já vale para
+        # todos os nós do processo; passar explícito cobre quem rodar o nó sem o launch.
+        # get_namespace() devolve "/" quando não há namespace.
+        ns = self.monitor.get_namespace()
+        self.nav = TurtleBot4Navigator(namespace='' if ns == '/' else ns)
         threading.Thread(target=self._esperar_nav2, daemon=True).start()
         return None
 
