@@ -1,0 +1,19 @@
+# L2: os mesmos pontos do patrol_loop oficial, no mapa `warehouse`, para comparar (AMB-01).
+#
+# Copiados de turtlebot4_python_tutorials/patrol_loop.py (lido da imagem em 2026-11-12).
+# No código oficial, NORTH = 0 graus, WEST = 90, EAST = 270 e NORTH_WEST = 45.
+patrulha:
+  ambiente: leve
+  modelo: standard
+  mapa: /opt/ros/jazzy/share/turtlebot4_navigation/maps/warehouse.yaml
+  pose_inicial: {x: 0.0, y: 0.0, yaw_graus: 0}
+  aproximacao_doca: {x: -1.0, y: 1.0, yaw_graus: 270}
+  pontos:
+    - {x: -5.0, y: 1.0, yaw_graus: 270}
+    - {x: -5.0, y: -23.0, yaw_graus: 0}
+    - {x: 9.0, y: -23.0, yaw_graus: 45}
+    - {x: 10.0, y: 2.0, yaw_graus: 90}
+  bateria: {modo: absoluto, alta: 0.95, baixa: 0.20, critica: 0.10}
+  tempos: {bateria_perdida_s: 10, destino_s: 600}   # trechos de 24 m levaram 222 s em 9/nov
+  limites: {falhas_seguidas: 3, tentativas_dock: 3}
+  validacao: {margem_obstaculo_m: 0.25}

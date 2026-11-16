@@ -1,0 +1,59 @@
+[0.604s] Invoking command in '/workspace/meu_ws/src/patrulha_tb4': PYTHONPATH=/workspace/meu_ws/build/patrulha_tb4/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/patrulha_tb4 build --build-base /workspace/meu_ws/build/patrulha_tb4/build install --record /workspace/meu_ws/build/patrulha_tb4/install.log --install-scripts $base/lib/patrulha_tb4 --single-version-externally-managed install_data
+[0.768s] running egg_info
+[0.768s] creating ../../build/patrulha_tb4/patrulha_tb4.egg-info
+[0.777s] writing ../../build/patrulha_tb4/patrulha_tb4.egg-info/PKG-INFO
+[0.777s] writing dependency_links to ../../build/patrulha_tb4/patrulha_tb4.egg-info/dependency_links.txt
+[0.777s] writing entry points to ../../build/patrulha_tb4/patrulha_tb4.egg-info/entry_points.txt
+[0.777s] writing requirements to ../../build/patrulha_tb4/patrulha_tb4.egg-info/requires.txt
+[0.777s] writing top-level names to ../../build/patrulha_tb4/patrulha_tb4.egg-info/top_level.txt
+[0.777s] writing manifest file '../../build/patrulha_tb4/patrulha_tb4.egg-info/SOURCES.txt'
+[0.797s] reading manifest file '../../build/patrulha_tb4/patrulha_tb4.egg-info/SOURCES.txt'
+[0.797s] writing manifest file '../../build/patrulha_tb4/patrulha_tb4.egg-info/SOURCES.txt'
+[0.797s] running build
+[0.797s] running build_py
+[0.798s] creating /workspace/meu_ws/build/patrulha_tb4/build
+[0.798s] creating /workspace/meu_ws/build/patrulha_tb4/build/lib
+[0.798s] creating /workspace/meu_ws/build/patrulha_tb4/build/lib/patrulha_tb4
+[0.798s] copying patrulha_tb4/config.py -> /workspace/meu_ws/build/patrulha_tb4/build/lib/patrulha_tb4
+[0.798s] copying patrulha_tb4/pontos.py -> /workspace/meu_ws/build/patrulha_tb4/build/lib/patrulha_tb4
+[0.798s] copying patrulha_tb4/registro.py -> /workspace/meu_ws/build/patrulha_tb4/build/lib/patrulha_tb4
+[0.798s] copying patrulha_tb4/decisao.py -> /workspace/meu_ws/build/patrulha_tb4/build/lib/patrulha_tb4
+[0.798s] copying patrulha_tb4/__init__.py -> /workspace/meu_ws/build/patrulha_tb4/build/lib/patrulha_tb4
+[0.798s] copying patrulha_tb4/no_patrulha.py -> /workspace/meu_ws/build/patrulha_tb4/build/lib/patrulha_tb4
+[0.798s] running install
+[0.802s] running install_lib
+[0.812s] creating /workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages/patrulha_tb4
+[0.812s] copying /workspace/meu_ws/build/patrulha_tb4/build/lib/patrulha_tb4/config.py -> /workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages/patrulha_tb4
+[0.812s] copying /workspace/meu_ws/build/patrulha_tb4/build/lib/patrulha_tb4/pontos.py -> /workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages/patrulha_tb4
+[0.812s] copying /workspace/meu_ws/build/patrulha_tb4/build/lib/patrulha_tb4/registro.py -> /workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages/patrulha_tb4
+[0.812s] copying /workspace/meu_ws/build/patrulha_tb4/build/lib/patrulha_tb4/decisao.py -> /workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages/patrulha_tb4
+[0.812s] copying /workspace/meu_ws/build/patrulha_tb4/build/lib/patrulha_tb4/__init__.py -> /workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages/patrulha_tb4
+[0.812s] copying /workspace/meu_ws/build/patrulha_tb4/build/lib/patrulha_tb4/no_patrulha.py -> /workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages/patrulha_tb4
+[0.813s] byte-compiling /workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages/patrulha_tb4/config.py to config.cpython-312.pyc
+[0.814s] byte-compiling /workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages/patrulha_tb4/pontos.py to pontos.cpython-312.pyc
+[0.816s] byte-compiling /workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages/patrulha_tb4/registro.py to registro.cpython-312.pyc
+[0.817s] byte-compiling /workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages/patrulha_tb4/decisao.py to decisao.cpython-312.pyc
+[0.819s] byte-compiling /workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages/patrulha_tb4/__init__.py to __init__.cpython-312.pyc
+[0.819s] byte-compiling /workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages/patrulha_tb4/no_patrulha.py to no_patrulha.cpython-312.pyc
+[0.821s] running install_data
+[0.821s] creating /workspace/meu_ws/install/patrulha_tb4/share/ament_index
+[0.821s] creating /workspace/meu_ws/install/patrulha_tb4/share/ament_index/resource_index
+[0.822s] creating /workspace/meu_ws/install/patrulha_tb4/share/ament_index/resource_index/packages
+[0.822s] copying resource/patrulha_tb4 -> /workspace/meu_ws/install/patrulha_tb4/share/ament_index/resource_index/packages
+[0.822s] copying package.xml -> /workspace/meu_ws/install/patrulha_tb4/share/patrulha_tb4
+[0.822s] creating /workspace/meu_ws/install/patrulha_tb4/share/patrulha_tb4/launch
+[0.822s] copying launch/patrulha.launch.py -> /workspace/meu_ws/install/patrulha_tb4/share/patrulha_tb4/launch
+[0.822s] creating /workspace/meu_ws/install/patrulha_tb4/share/patrulha_tb4/config
+[0.822s] copying config/inf_lab.yaml -> /workspace/meu_ws/install/patrulha_tb4/share/patrulha_tb4/config
+[0.845s] copying config/nav2_inf_devagar.yaml -> /workspace/meu_ws/install/patrulha_tb4/share/patrulha_tb4/config
+[0.845s] copying config/leve_reduzido.yaml -> /workspace/meu_ws/install/patrulha_tb4/share/patrulha_tb4/config
+[0.845s] copying config/teste_tempo_curto.yaml -> /workspace/meu_ws/install/patrulha_tb4/share/patrulha_tb4/config
+[0.845s] copying config/gazebo_maze.yaml -> /workspace/meu_ws/install/patrulha_tb4/share/patrulha_tb4/config
+[0.845s] copying config/warehouse_original.yaml -> /workspace/meu_ws/install/patrulha_tb4/share/patrulha_tb4/config
+[0.845s] running install_egg_info
+[0.858s] Copying ../../build/patrulha_tb4/patrulha_tb4.egg-info to /workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages/patrulha_tb4-0.1.0-py3.12.egg-info
+[0.858s] running install_scripts
+[0.933s] Installing patrulha script to /workspace/meu_ws/install/patrulha_tb4/lib/patrulha_tb4
+[0.933s] Installing validar_pontos script to /workspace/meu_ws/install/patrulha_tb4/lib/patrulha_tb4
+[0.933s] writing list of installed files to '/workspace/meu_ws/build/patrulha_tb4/install.log'
+[0.953s] Invoked command in '/workspace/meu_ws/src/patrulha_tb4' returned '0': PYTHONPATH=/workspace/meu_ws/build/patrulha_tb4/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/patrulha_tb4 build --build-base /workspace/meu_ws/build/patrulha_tb4/build install --record /workspace/meu_ws/build/patrulha_tb4/install.log --install-scripts $base/lib/patrulha_tb4 --single-version-externally-managed install_data

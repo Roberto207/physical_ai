@@ -1,0 +1,23 @@
+running egg_info
+writing ../../build/patrulha_tb4/patrulha_tb4.egg-info/PKG-INFO
+writing dependency_links to ../../build/patrulha_tb4/patrulha_tb4.egg-info/dependency_links.txt
+writing entry points to ../../build/patrulha_tb4/patrulha_tb4.egg-info/entry_points.txt
+writing requirements to ../../build/patrulha_tb4/patrulha_tb4.egg-info/requires.txt
+writing top-level names to ../../build/patrulha_tb4/patrulha_tb4.egg-info/top_level.txt
+reading manifest file '../../build/patrulha_tb4/patrulha_tb4.egg-info/SOURCES.txt'
+writing manifest file '../../build/patrulha_tb4/patrulha_tb4.egg-info/SOURCES.txt'
+running build
+running build_py
+copying patrulha_tb4/no_patrulha.py -> /workspace/meu_ws/build/patrulha_tb4/build/lib/patrulha_tb4
+running install
+running install_lib
+copying /workspace/meu_ws/build/patrulha_tb4/build/lib/patrulha_tb4/no_patrulha.py -> /workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages/patrulha_tb4
+byte-compiling /workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages/patrulha_tb4/no_patrulha.py to no_patrulha.cpython-312.pyc
+running install_data
+running install_egg_info
+removing '/workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages/patrulha_tb4-0.1.0-py3.12.egg-info' (and everything under it)
+Copying ../../build/patrulha_tb4/patrulha_tb4.egg-info to /workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages/patrulha_tb4-0.1.0-py3.12.egg-info
+running install_scripts
+Installing patrulha script to /workspace/meu_ws/install/patrulha_tb4/lib/patrulha_tb4
+Installing validar_pontos script to /workspace/meu_ws/install/patrulha_tb4/lib/patrulha_tb4
+writing list of installed files to '/workspace/meu_ws/build/patrulha_tb4/install.log'

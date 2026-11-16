@@ -1,0 +1,22 @@
+[INFO] [launch]: All log files can be found below /root/.ros/log/2026-11-13-15-08-15-083192-4de4f16c349f-236
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [patrulha-1]: process started with pid [245]
+[patrulha-1] [INFO] [1794582495.983993719] [patrulha_monitor]: Log da patrulha: /evidencias/2026-11-13_15-08-15.jsonl
+[patrulha-1] [INFO] [1794582496.213600182] [basic_navigator]: Publishing Initial Pose
+[patrulha-1] [INFO] [1794582500.298699033] [basic_navigator]: Nav2 is ready for use!
+[patrulha-1] [INFO] [1794582501.304147354] [patrulha_monitor]: [patrulhando] undock_ok resultado=4
+[patrulha-1] [INFO] [1794582501.305086590] [basic_navigator]: Navigating to goal: -2.0 0.5...
+[patrulha-1] [INFO] [1794582501.308570148] [patrulha_monitor]: [patrulhando] destino_enviado ponto=0
+[patrulha-1] [INFO] [1794582504.396285932] [patrulha_monitor]: [patrulhando] destino_falhou ponto=0 resultado=tempo_esgotado
+[patrulha-1] [INFO] [1794582504.429464725] [basic_navigator]: Navigating to goal: -2.0 2.5...
+[patrulha-1] [INFO] [1794582504.433181423] [patrulha_monitor]: [patrulhando] destino_enviado ponto=1
+[patrulha-1] [INFO] [1794582507.396686697] [patrulha_monitor]: [patrulhando] destino_falhou ponto=1 resultado=tempo_esgotado
+[patrulha-1] [INFO] [1794582507.403260331] [basic_navigator]: Navigating to goal: -3.5 2.5...
+[patrulha-1] [INFO] [1794582507.405175964] [patrulha_monitor]: [patrulhando] destino_enviado ponto=2
+[patrulha-1] [INFO] [1794582510.397571732] [patrulha_monitor]: [indo_doca] destino_falhou ponto=2 resultado=tempo_esgotado
+[patrulha-1] [INFO] [1794582510.426596025] [basic_navigator]: Navigating to goal: -0.6 0.0...
+[patrulha-1] [INFO] [1794582510.430629911] [patrulha_monitor]: [indo_doca] destino_enviado detalhe=aproximacao_doca:falhas_seguidas
+[patrulha-1] [INFO] [1794582512.297658730] [patrulha_monitor]: [encerrando] dock_ok
+[patrulha-1] [INFO] [1794582512.298774199] [patrulha_monitor]: [encerrando] falhas_seguidas
+[patrulha-1] [INFO] [1794582512.299940887] [patrulha_monitor]: Patrulha encerrada com o código 7.
+[ERROR] [patrulha-1]: process has died [pid 245, exit code 7, cmd '/workspace/meu_ws/install/patrulha_tb4/lib/patrulha_tb4/patrulha --ros-args --params-file /tmp/launch_params_othedfrj'].

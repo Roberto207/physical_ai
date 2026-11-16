@@ -1,0 +1,121 @@
+<?xml version="1.0"?>
+<!--
+  XACRO de exemplo para estudo: o MESMO robô do exemplo_robo.urdf, sem repetição.
+
+  Xacro é um URDF com recursos de programação. Antes de usar, o ROS "expande" o xacro
+  para um URDF comum. Aqui usamos quatro recursos:
+
+    1. xacro:arg       argumento de linha de comando      (com_lidar)
+    2. xacro:property  variável                            (raio_roda, chassi_x, ...)
+    3. xacro:macro     bloco reutilizável com parâmetros   (a roda)
+    4. xacro:if        liga ou desliga um trecho           (o lidar)
+
+  Também dá para fazer contas dentro de ${ ... }, e o `pi` já vem definido.
+
+  Para gerar o URDF comum a partir deste arquivo (dentro do container ROS):
+      xacro exemplo_robo.urdf.xacro > saida.urdf
+      xacro exemplo_robo.urdf.xacro com_lidar:=false > sem_lidar.urdf
+-->
+<robot name="robo_exemplo" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- 1. ARGUMENTO: dá para escolher na hora de expandir (padrão: com lidar) -->
+  <xacro:arg name="com_lidar" default="true"/>
+
+  <!-- 2. PROPRIEDADES: cada medida num lugar só. Mudou aqui, mudou no robô inteiro -->
+  <xacro:property name="chassi_x" value="0.4"/>
+  <xacro:property name="chassi_y" value="0.25"/>
+  <xacro:property name="chassi_z" value="0.1"/>
+  <xacro:property name="massa_chassi" value="2.0"/>
+  <xacro:property name="raio_roda" value="0.05"/>
+  <xacro:property name="largura_roda" value="0.03"/>
+  <xacro:property name="massa_roda" value="0.2"/>
+
+  <material name="azul"><color rgba="0.1 0.3 0.8 1"/></material>
+  <material name="preto"><color rgba="0.1 0.1 0.1 1"/></material>
+  <material name="cinza"><color rgba="0.6 0.6 0.6 1"/></material>
+
+  <!-- ===================== CORPO ===================== -->
+  <link name="base_link">
+    <visual>
+      <geometry><box size="${chassi_x} ${chassi_y} ${chassi_z}"/></geometry>
+      <material name="azul"/>
+    </visual>
+    <collision>
+      <geometry><box size="${chassi_x} ${chassi_y} ${chassi_z}"/></geometry>
+    </collision>
+    <!-- As inércias são CALCULADAS (no URDF comum, escrevemos o número pronto) -->
+    <inertial>
+      <mass value="${massa_chassi}"/>
+      <inertia ixx="${massa_chassi/12 * (chassi_y**2 + chassi_z**2)}"
+               iyy="${massa_chassi/12 * (chassi_x**2 + chassi_z**2)}"
+               izz="${massa_chassi/12 * (chassi_x**2 + chassi_y**2)}"
+               ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <!-- 3. MACRO: a roda escrita UMA vez. Os parâmetros são o nome e o lado (1 = esquerda, -1 = direita) -->
+  <xacro:macro name="roda" params="nome lado">
+    <link name="roda_${nome}">
+      <visual>
+        <geometry><cylinder radius="${raio_roda}" length="${largura_roda}"/></geometry>
+        <material name="preto"/>
+      </visual>
+      <collision>
+        <geometry><cylinder radius="${raio_roda}" length="${largura_roda}"/></geometry>
+      </collision>
+      <inertial>
+        <mass value="${massa_roda}"/>
+        <inertia ixx="${massa_roda/12 * (3*raio_roda**2 + largura_roda**2)}"
+                 iyy="${massa_roda/12 * (3*raio_roda**2 + largura_roda**2)}"
+                 izz="${0.5 * massa_roda * raio_roda**2}"
+                 ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+    </link>
+
+    <joint name="junta_roda_${nome}" type="continuous">
+      <parent link="base_link"/>
+      <child link="roda_${nome}"/>
+      <!-- lado = 1 põe a roda à esquerda (y positivo), lado = -1 à direita -->
+      <origin xyz="0 ${lado * (chassi_y/2 + largura_roda/2)} ${-raio_roda}" rpy="${-pi/2} 0 0"/>
+      <axis xyz="0 0 1"/>
+    </joint>
+  </xacro:macro>
+
+  <!-- Duas linhas no lugar das ~40 do URDF comum -->
+  <xacro:roda nome="esquerda" lado="1"/>
+  <xacro:roda nome="direita" lado="-1"/>
+
+  <!-- ===================== APOIO TRASEIRO ===================== -->
+  <link name="apoio_traseiro">
+    <visual>
+      <geometry><sphere radius="0.025"/></geometry>
+      <material name="cinza"/>
+    </visual>
+    <collision>
+      <geometry><sphere radius="0.025"/></geometry>
+    </collision>
+  </link>
+
+  <joint name="junta_apoio" type="fixed">
+    <parent link="base_link"/>
+    <child link="apoio_traseiro"/>
+    <origin xyz="-0.15 0 -0.075"/>
+  </joint>
+
+  <!-- 4. CONDICIONAL: o lidar só entra se com_lidar for verdadeiro -->
+  <xacro:if value="$(arg com_lidar)">
+    <link name="lidar_link">
+      <visual>
+        <geometry><cylinder radius="0.04" length="0.05"/></geometry>
+        <material name="preto"/>
+      </visual>
+    </link>
+
+    <joint name="junta_lidar" type="fixed">
+      <parent link="base_link"/>
+      <child link="lidar_link"/>
+      <origin xyz="0.1 0 ${chassi_z/2 + 0.025}"/>
+    </joint>
+  </xacro:if>
+
+</robot>

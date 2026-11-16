@@ -1,0 +1,4 @@
+  do SIGINT ao resumo gravado: 0.11 s (limite: 3.0 s)
+  7 eventos; código de saída no resumo: 0
+  hash_codigo: d588709ac9def5ad...
+APROVADO (sigint)

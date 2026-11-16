@@ -1,0 +1,3 @@
+  3 eventos; código de saída no resumo: 3
+  hash_codigo: d588709ac9def5ad...
+APROVADO (sem_bateria)

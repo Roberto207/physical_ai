@@ -1,0 +1,3 @@
+parada: a patrulha encerrou sozinha
+rviz2: nenhum processo (AMB-03)
+nos: /behavior_server /bt_navigator /bt_navigator_navigate_through_poses_rclcpp_node /bt_navigator_navigate_to_pose_rclcpp_node /collision_monitor /controller_server /docking_server /fake_tb4_base /global_costmap/global_costmap /launch_ros_54 /lifecycle_manager_map_server /lifecycle_manager_navigation /local_costmap/local_costmap /loopback_simulator /map_server /nav2_container /planner_server /robot_state_publisher /route_server /smoother_server /static_transform_publisher_rsPA7niA6U04kWz2 /transform_listener_impl_7b2b6c002080 /transform_listener_impl_7b2b780020e0 /velocity_smoother /waypoint_follower 

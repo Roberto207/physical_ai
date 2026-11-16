@@ -1,0 +1,50 @@
+# Modelo da configuração da patrulha para o laboratório do INF (robô real).
+#
+# Este arquivo NÃO roda como está: faltam o mapa e os pontos, que só existem depois do
+# SLAM no laboratório (kit de campo, etapas 4 e 6). Enquanto a lista `pontos` estiver
+# vazia, o validar_pontos e a patrulha recusam o arquivo (código 2). É de propósito.
+#
+# Como preencher: copie para um nome novo (por exemplo, inf_lab_2026-11.yaml), siga o
+# kit de campo em specs/patrol-inf/kit-de-campo.md e, antes de qualquer movimento, rode:
+#
+#     validar_pontos caminho/do/arquivo.yaml
+#
+# Todas as poses estão no referencial do mapa (frame `map`), em metros e graus.
+patrulha:
+  ambiente: real
+  modelo: standard          # standard | lite (confirmar com o coordenador)
+
+  # O .yaml que o SLAM gravou (etapa 4). Caminho absoluto, ou relativo a este arquivo.
+  mapa: lab.yaml
+
+  # Onde o robô está quando encaixado na doca. Se o SLAM começou com o robô na doca
+  # (hipótese H3), fica perto de (0, 0). Conferir no RViz.
+  pose_inicial: {x: 0.0, y: 0.0, yaw_graus: 0}
+
+  # De frente para a doca, a cerca de 0,5 a 1 m dela (a confirmar no laboratório).
+  aproximacao_doca: {x: 0.0, y: 0.0, yaw_graus: 0}
+
+  # Pontos de patrulha, na ordem da ronda. Preencher na etapa 6.
+  pontos: []
+  #  - {x: 1.5, y: 0.0, yaw_graus: 0}
+
+  bateria:
+    modo: absoluto          # use `relativo` na etapa 9, para provocar a recarga em minutos
+    alta: 0.95
+    baixa: 0.20
+    critica: 0.10
+    delta_alta: 0.005       # só no modo relativo: limite = primeira leitura - delta
+    delta_baixa: 0.01       # no robô real, talvez precisem crescer (ruído da leitura)
+    delta_critica: 0.02
+
+  tempos:
+    # OBRIGATÓRIO no real: pelo menos 3 vezes o maior intervalo entre mensagens de
+    # /battery_state medido na etapa 1 (PAT-18). Troque o valor abaixo pelo medido.
+    bateria_perdida_s: 30
+    espera_bateria_s: 30
+    confirma_dock_s: 5
+    destino_s: 120          # aumentar se algum trecho for longo com a velocidade reduzida
+    servidor_s: 30
+
+  limites: {falhas_seguidas: 3, tentativas_dock: 3}
+  validacao: {margem_obstaculo_m: 0.25}

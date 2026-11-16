@@ -1,0 +1,12 @@
+{"t": null, "t_parede": 1794582495.9467838, "evento": "inicio", "estado": "iniciando", "bateria": null, "versao": "0.1.0", "hash_codigo": "d588709ac9def5adb828a540cf25ce7c8c347675917001fc44684bc43afb892f", "hash_config": "80ad8d0889d956a434a431ab1e092202edca7376c664f358905477d323bb6e02", "ambiente": "leve", "modelo": "standard"}
+{"t": 1794582501.215256, "t_parede": 1794582501.2947714, "evento": "undock_ok", "estado": "patrulhando", "bateria": 0.9994999766349792, "resultado": 4}
+{"t": 1794582501.215256, "t_parede": 1794582501.3064656, "evento": "destino_enviado", "estado": "patrulhando", "bateria": 0.9994999766349792, "ponto": 0}
+{"t": 1794582504.3152514, "t_parede": 1794582504.3939133, "evento": "destino_falhou", "estado": "patrulhando", "bateria": 0.9980000257492065, "ponto": 0, "resultado": "tempo_esgotado"}
+{"t": 1794582504.4160092, "t_parede": 1794582504.4304578, "evento": "destino_enviado", "estado": "patrulhando", "bateria": 0.9980000257492065, "ponto": 1}
+{"t": 1794582507.3153877, "t_parede": 1794582507.3938227, "evento": "destino_falhou", "estado": "patrulhando", "bateria": 0.9965000152587891, "ponto": 1, "resultado": "tempo_esgotado"}
+{"t": 1794582507.3153877, "t_parede": 1794582507.4041662, "evento": "destino_enviado", "estado": "patrulhando", "bateria": 0.9965000152587891, "ponto": 2}
+{"t": 1794582510.315557, "t_parede": 1794582510.3943882, "evento": "destino_falhou", "estado": "indo_doca", "bateria": 0.9950000047683716, "ponto": 2, "resultado": "tempo_esgotado"}
+{"t": 1794582510.415383, "t_parede": 1794582510.4275985, "evento": "destino_enviado", "estado": "indo_doca", "bateria": 0.9950000047683716, "detalhe": "aproximacao_doca:falhas_seguidas"}
+{"t": 1794582512.2157476, "t_parede": 1794582512.2946994, "evento": "dock_ok", "estado": "encerrando", "bateria": 1.0}
+{"t": 1794582512.2157476, "t_parede": 1794582512.297767, "evento": "falhas_seguidas", "estado": "encerrando", "bateria": 1.0}
+{"t": 1794582512.2157476, "t_parede": 1794582512.2988913, "evento": "resumo", "estado": "encerrando", "bateria": 1.0, "voltas": 1, "destinos_falhos": 3, "docks_confirmados": 1, "tentativas_dock": 1, "bateria_minima": 0.9944999814033508, "duracao_s": 16.363, "codigo_saida": 7}

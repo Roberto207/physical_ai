@@ -1,0 +1,3 @@
+parada: o cenário chegou ao ponto esperado
+rviz2: nenhum processo (AMB-03)
+nos: 

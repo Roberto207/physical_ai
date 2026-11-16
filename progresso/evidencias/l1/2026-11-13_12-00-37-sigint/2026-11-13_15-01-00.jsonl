@@ -1,0 +1,7 @@
+{"t": null, "t_parede": 1794582060.8015904, "evento": "inicio", "estado": "iniciando", "bateria": null, "versao": "0.1.0", "hash_codigo": "d588709ac9def5adb828a540cf25ce7c8c347675917001fc44684bc43afb892f", "hash_config": "ecd2c5160650631c0639e230c07373e368c64b1a101ad873c3b26ddf3f328133", "ambiente": "leve", "modelo": "standard"}
+{"t": 1794582067.1542537, "t_parede": 1794582067.170485, "evento": "undock_ok", "estado": "patrulhando", "bateria": 0.9994999766349792, "resultado": 4}
+{"t": 1794582067.1542537, "t_parede": 1794582067.1762714, "evento": "destino_enviado", "estado": "patrulhando", "bateria": 0.9994999766349792, "ponto": 0}
+{"t": 1794582107.1489766, "t_parede": 1794582107.1711857, "evento": "destino_ok", "estado": "patrulhando", "bateria": 0.9794999957084656, "ponto": 0, "resultado": 4}
+{"t": 1794582107.1489766, "t_parede": 1794582107.182475, "evento": "destino_enviado", "estado": "patrulhando", "bateria": 0.9794999957084656, "ponto": 1}
+{"t": 1794582112.7395668, "t_parede": 1794582112.7451935, "evento": "encerrado", "estado": "encerrando", "bateria": 0.9769999980926514}
+{"t": 1794582112.7395668, "t_parede": 1794582112.7542148, "evento": "resumo", "estado": "encerrando", "bateria": 0.9769999980926514, "voltas": 0, "destinos_falhos": 0, "docks_confirmados": 0, "tentativas_dock": 0, "bateria_minima": 0.9769999980926514, "duracao_s": 51.961, "codigo_saida": 0}

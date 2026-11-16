@@ -1,0 +1,41 @@
+[0.000000] (-) TimerEvent: {}
+[0.000122] (patrulha_tb4) JobQueued: {'identifier': 'patrulha_tb4', 'dependencies': OrderedDict()}
+[0.000209] (patrulha_tb4) JobStarted: {'identifier': 'patrulha_tb4'}
+[0.099225] (-) TimerEvent: {}
+[0.199544] (-) TimerEvent: {}
+[0.299856] (-) TimerEvent: {}
+[0.400142] (-) TimerEvent: {}
+[0.500437] (-) TimerEvent: {}
+[0.600724] (-) TimerEvent: {}
+[0.701017] (-) TimerEvent: {}
+[0.801292] (-) TimerEvent: {}
+[0.875365] (patrulha_tb4) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'egg_info', '--egg-base', '../../build/patrulha_tb4', 'build', '--build-base', '/workspace/meu_ws/build/patrulha_tb4/build', 'install', '--record', '/workspace/meu_ws/build/patrulha_tb4/install.log', '--install-scripts', '$base/lib/patrulha_tb4', '--single-version-externally-managed', 'install_data'], 'cwd': '/workspace/meu_ws/src/patrulha_tb4', 'env': OrderedDict({'GZ_SIM_SYSTEM_PLUGIN_PATH': '/opt/ros/jazzy/lib', 'GZ_SIM_RESOURCE_PATH': '/opt/ros/jazzy/share', 'GZ_CONFIG_PATH': '/opt/ros/jazzy/opt/gz_sim_vendor/share/gz:/opt/ros/jazzy/opt/sdformat_vendor/share/gz:/opt/ros/jazzy/opt/gz_gui_vendor/share/gz:/opt/ros/jazzy/opt/gz_transport_vendor/share/gz:/opt/ros/jazzy/opt/gz_rendering_vendor/share/gz:/opt/ros/jazzy/opt/gz_plugin_vendor/share/gz:/opt/ros/jazzy/opt/gz_fuel_tools_vendor/share/gz:/opt/ros/jazzy/opt/gz_msgs_vendor/share/gz:/opt/ros/jazzy/opt/gz_common_vendor/share/gz', 'HOSTNAME': 'e8c6cfd31fd5', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/opt/ros/jazzy/opt/gz_sim_vendor/lib:/opt/ros/jazzy/opt/gz_sensors_vendor/lib:/opt/ros/jazzy/opt/gz_physics_vendor/lib:/opt/ros/jazzy/opt/sdformat_vendor/lib:/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/x86_64-linux-gnu:/opt/ros/jazzy/opt/gz_gui_vendor/lib:/opt/ros/jazzy/opt/gz_transport_vendor/lib:/opt/ros/jazzy/opt/gz_rendering_vendor/lib:/opt/ros/jazzy/opt/gz_plugin_vendor/lib:/opt/ros/jazzy/opt/gz_fuel_tools_vendor/lib:/opt/ros/jazzy/opt/gz_msgs_vendor/lib:/opt/ros/jazzy/opt/gz_common_vendor/lib:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_tools_vendor/lib:/opt/ros/jazzy/opt/gz_ogre_next_vendor/lib:/opt/ros/jazzy/opt/gz_dartsim_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib', 'HOME': '/root', 'OLDPWD': '/', 'SINAL_NO_FIM': '1', 'ROS_PYTHON_VERSION': '3', 'BASE': '-p battery_start:=0.99 -p drain_per_s:=0.0005 -p charge_per_s:=0.05 -p parar_bateria_em_s:=12.0', 'LIMITE_S': '400', 'COLCON_PREFIX_PATH': '/opt/tb4_ws/install', 'ROS_DISTRO': 'jazzy', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'PATH': '/opt/ros/jazzy/opt/gz_msgs_vendor/bin:/opt/ros/jazzy/opt/gz_tools_vendor/bin:/opt/ros/jazzy/opt/gz_ogre_next_vendor/bin:/opt/ros/jazzy/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin', 'NAV2_EXTRA': '', 'SUBIR_NAV2': '1', 'LANG': 'C.UTF-8', 'CENARIO': 'bateria_perdida', 'AMENT_PREFIX_PATH': '/opt/tb4_ws/install/turtlebot4_python_tutorials:/opt/tb4_ws/install/turtlebot4_openai_tutorials:/opt/ros/jazzy', 'DONO': '1000:1000', 'SUBIR_BASE': '1', 'CONFIG': 'leve_reduzido.yaml', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'PATRULHA_EXTRA': '', 'PWD': '/workspace/meu_ws/build/patrulha_tb4', 'LC_ALL': 'C.UTF-8', 'PYTHONPATH': '/workspace/meu_ws/build/patrulha_tb4/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages:/opt/tb4_ws/build/turtlebot4_python_tutorials:/opt/tb4_ws/install/turtlebot4_python_tutorials/lib/python3.12/site-packages:/opt/tb4_ws/build/turtlebot4_openai_tutorials:/opt/tb4_ws/install/turtlebot4_openai_tutorials/lib/python3.12/site-packages:/opt/ros/jazzy/opt/gz_sim_vendor/lib/python:/opt/ros/jazzy/opt/sdformat_vendor/lib/python:/opt/ros/jazzy/opt/gz_transport_vendor/lib/python:/opt/ros/jazzy/opt/gz_msgs_vendor/lib/python:/opt/ros/jazzy/opt/gz_math_vendor/lib/python:/opt/ros/jazzy/lib/python3.12/site-packages', 'COLCON': '1', 'CMAKE_PREFIX_PATH': '/opt/ros/jazzy/opt/gz_sim_vendor:/opt/ros/jazzy/opt/gz_sensors_vendor:/opt/ros/jazzy/opt/gz_physics_vendor:/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_gui_vendor:/opt/ros/jazzy/opt/gz_transport_vendor:/opt/ros/jazzy/opt/gz_rendering_vendor:/opt/ros/jazzy/opt/gz_plugin_vendor:/opt/ros/jazzy/opt/gz_fuel_tools_vendor:/opt/ros/jazzy/opt/gz_msgs_vendor:/opt/ros/jazzy/opt/gz_common_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_ogre_next_vendor:/opt/ros/jazzy/opt/gz_dartsim_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor'}), 'shell': False}
+[0.901499] (-) TimerEvent: {}
+[1.001794] (-) TimerEvent: {}
+[1.102146] (-) TimerEvent: {}
+[1.162288] (patrulha_tb4) StdoutLine: {'line': b'running egg_info\n'}
+[1.179909] (patrulha_tb4) StdoutLine: {'line': b'writing ../../build/patrulha_tb4/patrulha_tb4.egg-info/PKG-INFO\n'}
+[1.180494] (patrulha_tb4) StdoutLine: {'line': b'writing dependency_links to ../../build/patrulha_tb4/patrulha_tb4.egg-info/dependency_links.txt\n'}
+[1.180918] (patrulha_tb4) StdoutLine: {'line': b'writing entry points to ../../build/patrulha_tb4/patrulha_tb4.egg-info/entry_points.txt\n'}
+[1.181098] (patrulha_tb4) StdoutLine: {'line': b'writing requirements to ../../build/patrulha_tb4/patrulha_tb4.egg-info/requires.txt\n'}
+[1.181181] (patrulha_tb4) StdoutLine: {'line': b'writing top-level names to ../../build/patrulha_tb4/patrulha_tb4.egg-info/top_level.txt\n'}
+[1.202271] (-) TimerEvent: {}
+[1.216661] (patrulha_tb4) StdoutLine: {'line': b"reading manifest file '../../build/patrulha_tb4/patrulha_tb4.egg-info/SOURCES.txt'\n"}
+[1.217932] (patrulha_tb4) StdoutLine: {'line': b"writing manifest file '../../build/patrulha_tb4/patrulha_tb4.egg-info/SOURCES.txt'\n"}
+[1.218360] (patrulha_tb4) StdoutLine: {'line': b'running build\n'}
+[1.218664] (patrulha_tb4) StdoutLine: {'line': b'running build_py\n'}
+[1.218969] (patrulha_tb4) StdoutLine: {'line': b'running install\n'}
+[1.227353] (patrulha_tb4) StdoutLine: {'line': b'running install_lib\n'}
+[1.246357] (patrulha_tb4) StdoutLine: {'line': b'running install_data\n'}
+[1.246669] (patrulha_tb4) StdoutLine: {'line': b'running install_egg_info\n'}
+[1.266705] (patrulha_tb4) StdoutLine: {'line': b"removing '/workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages/patrulha_tb4-0.1.0-py3.12.egg-info' (and everything under it)\n"}
+[1.267109] (patrulha_tb4) StdoutLine: {'line': b'Copying ../../build/patrulha_tb4/patrulha_tb4.egg-info to /workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages/patrulha_tb4-0.1.0-py3.12.egg-info\n'}
+[1.268035] (patrulha_tb4) StdoutLine: {'line': b'running install_scripts\n'}
+[1.302397] (-) TimerEvent: {}
+[1.399437] (patrulha_tb4) StdoutLine: {'line': b'Installing patrulha script to /workspace/meu_ws/install/patrulha_tb4/lib/patrulha_tb4\n'}
+[1.399661] (patrulha_tb4) StdoutLine: {'line': b'Installing validar_pontos script to /workspace/meu_ws/install/patrulha_tb4/lib/patrulha_tb4\n'}
+[1.399964] (patrulha_tb4) StdoutLine: {'line': b"writing list of installed files to '/workspace/meu_ws/build/patrulha_tb4/install.log'\n"}
+[1.402507] (-) TimerEvent: {}
+[1.436955] (patrulha_tb4) CommandEnded: {'returncode': 0}
+[1.448894] (patrulha_tb4) JobEnded: {'identifier': 'patrulha_tb4', 'rc': 0}
+[1.449606] (-) EventReactorShutdown: {}

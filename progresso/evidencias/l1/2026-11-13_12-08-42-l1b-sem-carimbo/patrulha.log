@@ -1,0 +1,19 @@
+[INFO] [launch]: All log files can be found below /root/.ros/log/2026-11-13-15-09-04-319721-f82774300b94-236
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [patrulha-1]: process started with pid [245]
+[patrulha-1] [INFO] [1794582545.177427473] [patrulha_monitor]: Log da patrulha: /evidencias/2026-11-13_15-09-05.jsonl
+[patrulha-1] [INFO] [1794582545.349724627] [basic_navigator]: Publishing Initial Pose
+[patrulha-1] [INFO] [1794582549.362980714] [basic_navigator]: Nav2 is ready for use!
+[patrulha-1] [INFO] [1794582549.524970439] [patrulha_monitor]: [patrulhando] undock_ok resultado=4
+[patrulha-1] [INFO] [1794582549.526205021] [basic_navigator]: Navigating to goal: -2.0 0.5...
+[patrulha-1] [INFO] [1794582549.529010049] [patrulha_monitor]: [patrulhando] destino_enviado ponto=0
+[patrulha-1] [INFO] [1794582669.624159183] [patrulha_monitor]: [patrulhando] destino_falhou ponto=0 resultado=tempo_esgotado
+[patrulha-1] [INFO] [1794582669.631122536] [basic_navigator]: Navigating to goal: -2.0 2.5...
+[patrulha-1] [INFO] [1794582669.634646209] [patrulha_monitor]: [patrulhando] destino_enviado ponto=1
+[patrulha-1] [INFO] [1794582790.617738196] [patrulha_monitor]: [patrulhando] destino_falhou ponto=1 resultado=tempo_esgotado
+[patrulha-1] [INFO] [1794582790.644970259] [basic_navigator]: Navigating to goal: -3.5 2.5...
+[patrulha-1] [INFO] [1794582790.649731813] [patrulha_monitor]: [patrulhando] destino_enviado ponto=2
+[patrulha-1] [INFO] [1794582849.625102447] [patrulha_monitor]: [indo_doca] bateria_baixa detalhe=idade_bateria_s=0.000
+[patrulha-1] [INFO] [1794582849.628378705] [patrulha_monitor]: [indo_doca] destino_cancelado ponto=2
+[patrulha-1] [INFO] [1794582849.659531843] [basic_navigator]: Navigating to goal: -0.6 0.0...
+[patrulha-1] [INFO] [1794582849.665066518] [patrulha_monitor]: [indo_doca] destino_enviado detalhe=aproximacao_doca:bateria

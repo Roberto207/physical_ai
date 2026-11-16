@@ -1,0 +1,24 @@
+# L3: Gazebo `maze` no modo enxuto (TST-08). Só roda depois da medição M-GZ aprovar.
+#
+# Os mesmos pontos do leve_reduzido.yaml. Aqui a bateria, a doca e o AMCL são da Create 3
+# simulada e do Nav2, e não da base falsa. A bateria simulada cai devagar e só é publicada
+# a cada 10 s simulados: daí o modo relativo (PAT-21) e os 30 s de bateria_perdida_s (PAT-18).
+patrulha:
+  ambiente: gazebo
+  modelo: standard
+  mapa: /opt/ros/jazzy/share/turtlebot4_navigation/maps/maze.yaml
+  pose_inicial: {x: 0.0, y: 0.0, yaw_graus: 0}
+  aproximacao_doca: {x: -0.6, y: 0.0, yaw_graus: 0}
+  pontos:
+    - {x: -2.0, y: 0.5, yaw_graus: 90}
+    - {x: -2.0, y: 2.5, yaw_graus: 180}
+    - {x: -3.5, y: 2.5, yaw_graus: 270}
+  bateria:
+    modo: relativo
+    delta_alta: 0.005
+    delta_baixa: 0.01
+    delta_critica: 0.02
+  tempos: {espera_bateria_s: 30, confirma_dock_s: 5, cancelar_s: 2, bateria_perdida_s: 30,
+           destino_s: 120, servidor_s: 30, encerrar_s: 3}
+  limites: {falhas_seguidas: 3, tentativas_dock: 3}
+  validacao: {margem_obstaculo_m: 0.25}

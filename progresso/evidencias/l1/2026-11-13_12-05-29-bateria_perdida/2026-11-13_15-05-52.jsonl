@@ -1,0 +1,9 @@
+{"t": null, "t_parede": 1794582352.8164585, "evento": "inicio", "estado": "iniciando", "bateria": null, "versao": "0.1.0", "hash_codigo": "d588709ac9def5adb828a540cf25ce7c8c347675917001fc44684bc43afb892f", "hash_config": "ecd2c5160650631c0639e230c07373e368c64b1a101ad873c3b26ddf3f328133", "ambiente": "leve", "modelo": "standard"}
+{"t": 1794582359.141763, "t_parede": 1794582359.188205, "evento": "undock_ok", "estado": "patrulhando", "bateria": 0.9994999766349792, "resultado": 4}
+{"t": 1794582359.141763, "t_parede": 1794582359.200534, "evento": "destino_enviado", "estado": "patrulhando", "bateria": 0.9994999766349792, "ponto": 0}
+{"t": 1794582380.2380576, "t_parede": 1794582380.3005724, "evento": "bateria_perdida", "estado": "indo_doca", "bateria": 0.9944999814033508}
+{"t": 1794582380.2380576, "t_parede": 1794582380.3105874, "evento": "destino_cancelado", "estado": "indo_doca", "bateria": 0.9944999814033508, "ponto": 0}
+{"t": 1794582380.3413033, "t_parede": 1794582380.347377, "evento": "destino_enviado", "estado": "indo_doca", "bateria": 0.9944999814033508, "detalhe": "aproximacao_doca:bateria"}
+{"t": 1794582384.533416, "t_parede": 1794582384.5588574, "evento": "dock_ok", "estado": "carregando", "bateria": 0.9944999814033508}
+{"t": 1794582385.5444937, "t_parede": 1794582385.5696104, "evento": "bateria_perdida", "estado": "encerrando", "bateria": 0.9944999814033508, "detalhe": "na_doca"}
+{"t": 1794582385.5444937, "t_parede": 1794582385.572731, "evento": "resumo", "estado": "encerrando", "bateria": 0.9944999814033508, "voltas": 0, "destinos_falhos": 0, "docks_confirmados": 1, "tentativas_dock": 1, "bateria_minima": 0.9944999814033508, "duracao_s": 32.763, "codigo_saida": 3}

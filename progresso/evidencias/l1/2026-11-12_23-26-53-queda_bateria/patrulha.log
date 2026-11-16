@@ -1,0 +1,17 @@
+[INFO] [launch]: All log files can be found below /root/.ros/log/2026-11-13-02-27-14-144407-e1989714dae9-234
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [patrulha-1]: process started with pid [243]
+[patrulha-1] [INFO] [1794536834.612342149] [patrulha_monitor]: Log da patrulha: /evidencias/2026-11-13_02-27-14.jsonl
+[patrulha-1] [INFO] [1794536834.707265227] [basic_navigator]: Publishing Initial Pose
+[patrulha-1] [INFO] [1794536838.778263707] [basic_navigator]: Nav2 is ready for use!
+[patrulha-1] [INFO] [1794536839.247714181] [patrulha_monitor]: [patrulhando] undock_ok resultado=4
+[patrulha-1] [INFO] [1794536839.248814495] [basic_navigator]: Navigating to goal: -2.0 0.5...
+[patrulha-1] [INFO] [1794536839.251345938] [patrulha_monitor]: [patrulhando] destino_enviado ponto=0
+[patrulha-1] [INFO] [1794536850.345040399] [patrulha_monitor]: [indo_doca] bateria_baixa detalhe=idade_bateria_s=0.000
+[patrulha-1] [INFO] [1794536850.345775694] [patrulha_monitor]: [indo_doca] destino_cancelado ponto=0
+[patrulha-1] [INFO] [1794536850.371369324] [basic_navigator]: Navigating to goal: -0.6 0.0...
+[patrulha-1] [INFO] [1794536850.372846065] [patrulha_monitor]: [indo_doca] destino_enviado detalhe=aproximacao_doca:bateria
+[patrulha-1] [INFO] [1794536853.245693040] [patrulha_monitor]: [carregando] dock_ok
+[patrulha-1] [INFO] [1794536857.737112703] [patrulha_monitor]: [encerrando] encerrado
+[patrulha-1] [INFO] [1794536857.737928638] [patrulha_monitor]: Patrulha encerrada com o código 0.
+[INFO] [patrulha-1]: process has finished cleanly [pid 243]

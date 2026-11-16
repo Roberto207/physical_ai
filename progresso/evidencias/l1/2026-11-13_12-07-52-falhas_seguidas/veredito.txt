@@ -1,0 +1,3 @@
+  12 eventos; código de saída no resumo: 7
+  hash_codigo: d588709ac9def5ad...
+APROVADO (falhas_seguidas)

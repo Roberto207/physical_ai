@@ -1,0 +1,5 @@
+  da bateria recebida ao destino da doca enviado: 0.03 s (limite: 2.0 s)
+  do SIGINT ao resumo gravado: 0.01 s (limite: 3.0 s)
+  9 eventos; código de saída no resumo: 0
+  hash_codigo: d588709ac9def5ad...
+APROVADO (queda_bateria)

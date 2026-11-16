@@ -1,0 +1,57 @@
+running egg_info
+creating ../../build/patrulha_tb4/patrulha_tb4.egg-info
+writing ../../build/patrulha_tb4/patrulha_tb4.egg-info/PKG-INFO
+writing dependency_links to ../../build/patrulha_tb4/patrulha_tb4.egg-info/dependency_links.txt
+writing entry points to ../../build/patrulha_tb4/patrulha_tb4.egg-info/entry_points.txt
+writing requirements to ../../build/patrulha_tb4/patrulha_tb4.egg-info/requires.txt
+writing top-level names to ../../build/patrulha_tb4/patrulha_tb4.egg-info/top_level.txt
+writing manifest file '../../build/patrulha_tb4/patrulha_tb4.egg-info/SOURCES.txt'
+reading manifest file '../../build/patrulha_tb4/patrulha_tb4.egg-info/SOURCES.txt'
+writing manifest file '../../build/patrulha_tb4/patrulha_tb4.egg-info/SOURCES.txt'
+running build
+running build_py
+creating /workspace/meu_ws/build/patrulha_tb4/build
+creating /workspace/meu_ws/build/patrulha_tb4/build/lib
+creating /workspace/meu_ws/build/patrulha_tb4/build/lib/patrulha_tb4
+copying patrulha_tb4/config.py -> /workspace/meu_ws/build/patrulha_tb4/build/lib/patrulha_tb4
+copying patrulha_tb4/pontos.py -> /workspace/meu_ws/build/patrulha_tb4/build/lib/patrulha_tb4
+copying patrulha_tb4/registro.py -> /workspace/meu_ws/build/patrulha_tb4/build/lib/patrulha_tb4
+copying patrulha_tb4/decisao.py -> /workspace/meu_ws/build/patrulha_tb4/build/lib/patrulha_tb4
+copying patrulha_tb4/__init__.py -> /workspace/meu_ws/build/patrulha_tb4/build/lib/patrulha_tb4
+copying patrulha_tb4/no_patrulha.py -> /workspace/meu_ws/build/patrulha_tb4/build/lib/patrulha_tb4
+running install
+running install_lib
+creating /workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages/patrulha_tb4
+copying /workspace/meu_ws/build/patrulha_tb4/build/lib/patrulha_tb4/config.py -> /workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages/patrulha_tb4
+copying /workspace/meu_ws/build/patrulha_tb4/build/lib/patrulha_tb4/pontos.py -> /workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages/patrulha_tb4
+copying /workspace/meu_ws/build/patrulha_tb4/build/lib/patrulha_tb4/registro.py -> /workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages/patrulha_tb4
+copying /workspace/meu_ws/build/patrulha_tb4/build/lib/patrulha_tb4/decisao.py -> /workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages/patrulha_tb4
+copying /workspace/meu_ws/build/patrulha_tb4/build/lib/patrulha_tb4/__init__.py -> /workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages/patrulha_tb4
+copying /workspace/meu_ws/build/patrulha_tb4/build/lib/patrulha_tb4/no_patrulha.py -> /workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages/patrulha_tb4
+byte-compiling /workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages/patrulha_tb4/config.py to config.cpython-312.pyc
+byte-compiling /workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages/patrulha_tb4/pontos.py to pontos.cpython-312.pyc
+byte-compiling /workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages/patrulha_tb4/registro.py to registro.cpython-312.pyc
+byte-compiling /workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages/patrulha_tb4/decisao.py to decisao.cpython-312.pyc
+byte-compiling /workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages/patrulha_tb4/__init__.py to __init__.cpython-312.pyc
+byte-compiling /workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages/patrulha_tb4/no_patrulha.py to no_patrulha.cpython-312.pyc
+running install_data
+creating /workspace/meu_ws/install/patrulha_tb4/share/ament_index
+creating /workspace/meu_ws/install/patrulha_tb4/share/ament_index/resource_index
+creating /workspace/meu_ws/install/patrulha_tb4/share/ament_index/resource_index/packages
+copying resource/patrulha_tb4 -> /workspace/meu_ws/install/patrulha_tb4/share/ament_index/resource_index/packages
+copying package.xml -> /workspace/meu_ws/install/patrulha_tb4/share/patrulha_tb4
+creating /workspace/meu_ws/install/patrulha_tb4/share/patrulha_tb4/launch
+copying launch/patrulha.launch.py -> /workspace/meu_ws/install/patrulha_tb4/share/patrulha_tb4/launch
+creating /workspace/meu_ws/install/patrulha_tb4/share/patrulha_tb4/config
+copying config/inf_lab.yaml -> /workspace/meu_ws/install/patrulha_tb4/share/patrulha_tb4/config
+copying config/nav2_inf_devagar.yaml -> /workspace/meu_ws/install/patrulha_tb4/share/patrulha_tb4/config
+copying config/leve_reduzido.yaml -> /workspace/meu_ws/install/patrulha_tb4/share/patrulha_tb4/config
+copying config/teste_tempo_curto.yaml -> /workspace/meu_ws/install/patrulha_tb4/share/patrulha_tb4/config
+copying config/gazebo_maze.yaml -> /workspace/meu_ws/install/patrulha_tb4/share/patrulha_tb4/config
+copying config/warehouse_original.yaml -> /workspace/meu_ws/install/patrulha_tb4/share/patrulha_tb4/config
+running install_egg_info
+Copying ../../build/patrulha_tb4/patrulha_tb4.egg-info to /workspace/meu_ws/install/patrulha_tb4/lib/python3.12/site-packages/patrulha_tb4-0.1.0-py3.12.egg-info
+running install_scripts
+Installing patrulha script to /workspace/meu_ws/install/patrulha_tb4/lib/patrulha_tb4
+Installing validar_pontos script to /workspace/meu_ws/install/patrulha_tb4/lib/patrulha_tb4
+writing list of installed files to '/workspace/meu_ws/build/patrulha_tb4/install.log'

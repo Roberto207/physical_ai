@@ -1,0 +1,7 @@
+cenario: queda_bateria
+config: leve_reduzido.yaml
+base_falsa: -p battery_start:=0.99 -p drain_per_s:=0.001 -p charge_per_s:=0.05 -p queda_bateria_em_s:=12.0 -p queda_bateria_para:=0.30
+teto_mb: 2048
+memoria_disponivel_antes_mb: 4565
+oom_killed: false
+pico_ram: 472 MiB

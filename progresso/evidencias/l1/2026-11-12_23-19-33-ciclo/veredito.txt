@@ -1,0 +1,5 @@
+  ciclo de recarga fechado em 360 s de relógio (limite: 900 s)
+  78 eventos; código de saída no resumo: None
+  hash_codigo: 85dc080eb8e0caa7...
+REPROVADO (ciclo):
+  - recebeu SIGINT e não gravou "encerrado" e "resumo" (PAT-15)

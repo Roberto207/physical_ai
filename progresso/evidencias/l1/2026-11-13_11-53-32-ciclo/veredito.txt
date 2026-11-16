@@ -1,0 +1,5 @@
+  ciclo de recarga fechado em 386 s de relógio (limite: 900 s)
+  do SIGINT ao resumo gravado: 0.13 s (limite: 3.0 s)
+  52 eventos; código de saída no resumo: 0
+  hash_codigo: d588709ac9def5ad...
+APROVADO (ciclo)

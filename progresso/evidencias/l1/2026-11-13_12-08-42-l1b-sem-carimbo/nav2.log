@@ -1,0 +1,943 @@
+[INFO] [launch]: All log files can be found below /root/.ros/log/2026-11-13-15-08-46-261847-f82774300b94-54
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [robot_state_publisher-1]: process started with pid [73]
+[INFO] [static_transform_publisher-2]: process started with pid [74]
+[INFO] [map_server-3]: process started with pid [75]
+[INFO] [lifecycle_manager-4]: process started with pid [76]
+[INFO] [loopback_simulator-5]: process started with pid [77]
+[INFO] [component_container_isolated-6]: process started with pid [78]
+[static_transform_publisher-2] [WARN] [1794582527.442707940] []: Old-style arguments are deprecated; see --help for new-style arguments
+[static_transform_publisher-2] [INFO] [1794582527.522741773] [static_transform_publisher_OxljzE8PR15xXsCP]: Spinning until stopped - publishing transform
+[static_transform_publisher-2] translation: ('0.000000', '0.000000', '0.000000')
+[static_transform_publisher-2] rotation: ('0.000000', '0.000000', '0.000000', '1.000000')
+[static_transform_publisher-2] from 'base_footprint' to 'base_link'
+[lifecycle_manager-4] [INFO] [1794582527.530212354] [lifecycle_manager_map_server]: Creating
+[robot_state_publisher-1] [WARN] [1794582527.533654050] [kdl_parser]: The root link base_link has an inertia specified in the URDF, but KDL does not support a root link with an inertia.  As a workaround, you can add an extra dummy link to your URDF.
+[robot_state_publisher-1] [INFO] [1794582527.533942363] [robot_state_publisher]: Robot initialized
+[lifecycle_manager-4] [INFO] [1794582527.537670603] [lifecycle_manager_map_server]: [34m[1mCreating and initializing lifecycle service clients[0m[0m
+[lifecycle_manager-4] [INFO] [1794582527.565932461] [lifecycle_manager_map_server]: [34m[1mStarting managed nodes bringup...[0m[0m
+[lifecycle_manager-4] [INFO] [1794582527.566063729] [lifecycle_manager_map_server]: [34m[1mConfiguring map_server[0m[0m
+[map_server-3] [INFO] [1794582527.567923729] [map_server]: 
+[map_server-3] 	map_server lifecycle node launched. 
+[map_server-3] 	Waiting on external lifecycle transitions to activate
+[map_server-3] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[map_server-3] [INFO] [1794582527.568113405] [map_server]: Creating
+[component_container_isolated-6] [INFO] [1794582527.666880173] [nav2_container]: Load Library: /opt/ros/jazzy/lib/libcontroller_server_core.so
+[component_container_isolated-6] [INFO] [1794582527.680501196] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_controller::ControllerServer>
+[component_container_isolated-6] [INFO] [1794582527.680572461] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_controller::ControllerServer>
+[component_container_isolated-6] [INFO] [1794582527.694833821] [controller_server]: 
+[component_container_isolated-6] 	controller_server lifecycle node launched. 
+[component_container_isolated-6] 	Waiting on external lifecycle transitions to activate
+[component_container_isolated-6] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container_isolated-6] [INFO] [1794582527.700400074] [controller_server]: Creating controller server
+[map_server-3] [INFO] [1794582527.701264811] [map_server]: Configuring
+[map_server-3] [INFO] [1794582527.701349930] [map_io]: Loading yaml file: /opt/ros/jazzy/share/turtlebot4_navigation/maps/maze.yaml
+[map_server-3] [INFO] [1794582527.701782194] [map_io]: resolution: 0.03
+[map_server-3] [INFO] [1794582527.701795983] [map_io]: origin[0]: -10.1
+[map_server-3] [INFO] [1794582527.701802721] [map_io]: origin[1]: -10
+[map_server-3] [INFO] [1794582527.701807295] [map_io]: origin[2]: 0
+[map_server-3] [INFO] [1794582527.701812083] [map_io]: free_thresh: 0.1
+[map_server-3] [INFO] [1794582527.701816556] [map_io]: occupied_thresh: 0.65
+[map_server-3] [INFO] [1794582527.701821901] [map_io]: mode: trinary
+[map_server-3] [INFO] [1794582527.701827783] [map_io]: negate: 0
+[map_server-3] [INFO] [1794582527.702198210] [map_io]: Loading image_file: /opt/ros/jazzy/share/turtlebot4_navigation/maps/maze.pgm
+[component_container_isolated-6] [INFO] [1794582527.711862684] [local_costmap.local_costmap]: 
+[component_container_isolated-6] 	local_costmap lifecycle node launched. 
+[component_container_isolated-6] 	Waiting on external lifecycle transitions to activate
+[component_container_isolated-6] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container_isolated-6] [INFO] [1794582527.712567635] [local_costmap.local_costmap]: Creating Costmap
+[map_server-3] [INFO] [1794582527.713085014] [map_io]: Read map /opt/ros/jazzy/share/turtlebot4_navigation/maps/maze.pgm: 670 X 669 map @ 0.03 m/cell
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/controller_server' in container '/nav2_container'
+[component_container_isolated-6] [INFO] [1794582527.717127821] [nav2_container]: Load Library: /opt/ros/jazzy/lib/libsmoother_server_core.so
+[component_container_isolated-6] [INFO] [1794582527.719762574] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_smoother::SmootherServer>
+[component_container_isolated-6] [INFO] [1794582527.719795969] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_smoother::SmootherServer>
+[lifecycle_manager-4] [INFO] [1794582527.721926745] [lifecycle_manager_map_server]: [34m[1mActivating map_server[0m[0m
+[map_server-3] [INFO] [1794582527.722120898] [map_server]: Activating
+[map_server-3] [INFO] [1794582527.722996732] [map_server]: Creating bond (map_server) to lifecycle manager.
+[component_container_isolated-6] [INFO] [1794582527.730929988] [smoother_server]: 
+[component_container_isolated-6] 	smoother_server lifecycle node launched. 
+[component_container_isolated-6] 	Waiting on external lifecycle transitions to activate
+[component_container_isolated-6] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container_isolated-6] [INFO] [1794582527.732510997] [smoother_server]: Creating smoother server
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/smoother_server' in container '/nav2_container'
+[component_container_isolated-6] [INFO] [1794582527.735184981] [nav2_container]: Load Library: /opt/ros/jazzy/lib/libplanner_server_core.so
+[component_container_isolated-6] [INFO] [1794582527.736362242] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_planner::PlannerServer>
+[component_container_isolated-6] [INFO] [1794582527.736382991] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_planner::PlannerServer>
+[component_container_isolated-6] [INFO] [1794582527.746088116] [planner_server]: 
+[component_container_isolated-6] 	planner_server lifecycle node launched. 
+[component_container_isolated-6] 	Waiting on external lifecycle transitions to activate
+[component_container_isolated-6] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container_isolated-6] [INFO] [1794582527.747776229] [planner_server]: Creating
+[component_container_isolated-6] [INFO] [1794582527.758063593] [global_costmap.global_costmap]: 
+[component_container_isolated-6] 	global_costmap lifecycle node launched. 
+[component_container_isolated-6] 	Waiting on external lifecycle transitions to activate
+[component_container_isolated-6] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container_isolated-6] [INFO] [1794582527.758605637] [global_costmap.global_costmap]: Creating Costmap
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/planner_server' in container '/nav2_container'
+[component_container_isolated-6] [INFO] [1794582527.762289793] [nav2_container]: Load Library: /opt/ros/jazzy/lib/libroute_server_core.so
+[component_container_isolated-6] [INFO] [1794582527.764946886] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_route::RouteServer>
+[component_container_isolated-6] [INFO] [1794582527.764989470] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_route::RouteServer>
+[component_container_isolated-6] [INFO] [1794582527.778389723] [route_server]: 
+[component_container_isolated-6] 	route_server lifecycle node launched. 
+[component_container_isolated-6] 	Waiting on external lifecycle transitions to activate
+[component_container_isolated-6] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/route_server' in container '/nav2_container'
+[component_container_isolated-6] [INFO] [1794582527.781975935] [nav2_container]: Load Library: /opt/ros/jazzy/lib/libbehavior_server_core.so
+[component_container_isolated-6] [INFO] [1794582527.783563208] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<behavior_server::BehaviorServer>
+[component_container_isolated-6] [INFO] [1794582527.783582727] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<behavior_server::BehaviorServer>
+[component_container_isolated-6] [INFO] [1794582527.794499197] [behavior_server]: 
+[component_container_isolated-6] 	behavior_server lifecycle node launched. 
+[component_container_isolated-6] 	Waiting on external lifecycle transitions to activate
+[component_container_isolated-6] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/behavior_server' in container '/nav2_container'
+[component_container_isolated-6] [INFO] [1794582527.828778268] [nav2_container]: Load Library: /opt/ros/jazzy/lib/libbt_navigator_core.so
+[lifecycle_manager-4] [INFO] [1794582527.829650340] [lifecycle_manager_map_server]: Server map_server connected with bond.
+[lifecycle_manager-4] [INFO] [1794582527.829718416] [lifecycle_manager_map_server]: [34m[1mManaged nodes are active[0m[0m
+[lifecycle_manager-4] [INFO] [1794582527.829741574] [lifecycle_manager_map_server]: [34m[1mCreating bond timer...[0m[0m
+[component_container_isolated-6] [INFO] [1794582527.834253574] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_bt_navigator::BtNavigator>
+[component_container_isolated-6] [INFO] [1794582527.834285051] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_bt_navigator::BtNavigator>
+[component_container_isolated-6] [INFO] [1794582527.854828843] [bt_navigator]: 
+[component_container_isolated-6] 	bt_navigator lifecycle node launched. 
+[component_container_isolated-6] 	Waiting on external lifecycle transitions to activate
+[component_container_isolated-6] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container_isolated-6] [INFO] [1794582527.856937897] [bt_navigator]: Creating
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/bt_navigator' in container '/nav2_container'
+[component_container_isolated-6] [INFO] [1794582527.859313624] [nav2_container]: Load Library: /opt/ros/jazzy/lib/libwaypoint_follower_core.so
+[component_container_isolated-6] [INFO] [1794582527.861105313] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_waypoint_follower::WaypointFollower>
+[component_container_isolated-6] [INFO] [1794582527.861136408] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_waypoint_follower::WaypointFollower>
+[component_container_isolated-6] [INFO] [1794582527.879844664] [waypoint_follower]: 
+[component_container_isolated-6] 	waypoint_follower lifecycle node launched. 
+[component_container_isolated-6] 	Waiting on external lifecycle transitions to activate
+[component_container_isolated-6] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container_isolated-6] [INFO] [1794582527.880667755] [waypoint_follower]: Creating
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/waypoint_follower' in container '/nav2_container'
+[component_container_isolated-6] [INFO] [1794582527.884136531] [nav2_container]: Load Library: /opt/ros/jazzy/lib/libvelocity_smoother_core.so
+[component_container_isolated-6] [INFO] [1794582527.885270023] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_velocity_smoother::VelocitySmoother>
+[component_container_isolated-6] [INFO] [1794582527.885290594] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_velocity_smoother::VelocitySmoother>
+[component_container_isolated-6] [INFO] [1794582527.924932450] [velocity_smoother]: 
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/velocity_smoother' in container '/nav2_container'
+[component_container_isolated-6] 	velocity_smoother lifecycle node launched. 
+[component_container_isolated-6] 	Waiting on external lifecycle transitions to activate
+[component_container_isolated-6] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container_isolated-6] [INFO] [1794582527.929923759] [nav2_container]: Load Library: /opt/ros/jazzy/lib/libcollision_monitor_core.so
+[component_container_isolated-6] [INFO] [1794582527.935487731] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_collision_monitor::CollisionMonitor>
+[component_container_isolated-6] [INFO] [1794582527.935517580] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_collision_monitor::CollisionMonitor>
+[component_container_isolated-6] [INFO] [1794582527.952372439] [collision_monitor]: 
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/collision_monitor' in container '/nav2_container'
+[component_container_isolated-6] 	collision_monitor lifecycle node launched. 
+[component_container_isolated-6] 	Waiting on external lifecycle transitions to activate
+[component_container_isolated-6] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container_isolated-6] [INFO] [1794582527.955591762] [nav2_container]: Load Library: /opt/ros/jazzy/lib/libopennav_docking_core.so
+[component_container_isolated-6] [INFO] [1794582527.959158028] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<opennav_docking::DockingServer>
+[component_container_isolated-6] [INFO] [1794582527.959199720] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<opennav_docking::DockingServer>
+[component_container_isolated-6] [INFO] [1794582527.975135287] [docking_server]: 
+[component_container_isolated-6] 	docking_server lifecycle node launched. 
+[component_container_isolated-6] 	Waiting on external lifecycle transitions to activate
+[component_container_isolated-6] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[component_container_isolated-6] [INFO] [1794582527.975218549] [docking_server]: Creating docking_server
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/docking_server' in container '/nav2_container'
+[component_container_isolated-6] [INFO] [1794582527.978711260] [nav2_container]: Load Library: /opt/ros/jazzy/lib/libnav2_lifecycle_manager_core.so
+[component_container_isolated-6] [INFO] [1794582527.980289375] [nav2_container]: Found class: rclcpp_components::NodeFactoryTemplate<nav2_lifecycle_manager::LifecycleManager>
+[component_container_isolated-6] [INFO] [1794582527.980313304] [nav2_container]: Instantiate class: rclcpp_components::NodeFactoryTemplate<nav2_lifecycle_manager::LifecycleManager>
+[component_container_isolated-6] [INFO] [1794582528.028415360] [lifecycle_manager_navigation]: Creating
+[INFO] [launch_ros.actions.load_composable_nodes]: Loaded node '/lifecycle_manager_navigation' in container '/nav2_container'
+[component_container_isolated-6] [INFO] [1794582528.035896940] [lifecycle_manager_navigation]: [34m[1mCreating and initializing lifecycle service clients[0m[0m
+[component_container_isolated-6] [INFO] [1794582528.062306365] [lifecycle_manager_navigation]: [34m[1mStarting managed nodes bringup...[0m[0m
+[component_container_isolated-6] [INFO] [1794582528.062397127] [lifecycle_manager_navigation]: [34m[1mConfiguring controller_server[0m[0m
+[component_container_isolated-6] [INFO] [1794582528.062801523] [controller_server]: Configuring controller interface
+[component_container_isolated-6] [INFO] [1794582528.062852067] [controller_server]: getting progress checker plugins..
+[component_container_isolated-6] [INFO] [1794582528.063300133] [controller_server]: getting goal checker plugins..
+[component_container_isolated-6] [INFO] [1794582528.063577231] [controller_server]: Controller frequency set to 20.0000Hz
+[component_container_isolated-6] [INFO] [1794582528.063647684] [local_costmap.local_costmap]: Configuring
+[component_container_isolated-6] [INFO] [1794582528.073904583] [local_costmap.local_costmap]: Using plugin "static_layer"
+[component_container_isolated-6] [INFO] [1794582528.078827534] [local_costmap.local_costmap]: Subscribing to the map topic (/map) with transient local durability
+[component_container_isolated-6] [INFO] [1794582528.081265780] [local_costmap.local_costmap]: Initialized plugin "static_layer"
+[component_container_isolated-6] [INFO] [1794582528.081298780] [local_costmap.local_costmap]: Using plugin "voxel_layer"
+[component_container_isolated-6] [INFO] [1794582528.082098801] [local_costmap.local_costmap]: Subscribed to Topics: scan
+[component_container_isolated-6] [INFO] [1794582528.093368018] [local_costmap.local_costmap]: Initialized plugin "voxel_layer"
+[component_container_isolated-6] [INFO] [1794582528.093406356] [local_costmap.local_costmap]: Using plugin "inflation_layer"
+[component_container_isolated-6] [INFO] [1794582528.094213414] [local_costmap.local_costmap]: Initialized plugin "inflation_layer"
+[component_container_isolated-6] [INFO] [1794582528.144451292] [controller_server]: Created progress_checker : progress_checker of type nav2_controller::SimpleProgressChecker
+[component_container_isolated-6] [INFO] [1794582528.144570471] [local_costmap.local_costmap]: StaticLayer: Resizing static layer to 670 X 669 at 0.030000 m/pix
+[component_container_isolated-6] [INFO] [1794582528.145099709] [controller_server]: Controller Server has progress_checker  progress checkers available.
+[component_container_isolated-6] [INFO] [1794582528.146013285] [controller_server]: Created goal checker : general_goal_checker of type nav2_controller::SimpleGoalChecker
+[component_container_isolated-6] [INFO] [1794582528.146769495] [controller_server]: Controller Server has general_goal_checker  goal checkers available.
+[component_container_isolated-6] [INFO] [1794582528.148671936] [controller_server]: Created controller : FollowPath of type nav2_mppi_controller::MPPIController
+[component_container_isolated-6] [INFO] [1794582528.152017647] [controller_server]: Controller period is equal to model dt. Control sequence shifting is ON
+[component_container_isolated-6] [INFO] [1794582528.154606511] [controller_server]: ConstraintCritic instantiated with 1 power and 4.000000 weight.
+[component_container_isolated-6] [INFO] [1794582528.154656357] [controller_server]: Critic loaded : mppi::critics::ConstraintCritic
+[component_container_isolated-6] [INFO] [1794582528.156092665] [controller_server]: InflationCostCritic instantiated with 1 power and 300.000000 / 0.015000 weights. Critic will collision check based on footprint cost.
+[component_container_isolated-6] [INFO] [1794582528.156121261] [controller_server]: Critic loaded : mppi::critics::CostCritic
+[component_container_isolated-6] [INFO] [1794582528.156659155] [controller_server]: GoalCritic instantiated with 1 power and 5.000000 weight.
+[component_container_isolated-6] [INFO] [1794582528.156676633] [controller_server]: Critic loaded : mppi::critics::GoalCritic
+[component_container_isolated-6] [INFO] [1794582528.157421698] [controller_server]: GoalAngleCritic instantiated with 1 power, 3.000000 weight, 0.500000 angular threshold and symmetric_yaw_tolerance disabled
+[component_container_isolated-6] [INFO] [1794582528.157442297] [controller_server]: Critic loaded : mppi::critics::GoalAngleCritic
+[component_container_isolated-6] [INFO] [1794582528.158549685] [controller_server]: ReferenceTrajectoryCritic instantiated with 1 power and 14.000000 weight
+[component_container_isolated-6] [INFO] [1794582528.158571535] [controller_server]: Critic loaded : mppi::critics::PathAlignCritic
+[component_container_isolated-6] [INFO] [1794582528.159324279] [controller_server]: Critic loaded : mppi::critics::PathFollowCritic
+[component_container_isolated-6] [INFO] [1794582528.160317320] [controller_server]: PathAngleCritic instantiated with 1 power and 2.000000 weight. Mode set to: Forward Preference
+[component_container_isolated-6] [INFO] [1794582528.160339270] [controller_server]: Critic loaded : mppi::critics::PathAngleCritic
+[component_container_isolated-6] [INFO] [1794582528.160893952] [controller_server]: PreferForwardCritic instantiated with 1 power and 5.000000 weight.
+[component_container_isolated-6] [INFO] [1794582528.160910420] [controller_server]: Critic loaded : mppi::critics::PreferForwardCritic
+[component_container_isolated-6] [INFO] [1794582528.164398128] [controller_server]: Optimizer reset
+[component_container_isolated-6] [INFO] [1794582528.169559480] [MPPIController]: Configured MPPI Controller: FollowPath
+[component_container_isolated-6] [INFO] [1794582528.169596142] [controller_server]: Controller Server has FollowPath  controllers available.
+[component_container_isolated-6] [INFO] [1794582528.178645688] [lifecycle_manager_navigation]: [34m[1mConfiguring smoother_server[0m[0m
+[component_container_isolated-6] [INFO] [1794582528.178850832] [smoother_server]: Configuring smoother server
+[component_container_isolated-6] [INFO] [1794582528.184885338] [smoother_server]: Created smoother : simple_smoother of type nav2_smoother::SimpleSmoother
+[component_container_isolated-6] [INFO] [1794582528.185606870] [smoother_server]: Smoother Server has simple_smoother  smoothers available.
+[component_container_isolated-6] [INFO] [1794582528.228508895] [lifecycle_manager_navigation]: [34m[1mConfiguring planner_server[0m[0m
+[component_container_isolated-6] [INFO] [1794582528.228786248] [planner_server]: Configuring
+[component_container_isolated-6] [INFO] [1794582528.228861506] [global_costmap.global_costmap]: Configuring
+[component_container_isolated-6] [INFO] [1794582528.236400029] [global_costmap.global_costmap]: Using plugin "static_layer"
+[component_container_isolated-6] [INFO] [1794582528.237746620] [global_costmap.global_costmap]: Subscribing to the map topic (/map) with transient local durability
+[component_container_isolated-6] [INFO] [1794582528.238717735] [global_costmap.global_costmap]: Initialized plugin "static_layer"
+[component_container_isolated-6] [INFO] [1794582528.238750750] [global_costmap.global_costmap]: Using plugin "obstacle_layer"
+[component_container_isolated-6] [INFO] [1794582528.239769775] [global_costmap.global_costmap]: Subscribed to Topics: scan
+[component_container_isolated-6] [INFO] [1794582528.244710732] [global_costmap.global_costmap]: Initialized plugin "obstacle_layer"
+[component_container_isolated-6] [INFO] [1794582528.244758540] [global_costmap.global_costmap]: Using plugin "inflation_layer"
+[component_container_isolated-6] [INFO] [1794582528.245799402] [global_costmap.global_costmap]: Initialized plugin "inflation_layer"
+[component_container_isolated-6] [INFO] [1794582528.266117576] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 670 X 669 at 0.030000 m/pix
+[component_container_isolated-6] [INFO] [1794582528.266599430] [planner_server]: Created global planner plugin GridBased of type nav2_navfn_planner::NavfnPlanner
+[component_container_isolated-6] [INFO] [1794582528.266651219] [planner_server]: Configuring plugin GridBased of type NavfnPlanner
+[component_container_isolated-6] [INFO] [1794582528.268657691] [planner_server]: Planner Server has GridBased  planners available.
+[component_container_isolated-6] [INFO] [1794582528.284363081] [lifecycle_manager_navigation]: [34m[1mConfiguring route_server[0m[0m
+[component_container_isolated-6] [INFO] [1794582528.284593692] [route_server]: Configuring
+[component_container_isolated-6] [INFO] [1794582528.350695601] [route_server]: Created GraphFileLoader GeoJsonGraphFileLoader of type nav2_route::GeoJsonGraphFileLoader
+[component_container_isolated-6] [INFO] [1794582528.350764940] [route_server]: Configuring geojson graph file loader
+[component_container_isolated-6] [INFO] [1794582528.350779669] [route_server]: No graph file provided to load yet.
+[component_container_isolated-6] [INFO] [1794582528.356048415] [route_server]: Created edge cost function plugin DistanceScorer of type nav2_route::DistanceScorer
+[component_container_isolated-6] [INFO] [1794582528.356104935] [route_server]: Configuring distance scorer.
+[component_container_isolated-6] [INFO] [1794582528.356670265] [route_server]: Created edge cost function plugin DynamicEdgesScorer of type nav2_route::DynamicEdgesScorer
+[component_container_isolated-6] [INFO] [1794582528.356698401] [route_server]: Configuring adjust edges scorer.
+[component_container_isolated-6] [INFO] [1794582528.363214313] [route_server]: Created route operation AdjustSpeedLimit of type nav2_route::AdjustSpeedLimit
+[component_container_isolated-6] [INFO] [1794582528.363272876] [route_server]: Configuring Adjust speed limit operation.
+[component_container_isolated-6] [INFO] [1794582528.364968954] [route_server]: Created route operation ReroutingService of type nav2_route::ReroutingService
+[component_container_isolated-6] [INFO] [1794582528.365027007] [route_server]: Configuring Rerouting service operation.
+[component_container_isolated-6] [INFO] [1794582528.368357811] [lifecycle_manager_navigation]: [34m[1mConfiguring behavior_server[0m[0m
+[component_container_isolated-6] [INFO] [1794582528.368553561] [behavior_server]: Configuring
+[component_container_isolated-6] [INFO] [1794582528.373305542] [behavior_server]: Creating behavior plugin spin of type nav2_behaviors::Spin
+[component_container_isolated-6] [INFO] [1794582528.375396904] [behavior_server]: Creating behavior plugin backup of type nav2_behaviors::BackUp
+[component_container_isolated-6] [INFO] [1794582528.377248285] [behavior_server]: Creating behavior plugin drive_on_heading of type nav2_behaviors::DriveOnHeading
+[component_container_isolated-6] [INFO] [1794582528.378914421] [behavior_server]: Creating behavior plugin assisted_teleop of type nav2_behaviors::AssistedTeleop
+[component_container_isolated-6] [INFO] [1794582528.381830265] [behavior_server]: Creating behavior plugin wait of type nav2_behaviors::Wait
+[component_container_isolated-6] [INFO] [1794582528.386363540] [behavior_server]: Configuring spin
+[component_container_isolated-6] [INFO] [1794582528.428117870] [behavior_server]: Configuring backup
+[component_container_isolated-6] [INFO] [1794582528.438787086] [behavior_server]: Configuring drive_on_heading
+[component_container_isolated-6] [INFO] [1794582528.451694095] [behavior_server]: Configuring assisted_teleop
+[component_container_isolated-6] [INFO] [1794582528.463906840] [behavior_server]: Configuring wait
+[component_container_isolated-6] [INFO] [1794582528.474322459] [lifecycle_manager_navigation]: [34m[1mConfiguring velocity_smoother[0m[0m
+[component_container_isolated-6] [INFO] [1794582528.474863754] [velocity_smoother]: Configuring velocity smoother
+[component_container_isolated-6] [INFO] [1794582528.519947855] [lifecycle_manager_navigation]: [34m[1mConfiguring collision_monitor[0m[0m
+[component_container_isolated-6] [INFO] [1794582528.521021117] [collision_monitor]: Configuring
+[component_container_isolated-6] [INFO] [1794582528.532818105] [collision_monitor]: [scan]: Creating Scan
+[component_container_isolated-6] [INFO] [1794582528.537411296] [collision_monitor]: [FootprintApproach]: Creating Polygon
+[component_container_isolated-6] [INFO] [1794582528.537859728] [collision_monitor]: [FootprintApproach]: Polygon points are not defined. Using dynamic subscription instead.
+[component_container_isolated-6] [INFO] [1794582528.540674085] [collision_monitor]: [FootprintApproach]: Making footprint subscriber on local_costmap/published_footprint topic
+[component_container_isolated-6] [INFO] [1794582528.573367523] [lifecycle_manager_navigation]: [34m[1mConfiguring bt_navigator[0m[0m
+[component_container_isolated-6] [INFO] [1794582528.573625089] [bt_navigator]: Configuring
+[component_container_isolated-6] [INFO] [1794582528.580372340] [bt_navigator]: Creating navigator id navigate_to_pose of type nav2_bt_navigator::NavigateToPoseNavigator
+[component_container_isolated-6] [INFO] [1794582528.698965342] [bt_navigator]: Creating navigator id navigate_through_poses of type nav2_bt_navigator::NavigateThroughPosesNavigator
+[component_container_isolated-6] [INFO] [1794582528.732086463] [lifecycle_manager_navigation]: [34m[1mConfiguring waypoint_follower[0m[0m
+[component_container_isolated-6] [INFO] [1794582528.732396880] [waypoint_follower]: Configuring
+[component_container_isolated-6] [INFO] [1794582528.752575172] [waypoint_follower]: Created waypoint_task_executor : wait_at_waypoint of type nav2_waypoint_follower::WaitAtWaypoint
+[component_container_isolated-6] [INFO] [1794582528.754313050] [lifecycle_manager_navigation]: [34m[1mConfiguring docking_server[0m[0m
+[component_container_isolated-6] [INFO] [1794582528.754630562] [docking_server]: Configuring docking_server
+[component_container_isolated-6] [INFO] [1794582528.754725051] [docking_server]: Controller frequency set to 50.0000Hz
+[component_container_isolated-6] [INFO] [1794582528.787319888] [docking_server]: Created charging dock plugin simple_charging_dock of type opennav_docking::SimpleChargingDock
+[component_container_isolated-6] [WARN] [1794582528.794872549] [docking_server]: Dock database filepath nor dock parameters set. Docking actions can only be executed specifying the dock pose via the action request. Or update the dock database via the reload_database service.
+[component_container_isolated-6] [INFO] [1794582528.794945767] [docking_server]: Docking Server has 1 dock types and 0 dock instances available.
+[component_container_isolated-6] [INFO] [1794582528.797075303] [lifecycle_manager_navigation]: [34m[1mActivating controller_server[0m[0m
+[component_container_isolated-6] [INFO] [1794582528.797301875] [controller_server]: Activating
+[component_container_isolated-6] [INFO] [1794582528.797354358] [local_costmap.local_costmap]: Activating
+[component_container_isolated-6] [INFO] [1794582528.797364013] [local_costmap.local_costmap]: Checking transform
+[component_container_isolated-6] [INFO] [1794582528.797415614] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[map_server-3] [INFO] [1794582529.168284172] [map_server]: Handling GetMap request
+[loopback_simulator-5] [ERROR] [1794582529.199998119] [loopback_simulator]: Transform lookup failed: "base_footprint" passed to lookupTransform argument target_frame does not exist. 
+[loopback_simulator-5] [INFO] [1794582529.204304414] [loopback_simulator]: Laser scan will be populated using map data
+[loopback_simulator-5] [INFO] [1794582529.204686700] [loopback_simulator]: Loopback simulator initialized
+[component_container_isolated-6] [INFO] [1794582529.297891802] [local_costmap.local_costmap]: start
+[component_container_isolated-6] [ERROR] [1794582529.715533773] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [WARN] [1794582529.752154804] [controller_server]: Parameter controller_server.verbose not found
+[component_container_isolated-6] [INFO] [1794582529.757009633] [controller_server]: Optimizer reset
+[component_container_isolated-6] [INFO] [1794582529.757920718] [MPPIController]: Activated MPPI Controller: FollowPath
+[component_container_isolated-6] [INFO] [1794582529.757979758] [controller_server]: Creating bond (controller_server) to lifecycle manager.
+[component_container_isolated-6] [INFO] [1794582529.867250197] [lifecycle_manager_navigation]: Server controller_server connected with bond.
+[component_container_isolated-6] [INFO] [1794582529.867368042] [lifecycle_manager_navigation]: [34m[1mActivating smoother_server[0m[0m
+[component_container_isolated-6] [INFO] [1794582529.868361810] [smoother_server]: Activating
+[component_container_isolated-6] [INFO] [1794582529.868475163] [smoother_server]: Creating bond (smoother_server) to lifecycle manager.
+[component_container_isolated-6] [INFO] [1794582529.977685600] [lifecycle_manager_navigation]: Server smoother_server connected with bond.
+[component_container_isolated-6] [INFO] [1794582529.977802704] [lifecycle_manager_navigation]: [34m[1mActivating planner_server[0m[0m
+[component_container_isolated-6] [INFO] [1794582529.978813253] [planner_server]: Activating
+[component_container_isolated-6] [INFO] [1794582529.978912501] [global_costmap.global_costmap]: Activating
+[component_container_isolated-6] [INFO] [1794582529.978929647] [global_costmap.global_costmap]: Checking transform
+[component_container_isolated-6] [INFO] [1794582529.978969570] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container_isolated-6] [ERROR] [1794582530.120805050] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [ERROR] [1794582530.418371015] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [INFO] [1794582530.479155756] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container_isolated-6] [ERROR] [1794582530.818322652] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [INFO] [1794582530.979196304] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container_isolated-6] [ERROR] [1794582531.217481650] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [INFO] [1794582531.479193525] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container_isolated-6] [ERROR] [1794582531.616549799] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [INFO] [1794582531.979248611] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container_isolated-6] [ERROR] [1794582532.017187548] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [ERROR] [1794582532.419033877] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [INFO] [1794582532.479054082] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container_isolated-6] [ERROR] [1794582532.821487992] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [INFO] [1794582532.979076969] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container_isolated-6] [ERROR] [1794582533.120922633] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [ERROR] [1794582533.418381114] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [INFO] [1794582533.479123864] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container_isolated-6] [ERROR] [1794582533.819020639] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [INFO] [1794582533.979209411] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container_isolated-6] [ERROR] [1794582534.116720767] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [INFO] [1794582534.479070749] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container_isolated-6] [ERROR] [1794582534.516889234] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [ERROR] [1794582534.915325239] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [INFO] [1794582534.979314105] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container_isolated-6] [ERROR] [1794582535.213050309] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [INFO] [1794582535.479302251] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container_isolated-6] [ERROR] [1794582535.716459036] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [INFO] [1794582535.979160837] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container_isolated-6] [ERROR] [1794582536.014192046] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [INFO] [1794582536.479168222] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container_isolated-6] [ERROR] [1794582536.517787222] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [ERROR] [1794582536.816040264] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [INFO] [1794582536.979311693] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container_isolated-6] [ERROR] [1794582537.215205290] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [INFO] [1794582537.479165793] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container_isolated-6] [ERROR] [1794582537.614455183] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [ERROR] [1794582537.921428024] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [INFO] [1794582537.979193999] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container_isolated-6] [ERROR] [1794582538.414907823] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [INFO] [1794582538.479204523] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container_isolated-6] [ERROR] [1794582538.713233958] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [INFO] [1794582538.979060122] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container_isolated-6] [ERROR] [1794582539.112734578] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [INFO] [1794582539.479143310] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container_isolated-6] [ERROR] [1794582539.513562229] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [ERROR] [1794582539.821220505] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [INFO] [1794582539.979201568] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container_isolated-6] [ERROR] [1794582540.221768959] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [INFO] [1794582540.479018737] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container_isolated-6] [ERROR] [1794582540.520022994] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [ERROR] [1794582540.917516831] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [INFO] [1794582540.979237542] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container_isolated-6] [ERROR] [1794582541.319217429] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [INFO] [1794582541.479151258] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container_isolated-6] [ERROR] [1794582541.614900745] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [INFO] [1794582541.979188422] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container_isolated-6] [ERROR] [1794582542.015367080] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [ERROR] [1794582542.312667735] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [INFO] [1794582542.479126226] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container_isolated-6] [ERROR] [1794582542.618981748] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [INFO] [1794582542.979034871] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container_isolated-6] [ERROR] [1794582543.018509755] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [ERROR] [1794582543.418840541] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [INFO] [1794582543.479073028] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container_isolated-6] [ERROR] [1794582543.716409822] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [INFO] [1794582543.979163586] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container_isolated-6] [ERROR] [1794582544.216560466] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [INFO] [1794582544.479140753] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container_isolated-6] [ERROR] [1794582544.510887407] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [ERROR] [1794582544.918458198] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[component_container_isolated-6] [INFO] [1794582544.979014181] [global_costmap.global_costmap]: Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist
+[component_container_isolated-6] [ERROR] [1794582545.314054925] [local_costmap.local_costmap]: StaticLayer: "map" passed to lookupTransform argument target_frame does not exist. 
+[loopback_simulator-5] [INFO] [1794582545.350900320] [loopback_simulator]: Received initial pose!
+[component_container_isolated-6] [INFO] [1794582545.479357418] [global_costmap.global_costmap]: start
+[component_container_isolated-6] [INFO] [1794582546.531181042] [planner_server]: Activating plugin GridBased of type NavfnPlanner
+[component_container_isolated-6] [INFO] [1794582546.534882850] [planner_server]: Creating bond (planner_server) to lifecycle manager.
+[component_container_isolated-6] [INFO] [1794582546.641683425] [lifecycle_manager_navigation]: Server planner_server connected with bond.
+[component_container_isolated-6] [INFO] [1794582546.641738702] [lifecycle_manager_navigation]: [34m[1mActivating route_server[0m[0m
+[component_container_isolated-6] [INFO] [1794582546.642248807] [route_server]: Activating
+[component_container_isolated-6] [INFO] [1794582546.642440219] [route_server]: Creating bond (route_server) to lifecycle manager.
+[component_container_isolated-6] [INFO] [1794582546.749969261] [lifecycle_manager_navigation]: Server route_server connected with bond.
+[component_container_isolated-6] [INFO] [1794582546.750054365] [lifecycle_manager_navigation]: [34m[1mActivating behavior_server[0m[0m
+[component_container_isolated-6] [INFO] [1794582546.750820236] [behavior_server]: Activating
+[component_container_isolated-6] [INFO] [1794582546.750869261] [behavior_server]: Activating spin
+[component_container_isolated-6] [INFO] [1794582546.750921373] [behavior_server]: Activating backup
+[component_container_isolated-6] [INFO] [1794582546.750945267] [behavior_server]: Activating drive_on_heading
+[component_container_isolated-6] [INFO] [1794582546.750971188] [behavior_server]: Activating assisted_teleop
+[component_container_isolated-6] [INFO] [1794582546.751010694] [behavior_server]: Activating wait
+[component_container_isolated-6] [INFO] [1794582546.751041373] [behavior_server]: Creating bond (behavior_server) to lifecycle manager.
+[component_container_isolated-6] [INFO] [1794582546.860471947] [lifecycle_manager_navigation]: Server behavior_server connected with bond.
+[component_container_isolated-6] [INFO] [1794582546.860540137] [lifecycle_manager_navigation]: [34m[1mActivating velocity_smoother[0m[0m
+[component_container_isolated-6] [INFO] [1794582546.861170105] [velocity_smoother]: Activating
+[component_container_isolated-6] [INFO] [1794582546.861278048] [velocity_smoother]: Creating bond (velocity_smoother) to lifecycle manager.
+[component_container_isolated-6] [INFO] [1794582546.969871669] [lifecycle_manager_navigation]: Server velocity_smoother connected with bond.
+[component_container_isolated-6] [INFO] [1794582546.969929289] [lifecycle_manager_navigation]: [34m[1mActivating collision_monitor[0m[0m
+[component_container_isolated-6] [INFO] [1794582546.970533535] [collision_monitor]: Activating
+[component_container_isolated-6] [INFO] [1794582546.970605158] [collision_monitor]: Creating bond (collision_monitor) to lifecycle manager.
+[component_container_isolated-6] [INFO] [1794582547.077400082] [lifecycle_manager_navigation]: Server collision_monitor connected with bond.
+[component_container_isolated-6] [INFO] [1794582547.077455212] [lifecycle_manager_navigation]: [34m[1mActivating bt_navigator[0m[0m
+[component_container_isolated-6] [INFO] [1794582547.077877961] [bt_navigator]: Activating
+[component_container_isolated-6] [INFO] [1794582547.168634591] [bt_navigator]: Creating bond (bt_navigator) to lifecycle manager.
+[component_container_isolated-6] [INFO] [1794582547.276823496] [lifecycle_manager_navigation]: Server bt_navigator connected with bond.
+[component_container_isolated-6] [INFO] [1794582547.276887051] [lifecycle_manager_navigation]: [34m[1mActivating waypoint_follower[0m[0m
+[component_container_isolated-6] [INFO] [1794582547.277674444] [waypoint_follower]: Activating
+[component_container_isolated-6] [INFO] [1794582547.277752541] [waypoint_follower]: Creating bond (waypoint_follower) to lifecycle manager.
+[component_container_isolated-6] [INFO] [1794582547.391286853] [lifecycle_manager_navigation]: Server waypoint_follower connected with bond.
+[component_container_isolated-6] [INFO] [1794582547.391352167] [lifecycle_manager_navigation]: [34m[1mActivating docking_server[0m[0m
+[component_container_isolated-6] [INFO] [1794582547.392342111] [docking_server]: Activating docking_server
+[component_container_isolated-6] [INFO] [1794582547.407661067] [docking_server]: Creating bond (docking_server) to lifecycle manager.
+[component_container_isolated-6] [INFO] [1794582547.516938807] [lifecycle_manager_navigation]: Server docking_server connected with bond.
+[component_container_isolated-6] [INFO] [1794582547.516999136] [lifecycle_manager_navigation]: [34m[1mManaged nodes are active[0m[0m
+[component_container_isolated-6] [INFO] [1794582547.517029063] [lifecycle_manager_navigation]: [34m[1mCreating bond timer...[0m[0m
+[component_container_isolated-6] [INFO] [1794582549.527677516] [bt_navigator]: Begin navigating from current location (0.00, 0.00) to (-2.00, 0.50)
+[component_container_isolated-6] [INFO] [1794582549.548772600] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-6] [WARN] [1794582549.548868393] [controller_server]: No goal checker was specified in parameter 'current_goal_checker'. Server will use only plugin loaded general_goal_checker . This warning will appear once.
+[component_container_isolated-6] [WARN] [1794582549.548922930] [controller_server]: No progress checker was specified in parameter 'current_progress_checker'. Server will use only plugin loaded progress_checker . This warning will appear once.
+[component_container_isolated-6] [INFO] [1794582550.599154472] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582551.599152160] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582552.649191886] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582553.649158960] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582554.699248977] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582555.699208697] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582556.749187452] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582557.749228907] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582558.799187934] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [ERROR] [1794582559.549264581] [controller_server]: Failed to make progress
+[component_container_isolated-6] [INFO] [1794582559.549969540] [controller_server]: Optimizer reset
+[component_container_isolated-6] [WARN] [1794582559.549993870] [controller_server]: [follow_path] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582559.568164322] [local_costmap.local_costmap]: Received request to clear entirely the local_costmap
+[component_container_isolated-6] [INFO] [1794582559.568761718] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-6] [INFO] [1794582559.819019372] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582560.818934108] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582561.869079047] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582562.869011833] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582563.919010971] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582564.919009162] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582565.969027681] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582566.969012986] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582568.019017270] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582569.019012120] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [ERROR] [1794582569.569116044] [controller_server]: Failed to make progress
+[component_container_isolated-6] [INFO] [1794582569.569780711] [controller_server]: Optimizer reset
+[component_container_isolated-6] [WARN] [1794582569.569797370] [controller_server]: [follow_path] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582569.588378163] [local_costmap.local_costmap]: Received request to clear entirely the local_costmap
+[component_container_isolated-6] [INFO] [1794582569.588770964] [global_costmap.global_costmap]: Received request to clear entirely the global_costmap
+[component_container_isolated-6] [INFO] [1794582570.518415276] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-6] [INFO] [1794582571.568623342] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582572.568652990] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582573.618572193] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582574.618578679] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582575.668571449] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582576.668619113] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582577.668572177] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582578.718694155] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582579.718624437] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [ERROR] [1794582580.568693142] [controller_server]: Failed to make progress
+[component_container_isolated-6] [INFO] [1794582580.569620308] [controller_server]: Optimizer reset
+[component_container_isolated-6] [WARN] [1794582580.569642006] [controller_server]: [follow_path] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582580.588285054] [local_costmap.local_costmap]: Received request to clear entirely the local_costmap
+[component_container_isolated-6] [INFO] [1794582580.588899421] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-6] [WARN] [1794582580.649321087] [controller_server]: Control loop missed its desired rate of 20.0000 Hz. Current loop rate is 9.9017 Hz.
+[component_container_isolated-6] [INFO] [1794582580.749512030] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582581.799467421] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582582.799565815] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582583.849531050] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582584.849529323] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582585.899570048] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582586.899470546] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582587.949487459] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582588.949508810] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582589.999568249] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [ERROR] [1794582590.749579504] [controller_server]: Failed to make progress
+[component_container_isolated-6] [INFO] [1794582590.750335080] [controller_server]: Optimizer reset
+[component_container_isolated-6] [WARN] [1794582590.750357807] [controller_server]: [follow_path] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582590.768541156] [behavior_server]: Running spin
+[component_container_isolated-6] [INFO] [1794582590.768655584] [behavior_server]: Turning 1.57 for spin behavior.
+[component_container_isolated-6] [WARN] [1794582600.868808858] [behavior_server]: Exceeded time allowance before reaching the Spin goal - Exiting Spin
+[component_container_isolated-6] [WARN] [1794582600.868851819] [behavior_server]: spin failed
+[component_container_isolated-6] [WARN] [1794582600.868871540] [behavior_server]: [spin] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582600.888538045] [behavior_server]: Running wait
+[component_container_isolated-6] [INFO] [1794582605.888840489] [behavior_server]: wait completed successfully
+[component_container_isolated-6] [INFO] [1794582605.928664022] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-6] [INFO] [1794582606.978920310] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582608.028822876] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582609.028821284] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582610.078852755] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582611.078932499] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582612.128823360] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582613.128820183] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582614.178845341] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582615.178924296] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [ERROR] [1794582615.978929813] [controller_server]: Failed to make progress
+[component_container_isolated-6] [INFO] [1794582615.979587608] [controller_server]: Optimizer reset
+[component_container_isolated-6] [WARN] [1794582615.979607677] [controller_server]: [follow_path] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582615.998316025] [local_costmap.local_costmap]: Received request to clear entirely the local_costmap
+[component_container_isolated-6] [INFO] [1794582615.999028355] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-6] [WARN] [1794582616.126227061] [controller_server]: Control loop missed its desired rate of 20.0000 Hz. Current loop rate is 11.4205 Hz.
+[component_container_isolated-6] [INFO] [1794582616.226381874] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582617.226369107] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582618.276372392] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582619.276346349] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582620.326372397] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582621.326337452] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582622.376353429] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582623.376345569] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582624.426357751] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582625.426343353] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [ERROR] [1794582626.176449656] [controller_server]: Failed to make progress
+[component_container_isolated-6] [INFO] [1794582626.177291158] [controller_server]: Optimizer reset
+[component_container_isolated-6] [WARN] [1794582626.177331287] [controller_server]: [follow_path] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582626.188605662] [behavior_server]: Running backup
+[component_container_isolated-6] [WARN] [1794582636.188853147] [behavior_server]: Exceeded time allowance before reaching the DriveOnHeading goal - Exiting DriveOnHeading
+[component_container_isolated-6] [WARN] [1794582636.188924493] [behavior_server]: backup failed
+[component_container_isolated-6] [WARN] [1794582636.188942555] [behavior_server]: [backup] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582636.208183886] [local_costmap.local_costmap]: Received request to clear entirely the local_costmap
+[component_container_isolated-6] [INFO] [1794582636.208489432] [global_costmap.global_costmap]: Received request to clear entirely the global_costmap
+[component_container_isolated-6] [INFO] [1794582636.518567328] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-6] [INFO] [1794582637.568740811] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582638.618753321] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582639.618835914] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582640.668751352] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582641.668763283] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582642.718836189] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582643.718845997] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582644.768840147] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582645.768759143] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [ERROR] [1794582646.468848626] [controller_server]: Failed to make progress
+[component_container_isolated-6] [INFO] [1794582646.469505980] [controller_server]: Optimizer reset
+[component_container_isolated-6] [WARN] [1794582646.469527956] [controller_server]: [follow_path] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582646.488309806] [local_costmap.local_costmap]: Received request to clear entirely the local_costmap
+[component_container_isolated-6] [INFO] [1794582646.489169110] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-6] [INFO] [1794582646.789331913] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582647.839332760] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582648.839321449] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582649.889335724] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582650.889323950] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582651.939377637] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582652.939355152] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582653.989342032] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582654.989333596] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582656.039326606] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [ERROR] [1794582656.489506092] [controller_server]: Failed to make progress
+[component_container_isolated-6] [INFO] [1794582656.490200102] [controller_server]: Optimizer reset
+[component_container_isolated-6] [WARN] [1794582656.490216506] [controller_server]: [follow_path] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582656.508633684] [behavior_server]: Running spin
+[component_container_isolated-6] [INFO] [1794582656.508709778] [behavior_server]: Turning 1.57 for spin behavior.
+[component_container_isolated-6] [WARN] [1794582666.608939828] [behavior_server]: Exceeded time allowance before reaching the Spin goal - Exiting Spin
+[component_container_isolated-6] [WARN] [1794582666.608972531] [behavior_server]: spin failed
+[component_container_isolated-6] [WARN] [1794582666.608979982] [behavior_server]: [spin] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582666.628391566] [behavior_server]: Running wait
+[component_container_isolated-6] [INFO] [1794582669.628618088] [behavior_server]: Canceling wait
+[component_container_isolated-6] [INFO] [1794582669.628712547] [behavior_server]: [wait] [ActionServer] Client requested to cancel the goal. Cancelling.
+[component_container_isolated-6] [INFO] [1794582669.628933635] [bt_navigator]: [navigate_to_pose] [ActionServer] Client requested to cancel the goal. Cancelling.
+[component_container_isolated-6] [INFO] [1794582669.629154062] [bt_navigator]: Goal canceled
+[component_container_isolated-6] [INFO] [1794582669.631752001] [bt_navigator]: Begin navigating from current location (0.00, 0.00) to (-2.00, 2.50)
+[component_container_isolated-6] [INFO] [1794582669.652940042] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-6] [INFO] [1794582670.703123298] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582671.753144485] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582672.753167892] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582673.753135710] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582674.803127239] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582675.853141286] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582676.853133282] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582677.903167086] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582678.903220777] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [ERROR] [1794582679.653221753] [controller_server]: Failed to make progress
+[component_container_isolated-6] [INFO] [1794582679.653872776] [controller_server]: Optimizer reset
+[component_container_isolated-6] [WARN] [1794582679.653895741] [controller_server]: [follow_path] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582679.672410231] [local_costmap.local_costmap]: Received request to clear entirely the local_costmap
+[component_container_isolated-6] [INFO] [1794582679.672999034] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-6] [WARN] [1794582679.729108135] [controller_server]: Control loop missed its desired rate of 20.0000 Hz. Current loop rate is inf Hz.
+[component_container_isolated-6] [INFO] [1794582679.929215749] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582680.979218290] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582681.979216658] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582683.029218163] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582684.029215186] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582685.079237033] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582686.079220887] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582687.129214442] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582688.129216465] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582689.179233609] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [ERROR] [1794582689.779386086] [controller_server]: Failed to make progress
+[component_container_isolated-6] [INFO] [1794582689.780100074] [controller_server]: Optimizer reset
+[component_container_isolated-6] [WARN] [1794582689.780121492] [controller_server]: [follow_path] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582689.792567375] [local_costmap.local_costmap]: Received request to clear entirely the local_costmap
+[component_container_isolated-6] [INFO] [1794582689.793007021] [global_costmap.global_costmap]: Received request to clear entirely the global_costmap
+[component_container_isolated-6] [INFO] [1794582690.512875131] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-6] [INFO] [1794582691.563028854] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582692.613075284] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582693.613060481] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582694.663062049] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582695.663281949] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582696.713061980] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582697.713014632] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582698.763124171] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582699.813028058] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [ERROR] [1794582700.563242030] [controller_server]: Failed to make progress
+[component_container_isolated-6] [INFO] [1794582700.564507666] [controller_server]: Optimizer reset
+[component_container_isolated-6] [WARN] [1794582700.564536444] [controller_server]: [follow_path] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582700.582394554] [local_costmap.local_costmap]: Received request to clear entirely the local_costmap
+[component_container_isolated-6] [INFO] [1794582700.583187274] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-6] [WARN] [1794582700.730981263] [controller_server]: Control loop missed its desired rate of 20.0000 Hz. Current loop rate is 9.9845 Hz.
+[component_container_isolated-6] [INFO] [1794582700.831258778] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582701.831108363] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582702.881124096] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582703.881111523] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582704.931129285] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582705.931117297] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582706.981147700] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582707.981126621] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582709.031146264] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582710.031132985] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [ERROR] [1794582710.681221320] [controller_server]: Failed to make progress
+[component_container_isolated-6] [INFO] [1794582710.681820980] [controller_server]: Optimizer reset
+[component_container_isolated-6] [WARN] [1794582710.681837653] [controller_server]: [follow_path] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582710.692964524] [behavior_server]: Running spin
+[component_container_isolated-6] [INFO] [1794582710.693156229] [behavior_server]: Turning 1.57 for spin behavior.
+[component_container_isolated-6] [WARN] [1794582720.793317036] [behavior_server]: Exceeded time allowance before reaching the Spin goal - Exiting Spin
+[component_container_isolated-6] [WARN] [1794582720.793362380] [behavior_server]: spin failed
+[component_container_isolated-6] [WARN] [1794582720.793378175] [behavior_server]: [spin] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582720.812488157] [behavior_server]: Running wait
+[component_container_isolated-6] [INFO] [1794582725.912865555] [behavior_server]: wait completed successfully
+[component_container_isolated-6] [INFO] [1794582725.952924721] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-6] [INFO] [1794582727.003254799] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582728.003347232] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582729.053259631] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582730.053263047] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582731.103255232] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582732.103352008] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582733.103248960] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582734.153313467] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582735.203258953] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [ERROR] [1794582735.953340547] [controller_server]: Failed to make progress
+[component_container_isolated-6] [INFO] [1794582735.954192606] [controller_server]: Optimizer reset
+[component_container_isolated-6] [WARN] [1794582735.954234236] [controller_server]: [follow_path] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582735.972276096] [local_costmap.local_costmap]: Received request to clear entirely the local_costmap
+[component_container_isolated-6] [INFO] [1794582735.973009103] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-6] [WARN] [1794582736.129149586] [controller_server]: Control loop missed its desired rate of 20.0000 Hz. Current loop rate is 10.4643 Hz.
+[component_container_isolated-6] [INFO] [1794582736.229266635] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582737.229260614] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582738.279268538] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582739.279264141] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582740.329268577] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582741.329259700] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582742.379274322] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582743.379274587] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582744.429259435] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582745.429261746] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [ERROR] [1794582746.079339328] [controller_server]: Failed to make progress
+[component_container_isolated-6] [INFO] [1794582746.080460953] [controller_server]: Optimizer reset
+[component_container_isolated-6] [WARN] [1794582746.080493033] [controller_server]: [follow_path] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582746.092656957] [behavior_server]: Running backup
+[component_container_isolated-6] [WARN] [1794582756.092867397] [behavior_server]: Exceeded time allowance before reaching the DriveOnHeading goal - Exiting DriveOnHeading
+[component_container_isolated-6] [WARN] [1794582756.092941550] [behavior_server]: backup failed
+[component_container_isolated-6] [WARN] [1794582756.092953093] [behavior_server]: [backup] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582756.112339635] [local_costmap.local_costmap]: Received request to clear entirely the local_costmap
+[component_container_isolated-6] [INFO] [1794582756.112656776] [global_costmap.global_costmap]: Received request to clear entirely the global_costmap
+[component_container_isolated-6] [INFO] [1794582756.512769474] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-6] [INFO] [1794582757.562936944] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582758.562962868] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582759.612915475] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582760.663034224] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582761.662922487] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582762.712910958] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582763.713029718] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582764.763030080] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582765.762938303] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [ERROR] [1794582766.463081758] [controller_server]: Failed to make progress
+[component_container_isolated-6] [INFO] [1794582766.463973710] [controller_server]: Optimizer reset
+[component_container_isolated-6] [WARN] [1794582766.464053258] [controller_server]: [follow_path] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582766.482315055] [local_costmap.local_costmap]: Received request to clear entirely the local_costmap
+[component_container_isolated-6] [INFO] [1794582766.482890464] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-6] [INFO] [1794582766.783063537] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582767.833098387] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582768.833009213] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582769.883045058] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582770.883014478] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582771.933048949] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582772.983073890] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582773.983205612] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582775.033179038] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582776.033119931] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [ERROR] [1794582776.533101543] [controller_server]: Failed to make progress
+[component_container_isolated-6] [INFO] [1794582776.533711317] [controller_server]: Optimizer reset
+[component_container_isolated-6] [WARN] [1794582776.533728578] [controller_server]: [follow_path] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582776.552755046] [behavior_server]: Running spin
+[component_container_isolated-6] [INFO] [1794582776.552856943] [behavior_server]: Turning 1.57 for spin behavior.
+[component_container_isolated-6] [WARN] [1794582786.552975136] [behavior_server]: Exceeded time allowance before reaching the Spin goal - Exiting Spin
+[component_container_isolated-6] [WARN] [1794582786.553039484] [behavior_server]: spin failed
+[component_container_isolated-6] [WARN] [1794582786.553057700] [behavior_server]: [spin] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582786.572365038] [behavior_server]: Running wait
+[component_container_isolated-6] [ERROR] [1794582790.642449446] [bt_navigator_navigate_to_pose_rclcpp_node]: Failed to get result for wait in node halt!
+[component_container_isolated-6] [INFO] [1794582790.642614241] [bt_navigator]: [navigate_to_pose] [ActionServer] Client requested to cancel the goal. Cancelling.
+[component_container_isolated-6] [INFO] [1794582790.642717758] [bt_navigator]: Goal canceled
+[component_container_isolated-6] [INFO] [1794582790.645614339] [bt_navigator]: Begin navigating from current location (0.00, 0.00) to (-3.50, 2.50)
+[component_container_isolated-6] [INFO] [1794582790.666483503] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-6] [INFO] [1794582790.672563600] [behavior_server]: Canceling wait
+[component_container_isolated-6] [INFO] [1794582790.672645235] [behavior_server]: [wait] [ActionServer] Client requested to cancel the goal. Cancelling.
+[component_container_isolated-6] [INFO] [1794582791.716801381] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582792.766697164] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582793.766690079] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582794.816709453] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582795.816761024] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582796.866697112] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582797.866664021] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582798.916680933] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582799.916671777] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [ERROR] [1794582800.666740776] [controller_server]: Failed to make progress
+[component_container_isolated-6] [INFO] [1794582800.667464073] [controller_server]: Optimizer reset
+[component_container_isolated-6] [WARN] [1794582800.667490924] [controller_server]: [follow_path] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582800.686317384] [local_costmap.local_costmap]: Received request to clear entirely the local_costmap
+[component_container_isolated-6] [INFO] [1794582800.687116019] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-6] [INFO] [1794582800.937267129] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582801.987253079] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582803.037258386] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582804.037355464] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582805.087251068] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582806.087258959] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582807.137255430] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582808.137361124] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582809.187250417] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582810.187251688] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [ERROR] [1794582810.737325303] [controller_server]: Failed to make progress
+[component_container_isolated-6] [INFO] [1794582810.737938995] [controller_server]: Optimizer reset
+[component_container_isolated-6] [WARN] [1794582810.737955772] [controller_server]: [follow_path] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582810.756342405] [local_costmap.local_costmap]: Received request to clear entirely the local_costmap
+[component_container_isolated-6] [INFO] [1794582810.756739574] [global_costmap.global_costmap]: Received request to clear entirely the global_costmap
+[component_container_isolated-6] [INFO] [1794582811.516759712] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-6] [INFO] [1794582812.566942696] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582813.566902792] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582814.617019224] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582815.667014900] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582816.666938466] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582817.666939016] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582818.716944794] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582819.766938321] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582820.766941495] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [ERROR] [1794582821.467091941] [controller_server]: Failed to make progress
+[component_container_isolated-6] [INFO] [1794582821.467707190] [controller_server]: Optimizer reset
+[component_container_isolated-6] [WARN] [1794582821.467728976] [controller_server]: [follow_path] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582821.486336968] [local_costmap.local_costmap]: Received request to clear entirely the local_costmap
+[component_container_isolated-6] [INFO] [1794582821.487086776] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-6] [INFO] [1794582821.787235722] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582822.837292668] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582823.837243302] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582824.887244600] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582825.887242670] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582826.937246620] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582827.937245000] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582828.987313646] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582829.987242698] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582831.037243621] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [ERROR] [1794582831.437370393] [controller_server]: Failed to make progress
+[component_container_isolated-6] [INFO] [1794582831.438035367] [controller_server]: Optimizer reset
+[component_container_isolated-6] [WARN] [1794582831.438059320] [controller_server]: [follow_path] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582831.456373504] [behavior_server]: Running spin
+[component_container_isolated-6] [INFO] [1794582831.456456246] [behavior_server]: Turning 1.57 for spin behavior.
+[component_container_isolated-6] [WARN] [1794582841.556582883] [behavior_server]: Exceeded time allowance before reaching the Spin goal - Exiting Spin
+[component_container_isolated-6] [WARN] [1794582841.556624965] [behavior_server]: spin failed
+[component_container_isolated-6] [WARN] [1794582841.556635807] [behavior_server]: [spin] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582841.576243064] [behavior_server]: Running wait
+[component_container_isolated-6] [INFO] [1794582846.576492773] [behavior_server]: wait completed successfully
+[component_container_isolated-6] [INFO] [1794582846.616507708] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-6] [INFO] [1794582847.666692945] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582848.716698001] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [ERROR] [1794582849.656415577] [bt_navigator_navigate_to_pose_rclcpp_node]: Failed to get result for follow_path in node halt!
+[component_container_isolated-6] [INFO] [1794582849.656645211] [bt_navigator]: [navigate_to_pose] [ActionServer] Client requested to cancel the goal. Cancelling.
+[component_container_isolated-6] [INFO] [1794582849.656881508] [bt_navigator]: Goal canceled
+[component_container_isolated-6] [INFO] [1794582849.660517299] [bt_navigator]: Begin navigating from current location (0.00, 0.00) to (-0.60, 0.00)
+[component_container_isolated-6] [INFO] [1794582849.666720122] [controller_server]: Cancellation was successful. Stopping the robot.
+[component_container_isolated-6] [INFO] [1794582849.666760046] [controller_server]: [follow_path] [ActionServer] Client requested to cancel the goal. Cancelling.
+[component_container_isolated-6] [INFO] [1794582849.667760797] [controller_server]: Optimizer reset
+[component_container_isolated-6] [INFO] [1794582849.681449062] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-6] [INFO] [1794582850.731618594] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582851.781656200] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582852.781643452] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582853.781617646] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582854.831639859] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582855.881619892] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582856.881630784] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582857.931605573] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582858.931620194] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [ERROR] [1794582859.681686247] [controller_server]: Failed to make progress
+[component_container_isolated-6] [INFO] [1794582859.682317667] [controller_server]: Optimizer reset
+[component_container_isolated-6] [WARN] [1794582859.682337055] [controller_server]: [follow_path] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582859.701259698] [local_costmap.local_costmap]: Received request to clear entirely the local_costmap
+[component_container_isolated-6] [INFO] [1794582859.701853692] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-6] [INFO] [1794582859.951982421] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582861.002092705] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582862.002096725] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582863.051999951] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582864.052096448] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582865.101997234] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582866.102153277] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582867.151992877] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582868.152038387] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582869.202112404] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [ERROR] [1794582869.752224785] [controller_server]: Failed to make progress
+[component_container_isolated-6] [INFO] [1794582869.753039980] [controller_server]: Optimizer reset
+[component_container_isolated-6] [WARN] [1794582869.753068334] [controller_server]: [follow_path] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582869.771152293] [local_costmap.local_costmap]: Received request to clear entirely the local_costmap
+[component_container_isolated-6] [INFO] [1794582869.771547211] [global_costmap.global_costmap]: Received request to clear entirely the global_costmap
+[component_container_isolated-6] [INFO] [1794582870.511496507] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-6] [INFO] [1794582871.561770309] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582872.611676338] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582873.611770928] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582874.661691533] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582875.661759003] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582876.711718191] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582877.711686915] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582878.761776443] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582879.761762023] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [ERROR] [1794582880.561740807] [controller_server]: Failed to make progress
+[component_container_isolated-6] [INFO] [1794582880.562712023] [controller_server]: Optimizer reset
+[component_container_isolated-6] [WARN] [1794582880.562729538] [controller_server]: [follow_path] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582880.581164158] [local_costmap.local_costmap]: Received request to clear entirely the local_costmap
+[component_container_isolated-6] [INFO] [1794582880.581818855] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-6] [WARN] [1794582880.731480636] [controller_server]: Control loop missed its desired rate of 20.0000 Hz. Current loop rate is 5.3681 Hz.
+[component_container_isolated-6] [INFO] [1794582880.781603665] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582881.831600163] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582882.881722935] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582883.881645708] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582884.881712942] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582885.931708493] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582886.931603122] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582887.981723124] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582889.031707195] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582890.031607377] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [ERROR] [1794582890.781721661] [controller_server]: Failed to make progress
+[component_container_isolated-6] [INFO] [1794582890.782354860] [controller_server]: Optimizer reset
+[component_container_isolated-6] [WARN] [1794582890.782371843] [controller_server]: [follow_path] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582890.801344095] [behavior_server]: Running spin
+[component_container_isolated-6] [INFO] [1794582890.801456860] [behavior_server]: Turning 1.57 for spin behavior.
+[component_container_isolated-6] [WARN] [1794582900.901623231] [behavior_server]: Exceeded time allowance before reaching the Spin goal - Exiting Spin
+[component_container_isolated-6] [WARN] [1794582900.901656790] [behavior_server]: spin failed
+[component_container_isolated-6] [WARN] [1794582900.901664301] [behavior_server]: [spin] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582900.921278969] [behavior_server]: Running wait
+[component_container_isolated-6] [INFO] [1794582905.921489729] [behavior_server]: wait completed successfully
+[component_container_isolated-6] [INFO] [1794582905.961443315] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-6] [INFO] [1794582907.011663592] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582908.061714422] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582909.061600780] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582910.111594200] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582911.111660072] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582912.161609583] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582913.161622307] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582914.211687052] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582915.211600509] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [ERROR] [1794582915.961748504] [controller_server]: Failed to make progress
+[component_container_isolated-6] [INFO] [1794582915.962505126] [controller_server]: Optimizer reset
+[component_container_isolated-6] [WARN] [1794582915.962530797] [controller_server]: [follow_path] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582915.981185765] [local_costmap.local_costmap]: Received request to clear entirely the local_costmap
+[component_container_isolated-6] [INFO] [1794582915.981861888] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-6] [WARN] [1794582916.128180125] [controller_server]: Control loop missed its desired rate of 20.0000 Hz. Current loop rate is 10.6107 Hz.
+[component_container_isolated-6] [INFO] [1794582916.228303785] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582917.278324107] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582918.278320992] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582919.328311048] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582920.328309868] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582921.378304240] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582922.378297425] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582923.428314107] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582924.428304261] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582925.478309886] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [ERROR] [1794582926.078381796] [controller_server]: Failed to make progress
+[component_container_isolated-6] [INFO] [1794582926.079068674] [controller_server]: Optimizer reset
+[component_container_isolated-6] [WARN] [1794582926.079093049] [controller_server]: [follow_path] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582926.091324320] [behavior_server]: Running backup
+[component_container_isolated-6] [WARN] [1794582936.191587809] [behavior_server]: Exceeded time allowance before reaching the DriveOnHeading goal - Exiting DriveOnHeading
+[component_container_isolated-6] [WARN] [1794582936.191649619] [behavior_server]: backup failed
+[component_container_isolated-6] [WARN] [1794582936.191658188] [behavior_server]: [backup] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582936.211082373] [local_costmap.local_costmap]: Received request to clear entirely the local_costmap
+[component_container_isolated-6] [INFO] [1794582936.211303168] [global_costmap.global_costmap]: Received request to clear entirely the global_costmap
+[component_container_isolated-6] [INFO] [1794582936.511325627] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-6] [INFO] [1794582937.561504210] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582938.611512530] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582939.611540619] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582940.661498700] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582941.661502043] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582942.711496418] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582943.711507302] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582944.711501998] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582945.761503168] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [ERROR] [1794582946.561575315] [controller_server]: Failed to make progress
+[component_container_isolated-6] [INFO] [1794582946.562576359] [controller_server]: Optimizer reset
+[component_container_isolated-6] [WARN] [1794582946.562602950] [controller_server]: [follow_path] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582946.581364784] [local_costmap.local_costmap]: Received request to clear entirely the local_costmap
+[component_container_isolated-6] [INFO] [1794582946.582139275] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-6] [WARN] [1794582946.730330010] [controller_server]: Control loop missed its desired rate of 20.0000 Hz. Current loop rate is 10.0328 Hz.
+[component_container_isolated-6] [INFO] [1794582946.780484778] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582947.830501844] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582948.830506168] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582949.880468610] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582950.880523342] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582951.930503995] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582952.930494306] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582953.980504845] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582954.980548829] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582956.030500360] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [ERROR] [1794582956.680668875] [controller_server]: Failed to make progress
+[component_container_isolated-6] [INFO] [1794582956.681660683] [controller_server]: Optimizer reset
+[component_container_isolated-6] [WARN] [1794582956.681685075] [controller_server]: [follow_path] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582956.701388395] [behavior_server]: Running spin
+[component_container_isolated-6] [INFO] [1794582956.701466376] [behavior_server]: Turning 1.57 for spin behavior.
+[component_container_isolated-6] [WARN] [1794582966.701639770] [behavior_server]: Exceeded time allowance before reaching the Spin goal - Exiting Spin
+[component_container_isolated-6] [WARN] [1794582966.701684398] [behavior_server]: spin failed
+[component_container_isolated-6] [WARN] [1794582966.701699273] [behavior_server]: [spin] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582966.721225534] [behavior_server]: Running wait
+[component_container_isolated-6] [INFO] [1794582971.721520549] [behavior_server]: wait completed successfully
+[component_container_isolated-6] [INFO] [1794582971.761463283] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-6] [INFO] [1794582972.811837760] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582973.861677817] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582974.861757616] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582975.911658576] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582976.911762476] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582977.961688029] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582978.961773281] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582980.011762134] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582981.011793899] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [ERROR] [1794582981.861736903] [controller_server]: Failed to make progress
+[component_container_isolated-6] [INFO] [1794582981.862774294] [controller_server]: Optimizer reset
+[component_container_isolated-6] [WARN] [1794582981.862799913] [controller_server]: [follow_path] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582981.881279469] [local_costmap.local_costmap]: Received request to clear entirely the local_costmap
+[component_container_isolated-6] [INFO] [1794582981.882150731] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-6] [WARN] [1794582981.932683171] [controller_server]: Control loop missed its desired rate of 20.0000 Hz. Current loop rate is inf Hz.
+[component_container_isolated-6] [INFO] [1794582982.032924122] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582983.082918473] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582984.082925112] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582985.132932167] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582986.132916329] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582987.182918713] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582988.182927763] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582989.232817234] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582990.232924593] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794582991.282827674] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [ERROR] [1794582991.933020496] [controller_server]: Failed to make progress
+[component_container_isolated-6] [INFO] [1794582991.933710041] [controller_server]: Optimizer reset
+[component_container_isolated-6] [WARN] [1794582991.933724776] [controller_server]: [follow_path] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794582991.951407238] [behavior_server]: Running backup
+[component_container_isolated-6] [WARN] [1794583001.951624993] [behavior_server]: Exceeded time allowance before reaching the DriveOnHeading goal - Exiting DriveOnHeading
+[component_container_isolated-6] [WARN] [1794583001.951669909] [behavior_server]: backup failed
+[component_container_isolated-6] [WARN] [1794583001.951677170] [behavior_server]: [backup] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794583001.970956407] [local_costmap.local_costmap]: Received request to clear entirely the local_costmap
+[component_container_isolated-6] [INFO] [1794583001.971297343] [global_costmap.global_costmap]: Received request to clear entirely the global_costmap
+[component_container_isolated-6] [INFO] [1794583002.521399566] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-6] [INFO] [1794583003.571578862] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794583004.621591375] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794583005.621597943] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794583006.671551017] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794583007.671551035] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794583008.721651290] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794583009.721587522] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794583010.771581083] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794583011.771660227] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [ERROR] [1794583012.471673352] [controller_server]: Failed to make progress
+[component_container_isolated-6] [INFO] [1794583012.472320413] [controller_server]: Optimizer reset
+[component_container_isolated-6] [WARN] [1794583012.472337755] [controller_server]: [follow_path] [ActionServer] Aborting handle.
+[component_container_isolated-6] [INFO] [1794583012.491295428] [local_costmap.local_costmap]: Received request to clear entirely the local_costmap
+[component_container_isolated-6] [INFO] [1794583012.492282128] [controller_server]: Received a goal, begin computing control effort.
+[component_container_isolated-6] [INFO] [1794583012.792466853] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794583013.842458783] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794583014.842493048] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794583015.892501990] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794583016.892460840] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794583017.942468084] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794583018.942463190] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794583019.942464758] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794583020.992464814] [controller_server]: Passing new path to controller.
+[component_container_isolated-6] [INFO] [1794583022.042491615] [controller_server]: Passing new path to controller.
