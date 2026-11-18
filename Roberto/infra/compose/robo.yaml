@@ -12,6 +12,19 @@
 # - Sem "build:": o Compose nunca constrói imagem sozinho (o build não tem teto de memória).
 #   As imagens vêm do infra/docker/construir_imagem.sh.
 # Explicação: docs/tarefas/2026-11-16-compose-e-alvos.md
+#
+# ATENÇÃO (2026-11-16): NÃO USE ESTE ARQUIVO COM O ROBÔ DO LAB ATÉ A IMAGEM HUMBLE EXISTIR.
+# As imagens daqui são Jazzy, e os nós Jazzy derrubam o robô Humble: ele morre por falta de
+# memória ao ler a mensagem interna ParticipantEntitiesInfo, que mudou de formato entre as
+# versões. Plano: docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md, seção 8.
+#
+# O robô do lab (conferido em 2026-11-16, docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md):
+# - Roda ROS 2 Humble, e o PC roda Jazzy (ver o aviso acima). O /robot1/cmd_vel do robô é
+#   geometry_msgs/Twist (sem carimbo), e o Jazzy usa TwistStamped por padrão. Por isso STAMPED
+#   vale false aqui (teleop e Nav2).
+# - Publica tudo no namespace /robot1 (/robot1/scan, /robot1/tf...). ROBO_NS muda isso; use
+#   ROBO_NS= (vazio) para um robô sem namespace. Os launches oficiais aceitam namespace:=
+#   (manual: setup/basic.html, "Namespacing"; conferido com --show-args na imagem).
 name: tb4-robo
 
 x-ros: &ros
@@ -50,7 +63,8 @@ services:
     memswap_limit: 2g
     command: >-
       bash -c "source /opt/ros/jazzy/setup.bash &&
-      exec ros2 launch turtlebot4_navigation slam.launch.py sync:=${SYNC:-true}"
+      exec ros2 launch turtlebot4_navigation slam.launch.py sync:=${SYNC:-true}
+      namespace:=${ROBO_NS-/robot1}"
 
   # Localização (AMCL) num mapa salvo. Manual: tutorials/navigation.html.
   # MAPA é o caminho DENTRO do container: os mapas de workspace/mapas/ aparecem em /mapas/.
@@ -62,10 +76,14 @@ services:
     command: >-
       bash -c "source /opt/ros/jazzy/setup.bash &&
       test -f ${MAPA:-/mapas/lab.yaml} || { echo 'Mapa ${MAPA:-/mapas/lab.yaml} não existe. Defina MAPA=/mapas/<nome>.yaml'; exit 1; } &&
-      exec ros2 launch turtlebot4_navigation localization.launch.py map:=${MAPA:-/mapas/lab.yaml}"
+      exec ros2 launch turtlebot4_navigation localization.launch.py map:=${MAPA:-/mapas/lab.yaml}
+      namespace:=${ROBO_NS-/robot1}"
 
   # Nav2 com o nosso perfil de velocidade reduzida (0,15 m/s, INF-02).
   # Manual: tutorials/navigation.html. O argumento se chama params_file (nav2.launch.py, jazzy).
+  # O perfil liga enable_stamped_cmd_vel (certo para o Gazebo Jazzy). O robô Humble só aceita
+  # Twist sem carimbo: uma cópia em /tmp troca o valor pelo STAMPED, e o arquivo do pacote
+  # continua sendo o único perfil.
   nav2:
     <<: *ros
     profiles: [navegacao]
@@ -73,8 +91,10 @@ services:
     memswap_limit: 2g
     command: >-
       bash -c "source /opt/ros/jazzy/setup.bash &&
-      exec ros2 launch turtlebot4_navigation nav2.launch.py
-      params_file:=${NAV2_PARAMS:-/workspace/meu_ws/src/patrulha_tb4/config/nav2_inf_devagar.yaml}"
+      sed 's/enable_stamped_cmd_vel: true/enable_stamped_cmd_vel: ${STAMPED:-false}/'
+      ${NAV2_PARAMS:-/workspace/meu_ws/src/patrulha_tb4/config/nav2_inf_devagar.yaml} > /tmp/nav2.yaml &&
+      exec ros2 launch turtlebot4_navigation nav2.launch.py params_file:=/tmp/nav2.yaml
+      namespace:=${ROBO_NS-/robot1}"
 
   # RViz. Manual: tutorials/generate_map.html (aba Jazzy). Precisa da imagem com RViz.
   rviz:
@@ -85,11 +105,13 @@ services:
     memswap_limit: 1g
     command: >-
       bash -c "source /opt/ros/jazzy/setup.bash &&
-      exec ros2 launch turtlebot4_viz view_navigation.launch.py"
+      exec ros2 launch turtlebot4_viz view_navigation.launch.py namespace:=${ROBO_NS-/robot1}"
 
   # Dirigir pelo teclado. MOVE O ROBÔ REAL. Manual: tutorials/driving.html.
-  # stamped:=true é o que o manual pede no Jazzy. speed/turn são parâmetros do teleop (o padrão
+  # O manual pede stamped:=true no Jazzy, mas o robô do lab é Humble e só aceita Twist sem
+  # carimbo (ver o topo): aqui o padrão é false. speed/turn são parâmetros do teleop (o padrão
   # dele, 0,5 m/s e 1,0 rad/s, é rápido demais para mapear com gente por perto).
+  # __ns põe o "cmd_vel" relativo do teleop dentro do namespace do robô.
   teleop:
     <<: *ros
     profiles: [manual]
@@ -107,8 +129,10 @@ services:
         [ "$$resposta" = SIM ] || { echo 'Cancelado.'; exit 1; }
         echo 'Velocidade inicial ${VEL:-0.15} m/s e ${GIRO:-0.5} rad/s. As teclas q/w/e AUMENTAM 10% por toque.'
         source /opt/ros/jazzy/setup.bash
+        NS='${ROBO_NS-/robot1}'   # vazio: sem o -r (o ROS recusa "__ns:=" vazio)
         exec ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args \
-          -p stamped:=${STAMPED:-true} -p speed:=${VEL:-0.15} -p turn:=${GIRO:-0.5}
+          $${NS:+-r __ns:=$$NS} \
+          -p stamped:=${STAMPED:-false} -p speed:=${VEL:-0.15} -p turn:=${GIRO:-0.5}
 
   # A nossa patrulha. MOVE O ROBÔ REAL SOZINHO. Precisa de localizacao e nav2 rodando.
   # CONFIG é o caminho DENTRO do container. O padrão é o modelo vazio, que o validar_pontos
@@ -139,4 +163,5 @@ services:
         echo 'localizacao e nav2 rodando.'
         read -r -p 'Digite SIM para continuar: ' resposta
         [ "$$resposta" = SIM ] || { echo 'Cancelado.'; exit 1; }
-        exec ros2 launch patrulha_tb4 patrulha.launch.py config:="$$CONFIG" pasta_log:=/logs
+        exec ros2 launch patrulha_tb4 patrulha.launch.py config:="$$CONFIG" pasta_log:=/logs \
+          namespace:=${ROBO_NS-/robot1}

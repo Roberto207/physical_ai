@@ -4,6 +4,7 @@ Argumentos:
   config        arquivo YAML da patrulha (obrigatório)
   ambiente      leve, gazebo ou real. Se vier, precisa bater com o da configuração
   use_sim_time  true ou false. Se faltar, segue o ambiente da configuração (AMB-02)
+  namespace     namespace do robô (ex.: /robot1). Vazio = sem namespace, como no simulador
 
 O que roda ao lado do nó (Nav2, base falsa, Gazebo) não é deste pacote (AMB-01).
 """
@@ -33,8 +34,11 @@ def _montar(contexto):
     else:
         usa_sim_time = (ambiente or _ambiente_da_config(config)) in ('leve', 'gazebo')
 
+    # Os tópicos do nó são relativos (battery_state, dock_status): com o namespace eles viram
+    # /robot1/battery_state etc. O nó passa o mesmo namespace ao TurtleBot4Navigator.
     no = Node(
         package='patrulha_tb4', executable='patrulha', output='screen',
+        namespace=LaunchConfiguration('namespace').perform(contexto),
         parameters=[{'config': config, 'ambiente': ambiente, 'use_sim_time': usa_sim_time,
                      'pasta_log': LaunchConfiguration('pasta_log')}])
     # Quando a patrulha termina, o launch termina junto. O código de saída está no resumo do log.
@@ -52,5 +56,7 @@ def generate_launch_description():
                               description='true ou false (padrão: pelo ambiente)'),
         DeclareLaunchArgument('pasta_log', default_value='~/.ros/patrulha',
                               description='onde gravar o log JSONL'),
+        DeclareLaunchArgument('namespace', default_value='',
+                              description='namespace do robô, ex.: /robot1 (padrão: nenhum)'),
         OpaqueFunction(function=_montar),
     ])

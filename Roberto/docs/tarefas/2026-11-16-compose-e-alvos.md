@@ -1,5 +1,7 @@
 # Tarefa: Docker Compose e imagens em camadas
 
+**Aviso (2026-11-16, noite):** no PC do laboratório, o modo `sim` rodou (mapa `teste_maze` salvo e `UTILIZÁVEL`). O modo `robo` precisou de ajustes, descritos em `docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md`: o robô é Humble e usa o namespace `/robot1`, então os serviços do `robo.yaml` passaram a receber `namespace:=/robot1` e `STAMPED=false`. O `checar-rede` também passou a conferir as rotas e a mostrar o erro quando o container não sobe. A imagem `physical-ai:base` não tinha sido construída. Este documento fica como registro do desenho do Compose, que não mudou.
+
 **Data:** 2026-11-16 (tarde)
 **Pedido:** trocar a imagem Docker única por imagens menores, uma para cada tipo de tarefa, e passar a rodar as tarefas por Docker Compose: um serviço para o SLAM, outro para a patrulha, e as outras divisões que fossem necessárias.
 **Situação:** arquivos prontos e conferidos sem Docker. **Nada rodou com o Docker de verdade, nem no robô.** No notebook, o Docker estava desligado e havia 1,5 GiB de memória livre. O que foi e o que não foi verificado está na seção 7.

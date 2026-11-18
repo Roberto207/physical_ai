@@ -55,8 +55,8 @@ Só no PC do laboratório. No notebook, o Gazebo e o docker build não cabem na 
 Os serviços ficam em infra/compose/sim.yaml (Gazebo) e infra/compose/robo.yaml (robô real).
 O atalho infra/docker/lab.sh chama o arquivo certo e confere a rede antes.
 
-cd ~/dev/physical_ai/Roberto/infra/docker
-./construir_imagem.sh robo sim        # 1ª vez no PC (recusa com menos de 12 GiB de RAM)
+cd ~/physical_ai/Roberto/infra/docker   # no PC do lab (NUC14RVK-B); no notebook, ~/dev/physical_ai
+./construir_imagem.sh base robo sim   # 1ª vez no PC (recusa com menos de 12 GiB de RAM). O robo.yaml usa a base
 ./construir_imagem.sh apelidos        # SÓ NO NOTEBOOK: dá à physical-ai:jazzy os nomes base, robo e sim
 
 Treino do mapa no Gazebo (rede isolada e domínio 42, não alcança o robô real):
@@ -67,9 +67,12 @@ Treino do mapa no Gazebo (rede isolada e domínio 42, não alcança o robô real
 ./lab.sh sim salvar teste_maze        # grava em workspace/mapas/ e confere
 ./lab.sh sim parar
 
+ATENÇÃO (2026-11-16): não use o lab.sh robo por enquanto. A imagem do PC é Jazzy e derruba o robô, que é Humble.
+Falta fazer a imagem Humble (docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md, seção 8).
+
 Mapa no robô real, só depois das etapas 1 a 3 do kit de campo (specs/patrol-inf/kit-de-campo.md):
 
-./lab.sh robo checar-rede             # só lê: /scan, /tf e /odom chegam?
+./lab.sh robo checar-rede             # só lê: rotas, e /robot1/scan, /robot1/tf e /robot1/odom chegam?
 ./lab.sh robo subir slam rviz         # confere a rede e sobe (não move o robô)
 ./lab.sh robo teleop                  # move o robô REAL: pede que você digite SIM
 ./lab.sh robo salvar lab
@@ -80,5 +83,8 @@ Patrulha no robô real (kit de campo, etapas 5 a 8):
 MAPA=/mapas/lab.yaml ./lab.sh robo subir localizacao nav2 rviz
 CONFIG=/mapas/inf_lab_preenchido.yaml ./lab.sh robo patrulha   # config ao lado do mapa; validar_pontos + SIM antes de andar
 
-Ver o que está rodando: ./lab.sh robo estado. Conferir um mapa: ./lab.sh conferir ../../workspace/mapas/lab.yaml
-A rede do PC fica em infra/lab/rede_lab.env. Explicação: docs/tarefas/2026-11-16-compose-e-alvos.md
+Ver o que está rodando: ./lab.sh robo estado. Conferir um mapa: ./lab.sh conferir workspace/mapas/lab.yaml (caminho a partir da pasta Roberto/: o lab.sh vai para lá antes)
+O robô do lab é Humble, usa Discovery Server e o namespace /robot1 (ROBO_NS muda; ROBO_NS= para nenhum).
+O PC precisa de rotas pelo robô para 192.168.186.0/24 e 192.168.185.0/24: o checar-rede mostra o comando.
+Acesso ao robô por cabo e por Wi-Fi (`ssh robo`, `ssh robo-wifi`) e as rotas: docs/acesso-ao-robo-por-cabo.md.
+O que foi conferido no robô: docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md. A rede do PC fica em infra/lab/rede_lab.env. Explicação: docs/tarefas/2026-11-16-compose-e-alvos.md
