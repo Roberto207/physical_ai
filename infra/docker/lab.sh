@@ -8,6 +8,7 @@
 #   ./lab.sh sim undock                      tira o robô SIMULADO da doca
 #   ./lab.sh <modo> teleop                   dirige pelo teclado (no robo, pede SIM)
 #   ./lab.sh <modo> patrulha                 a nossa patrulha (validar_pontos antes; no robo, pede SIM)
+#   ./lab.sh <modo> voltar-doca              pede à patrulha rodando que volte à doca e encerre (no robo, pede SIM)
 #   ./lab.sh <modo> salvar [nome]            grava o mapa em workspace/mapas/ e confere
 #   ./lab.sh <modo> estado | logs [serviço]  o que está rodando / últimas linhas do log
 #   ./lab.sh <modo> parar                    desliga tudo do modo e devolve workspace/ ao usuário
@@ -26,7 +27,7 @@ cd "$(dirname "$ESTE")/../.."   # raiz do projeto (raiz do repositório)
 # Pastas montadas nos containers: criadas aqui para não nascerem como root.
 mkdir -p workspace/mapas workspace/logs
 
-uso() { sed -n 2,22p "$ESTE"; }
+uso() { sed -n 2,23p "$ESTE"; }
 
 if [ "${1:-}" = conferir ]; then
   [ -n "${2:-}" ] || { echo "Uso: ./lab.sh conferir <mapa.yaml>"; exit 1; }
@@ -170,6 +171,21 @@ case "$ACAO" in
     [ "$ACAO" = undock ] && [ "$MODO" = robo ] && { echo "No robô real, o undock é à mão (kit de campo, etapa 3)."; exit 1; }
     exigir_sozinho
     dc run --rm "$ACAO"
+    ;;
+  voltar-doca)
+    # PAT-23: só chama o serviço do nó da patrulha (um comando de CLI de uma resposta). Quem
+    # decide e move o robô é a patrulha (decisao.py): cancela o destino, vai à doca, encaixa e
+    # encerra com o código 0. Não envia dock nem undock por conta própria (SEG-06).
+    ns=""; [ "$MODO" = robo ] && ns=${ROBO_NS-/robot1}
+    if [ "$MODO" = robo ]; then
+      echo "ATENÇÃO: a patrulha vai levar o robô REAL de volta à doca e encerrar."
+      read -r -p 'Pessoa de segurança ao lado? Digite SIM para continuar: ' resposta
+      [ "$resposta" = SIM ] || { echo "Cancelado."; exit 1; }
+    fi
+    # O timeout evita esperar para sempre se a patrulha não estiver rodando (o serviço não existe).
+    ferramenta "timeout 30 ros2 service call ${ns}/patrulha/voltar_doca std_srvs/srv/Trigger" \
+      || { echo "Sem resposta em 30 s: a patrulha está rodando em ./lab.sh $MODO patrulha?"; exit 1; }
+    echo "Pedido enviado. A patrulha encerra sozinha, encaixada, com o código 0 (veja o terminal dela)."
     ;;
   salvar)
     [ -n "$(dc ps -q slam 2>/dev/null)" ] || { echo "O serviço slam não está rodando: ./lab.sh $MODO subir slam"; exit 1; }

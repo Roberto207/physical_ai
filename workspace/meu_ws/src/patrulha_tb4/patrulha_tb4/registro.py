@@ -14,7 +14,7 @@ EVENTOS = (
     'servidor_indisponivel', 'undock_ok', 'undock_falhou', 'destino_enviado', 'destino_ok',
     'destino_falhou', 'destino_cancelado', 'bateria_baixa', 'bateria_critica',
     'bateria_perdida', 'sem_relogio', 'dock_ok', 'dock_nao_confirmado', 'dock_falhou',
-    'carga_completa', 'falhas_seguidas', 'encerrado', 'resumo',
+    'carga_completa', 'falhas_seguidas', 'doca_pedida', 'encerrado', 'resumo',
 )
 
 ESTADOS = ('iniciando', 'saindo_doca', 'patrulhando', 'indo_doca', 'encaixando',

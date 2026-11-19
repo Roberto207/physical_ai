@@ -452,3 +452,197 @@ def test_tempo_limite_so_conta_depois_do_primeiro_clock(cfg):
     saida = d.decidir(inicio.estado, d.Entrada(parede=1001.0, agora=5000.0, usa_sim_time=True,
                                                parede_relogio=1001.0), cfg)
     assert saida.acoes == () and saida.estado.t_inicio == 5000.0
+
+
+# ---------------------------------------------------------------- pedido de retorno à doca
+
+def _resultado(acao, status=d.SUCESSO):
+    return d.Resultado(acao, status, 4 if status == d.SUCESSO else 6)
+
+
+@pytest.mark.req('PAT-23')
+def test_pedido_na_ronda_cancela_o_destino_e_vai_a_aproximacao_sem_contar_falha(cfg):
+    inicial = patrulhando(cfg, falhas_seguidas=1)
+    saida = d.decidir(inicial, entrada(pedido_doca=True), cfg)
+    assert nomes(saida) == ['doca_pedida', 'destino_cancelado', 'destino_enviado']
+    assert acoes(saida) == [d.CANCELAR, d.APROXIMACAO]
+    assert saida.eventos[0]['detalhe'] == d.PATRULHANDO
+    assert saida.eventos[2]['detalhe'] == 'aproximacao_doca:comando'
+    assert saida.estado.fase == d.INDO_DOCA and saida.estado.motivo_doca == d.POR_COMANDO
+    assert saida.estado.falhas_seguidas == 1  # o cancelamento não é destino falho
+
+
+@pytest.mark.req('PAT-23')
+def test_pedido_na_ronda_termina_encaixado_com_codigo_0_sem_recarregar(cfg):
+    mundo = Mundo(cfg, bateria=0.99, descarga=0.0001, pedido_doca_em=40).rodar(400)
+    assert mundo.codigo == d.CODIGO_ENCERRADO
+    nomes_ = mundo.nomes()
+    assert nomes_.index('doca_pedida') < nomes_.index('dock_ok') < nomes_.index('encerrado')
+    assert 'carga_completa' not in nomes_ and nomes_.count('undock_ok') == 1
+    assert mundo.eventos[-1]['evento'] == 'encerrado'
+    assert mundo.eventos[-1]['detalhe'] == 'voltar_doca'
+    assert mundo.na_base is True
+    # Reação em até 2 s do pedido (t=40) e nenhum destino de patrulha depois dele.
+    envios = [t for t, acao in mundo.acoes if acao[0] == d.APROXIMACAO]
+    assert envios and 40 <= envios[0] <= 42
+    assert not [t for t, acao in mundo.acoes if acao[0] == d.DESTINO and t >= 40]
+
+
+@pytest.mark.req('PAT-23')
+def test_pedido_repetido_nao_grava_de_novo(cfg):
+    primeira = d.decidir(patrulhando(cfg), entrada(pedido_doca=True), cfg)
+    de_novo = d.decidir(primeira.estado, entrada(pedido_doca=True), cfg)
+    assert de_novo.acoes == () and de_novo.eventos == ()
+
+
+@pytest.mark.req('PAT-15')
+def test_sinal_prevalece_sobre_o_pedido(cfg):
+    saida = d.decidir(patrulhando(cfg), entrada(sinal=True, pedido_doca=True), cfg)
+    assert nomes(saida) == ['encerrado']
+    assert saida.acoes == ((d.CANCELAR,), (d.ENCERRAR, d.CODIGO_ENCERRADO))
+
+
+def test_depois_de_encerrar_o_pedido_nao_faz_nada(cfg):
+    fim = d.decidir(patrulhando(cfg), entrada(sinal=True), cfg)
+    de_novo = d.decidir(fim.estado, entrada(pedido_doca=True), cfg)
+    assert de_novo.acoes == () and de_novo.eventos == ()
+
+
+@pytest.mark.req('PAT-23b')
+@pytest.mark.parametrize('fase', [d.CARREGANDO, d.INICIANDO])
+def test_pedido_na_doca_encerra_sem_enviar_acao(cfg, fase):
+    saida = d.decidir(estado(cfg, fase), entrada(pedido_doca=True, na_base=True), cfg)
+    assert saida.acoes == ((d.ENCERRAR, d.CODIGO_ENCERRADO),)
+    assert nomes(saida) == ['doca_pedida', 'encerrado']
+    assert saida.eventos[0]['detalhe'] == fase and saida.eventos[1]['detalhe'] == 'voltar_doca'
+
+
+@pytest.mark.req('PAT-23b')
+def test_pedido_com_o_robo_carregando_na_doca_encerra_com_0(cfg):
+    mundo = Mundo(cfg, bateria=0.5, carga=0.001, pedido_doca_em=5).rodar(30)
+    assert mundo.codigo == d.CODIGO_ENCERRADO
+    assert mundo.acoes_enviadas() == [d.ENCERRAR]
+    assert mundo.nomes() == ['doca_pedida', 'encerrado']
+
+
+@pytest.mark.req('PAT-23b')
+def test_pedido_sem_confirmacao_de_doca_nao_tem_efeito(cfg):
+    fora = d.decidir(estado(cfg, d.INICIANDO), entrada(pedido_doca=True, na_base=False), cfg)
+    assert nomes(fora) == ['fora_da_doca']  # vale o PAT-17
+    assert fora.acoes == ((d.ENCERRAR, d.CODIGO_FORA_DA_DOCA),)
+    sem_status = d.decidir(estado(cfg, d.INICIANDO),
+                           entrada(pedido_doca=True, na_base=None, agora=10.0), cfg)
+    assert sem_status.acoes == () and sem_status.eventos == ()
+
+
+@pytest.mark.req('PAT-23c')
+def test_pedido_durante_o_undock_fica_pendente(cfg):
+    saindo = estado(cfg, d.SAINDO_DOCA, acao=d.UNDOCK, t_acao=100.0)
+    espera = d.decidir(saindo, entrada(pedido_doca=True, na_base=True), cfg)
+    assert espera.acoes == () and espera.eventos == ()
+    assert espera.estado.fase == d.SAINDO_DOCA and espera.estado.acao == d.UNDOCK
+
+
+@pytest.mark.req('PAT-23c')
+def test_undock_ok_com_pedido_pendente_aplica_o_pedido(cfg):
+    saindo = estado(cfg, d.SAINDO_DOCA, acao=d.UNDOCK, t_acao=100.0)
+    saida = d.decidir(saindo, entrada(pedido_doca=True, na_base=False,
+                                      resultado=_resultado(d.UNDOCK)), cfg)
+    assert nomes(saida) == ['undock_ok', 'doca_pedida', 'destino_enviado']
+    assert acoes(saida) == [d.APROXIMACAO]
+    assert saida.estado.fase == d.INDO_DOCA and saida.estado.motivo_doca == d.POR_COMANDO
+
+
+@pytest.mark.req('PAT-23c')
+def test_undock_falho_com_pedido_pendente_vale_o_pat_16(cfg):
+    saindo = estado(cfg, d.SAINDO_DOCA, acao=d.UNDOCK, t_acao=100.0)
+    saida = d.decidir(saindo, entrada(pedido_doca=True, na_base=True,
+                                      resultado=_resultado(d.UNDOCK, d.FALHOU)), cfg)
+    assert nomes(saida) == ['undock_falhou']
+    assert saida.acoes == ((d.ENCERRAR, d.CODIGO_UNDOCK),)
+
+
+@pytest.mark.req('PAT-23d')
+@pytest.mark.parametrize('fase, acao', [(d.INDO_DOCA, d.APROXIMACAO), (d.ENCAIXANDO, d.DOCK)])
+def test_pedido_na_ida_por_bateria_troca_o_motivo_e_mantem_a_acao(cfg, fase, acao):
+    ida = estado(cfg, fase, acao=acao, t_acao=100.0, motivo_doca=d.POR_BATERIA)
+    saida = d.decidir(ida, entrada(pedido_doca=True), cfg)
+    assert nomes(saida) == ['doca_pedida'] and saida.eventos[0]['detalhe'] == fase
+    assert saida.acoes == () and saida.estado.acao == acao
+    assert saida.estado.motivo_doca == d.POR_COMANDO
+    de_novo = d.decidir(saida.estado, entrada(pedido_doca=True), cfg)
+    assert de_novo.eventos == ()  # idempotente: o pedido é um nível, e não um evento
+
+
+@pytest.mark.req('PAT-23d')
+def test_dock_confirmado_depois_do_pedido_encerra_com_0_sem_carregar(cfg):
+    ida = estado(cfg, d.ENCAIXANDO, acao=d.DOCK, t_acao=100.0, motivo_doca=d.POR_BATERIA)
+    pedido = d.decidir(ida, entrada(pedido_doca=True), cfg)
+    saida = d.decidir(pedido.estado, entrada(pedido_doca=True, na_base=True,
+                                             resultado=_resultado(d.DOCK)), cfg)
+    assert nomes(saida) == ['dock_ok', 'encerrado']
+    assert saida.eventos[1]['detalhe'] == 'voltar_doca'
+    assert saida.acoes == ((d.ENCERRAR, d.CODIGO_ENCERRADO),)
+
+
+@pytest.mark.req('PAT-23d')
+def test_pedido_durante_a_ida_por_bateria_ponta_a_ponta(cfg):
+    mundo = Mundo(cfg, bateria=0.99, descarga=0.02)
+    mundo.rodar(400, ate=lambda m: 'bateria_baixa' in m.nomes())
+    assert 'bateria_baixa' in mundo.nomes() and mundo.codigo is None
+    mundo.pedido_doca_em = mundo.t + 1
+    mundo.rodar(400)
+    nomes_ = mundo.nomes()
+    assert mundo.codigo == d.CODIGO_ENCERRADO
+    assert nomes_.index('bateria_baixa') < nomes_.index('doca_pedida') < nomes_.index('dock_ok')
+    assert 'carga_completa' not in nomes_
+
+
+@pytest.mark.req('PAT-23d')
+def test_pedido_depois_de_falhas_seguidas_mantem_o_codigo_7(cfg):
+    ida = estado(cfg, d.ENCAIXANDO, acao=None, motivo_doca=d.POR_FALHAS, t_resultado_dock=109.0)
+    saida = d.decidir(ida, entrada(pedido_doca=True, na_base=True), cfg)
+    assert nomes(saida) == ['dock_ok', 'falhas_seguidas']  # sem doca_pedida
+    assert saida.acoes == ((d.ENCERRAR, d.CODIGO_FALHAS),)
+
+
+@pytest.mark.req('PAT-23')
+def test_destino_falho_do_mesmo_ciclo_conta_e_o_pedido_prevalece_sobre_o_pat_08(cfg):
+    inicial = patrulhando(cfg, falhas_seguidas=2)
+    saida = d.decidir(inicial, entrada(pedido_doca=True,
+                                       resultado=_resultado(d.DESTINO, d.FALHOU)), cfg)
+    assert nomes(saida) == ['destino_falhou', 'doca_pedida', 'destino_enviado']
+    assert saida.estado.falhas_seguidas == 3 and saida.estado.motivo_doca == d.POR_COMANDO
+
+
+@pytest.mark.req('PAT-23')
+def test_pedido_prevalece_sobre_a_bateria_baixa_e_a_critica(cfg):
+    for bateria in (0.15, 0.05):  # abaixo de `baixa` e de `critica`
+        saida = d.decidir(patrulhando(cfg), entrada(pedido_doca=True, bateria=bateria), cfg)
+        assert nomes(saida) == ['doca_pedida', 'destino_cancelado', 'destino_enviado']
+        assert saida.estado.motivo_doca == d.POR_COMANDO
+
+
+@pytest.mark.req('PAT-23')
+def test_dock_que_falha_depois_do_pedido_vale_o_pat_11(cfg):
+    mundo = Mundo(cfg, bateria=0.99, descarga=0.0001, falhar_dock=99,
+                  pedido_doca_em=40).rodar(600)
+    assert mundo.codigo == d.CODIGO_DOCK
+    assert 'doca_pedida' in mundo.nomes() and mundo.nomes()[-1] == 'dock_falhou'
+
+
+@pytest.mark.req('PAT-23b')
+def test_pedido_na_doca_prevalece_sobre_a_bateria_perdida(cfg):
+    carregando = estado(cfg, d.CARREGANDO)
+    saida = d.decidir(carregando, entrada(pedido_doca=True, na_base=True, agora=200.0,
+                                          t_bateria=110.0), cfg)
+    assert nomes(saida) == ['doca_pedida', 'encerrado']
+    assert saida.acoes == ((d.ENCERRAR, d.CODIGO_ENCERRADO),)
+
+
+@pytest.mark.req('PAT-23b')
+def test_pedido_com_carregando_fora_da_doca_fica_pendente_e_reencaixa(cfg):
+    carregando = estado(cfg, d.CARREGANDO)
+    saida = d.decidir(carregando, entrada(pedido_doca=True, na_base=False), cfg)
+    assert acoes(saida) == [d.APROXIMACAO] and saida.estado.fase == d.INDO_DOCA
+    assert 'doca_pedida' not in nomes(saida)
