@@ -2,6 +2,17 @@
 
 Tudo o que foi alterado no projeto, o que foi feito e com que objetivo. A entrada mais nova fica em cima. Cada linha diz também como a mudança foi verificada: "medido" é o que eu rodei e vi; "não verificado" é o que ainda depende de um teste.
 
+## 2026-11-16 (noite): o `rede_lab.env` explicado
+
+Pedido do Roberto: ele não entendeu a seção 3.2 do documento do modo SLAM (o que pôr no `rede_lab.env`) e pediu para atualizar o documento com o que mudou no Compose. Documento da tarefa: `docs/tarefas/2026-11-16-rede-lab-explicada.md`.
+
+| # | O que mudou | Arquivos | Objetivo | Como foi verificado |
+|---|---|---|---|---|
+| 46 | Passo a passo de preenchimento dentro do arquivo, e a regra "a posição na lista é o server ID" | `infra/lab/rede_lab.env` | Preencher no dia sem precisar do documento | Regra lida no `configure_discovery.sh` oficial (ramo `jazzy`). Medido: o Compose lê `IP:11811;` e `;IP:11811;` corretamente |
+| 47 | `ROS_SUPER_CLIENT: "True"` no serviço `ferramentas` | `infra/compose/robo.yaml` | No Discovery Server, sem isso, o `checar-rede` reprovaria uma rede boa | Lido no script oficial. Medido: `docker compose config` mostra a variável só no `ferramentas` |
+| 48 | Seção 3.2 reescrita; seções 1, 3.3, 4 e 5 atualizadas para o Compose | `docs/tarefas/2026-11-16-modo-slam.md` | Explicação clara e documento coerente com o sistema atual | |
+| 49 | Ponteiros para a seção 3.2 | `docs/tarefas/2026-11-16-compose-e-alvos.md`, `specs/patrol-inf/kit-de-campo.md` (etapa 1) | | |
+
 ## 2026-11-16 (tarde): Docker Compose e imagens em camadas
 
 Pedido do Roberto: trocar a imagem única por imagens menores e passar a rodar as tarefas por Docker Compose, um serviço por tarefa. Explicação completa: `docs/tarefas/2026-11-16-compose-e-alvos.md`. **Nada rodou com o Docker de verdade** (desligado no notebook, 1,5 GiB livres), nem no robô.

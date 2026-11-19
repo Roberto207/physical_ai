@@ -55,6 +55,8 @@ O que o manual diz, e que muda o nosso plano:
 
 Pergunte à equipe do INF qual dos dois modos o robô usa. **Não mude a configuração de rede do robô sem autorização.**
 
+No PC, a resposta vai para o `infra/lab/rede_lab.env`. Pergunte três coisas: o `ROS_DOMAIN_ID`, o modo e, se for Discovery Server, o IP do Raspberry Pi e o server ID. O que preencher em cada caso está em `docs/tarefas/2026-11-16-modo-slam.md`, seção 3.2. Depois, `infra/docker/lab.sh robo checar-rede` faz a conferência abaixo pelo container.
+
 ```bash
 ros2 topic list                          # deve listar /battery_state, /dock_status, /scan
 ros2 topic echo /battery_state --once
