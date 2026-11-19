@@ -81,8 +81,6 @@ Comece pelo `README.md`. Caminhos relativos à raiz do repositório.
 | Escopo, briefing e missões | `docs/contexto/projeto.md` |
 | Máquinas, rede e papel de cada uma | `docs/contexto/maquinas.md` |
 | Stack e fontes | `docs/contexto/stack.md` |
-| Equipe | `docs/contexto/equipe.md` |
-| Pendências | `docs/contexto/pendencias.md` |
 | Decisões (ADRs e antigas) | `docs/decisoes/README.md` |
 | O que foi feito, por tarefa | `docs/tarefas/README.md` |
 | Histórico congelado | `docs/historico/` |

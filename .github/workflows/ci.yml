@@ -10,6 +10,13 @@
 #   - permissions: só leitura do código, nenhum secret é usado aqui;
 #   - actions fixadas por SHA do commit (a tag @v7 pode ser movida; o SHA não);
 #   - ferramentas do pip com versão fixa.
+#
+# Como ler um vermelho (cada job é um tipo de erro):
+#   Marcas de conflito de merge nos arquivos      sobrou <<<<<<< ou >>>>>>> num arquivo
+#   Estilo e erros do Python (ruff)               linha longa, import sem uso, nome indefinido
+#   Sintaxe do workflow do GitHub Actions         erro neste ci.yml
+#   Documentos citando arquivo que não existe     um .md cita um caminho que não existe
+#   L0 (humble): a etapa que ficou vermelha       teste da lógica da patrulha falhou
 # ============================================================================================
 name: CI
 
@@ -29,37 +36,71 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # ------------------------------------------------------------------ lint
-  # ruff (regras em ruff.toml, alvo Python 3.10 = Humble) e actionlint, que confere
-  # este próprio arquivo: chave errada, expressão ${{ }} inválida, script com erro de shell.
-  lint:
-    name: Lint (ruff + actionlint)
+  # ------------------------------------------------------------------ verificações
+  # Quatro jobs independentes, um por tipo de erro. Cada um roda mesmo que os outros falhem, e o
+  # NOME do job vermelho já diz o que quebrou. Antes era um job só ("lint"): o primeiro erro
+  # (ex.: uma linha longa no ruff) impedia as etapas seguintes de rodar e escondia os demais.
+
+  # Um merge com conflito resolvido pela metade deixa as marcas do git no arquivo, e o commit
+  # passa assim mesmo. Aconteceu no merge f1009a4. Só olha <<<<<<< e >>>>>>>: a linha "=======" sozinha
+  # também é sublinhado de título em Markdown.
+  conflitos:
+    name: Marcas de conflito de merge nos arquivos
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
-      # Um merge com conflito resolvido pela metade deixa as marcas do git no arquivo, e o
-      # commit passa assim mesmo. Aconteceu no merge f1009a4. Só olha <<<<<<< e >>>>>>>:
-      # a linha "=======" sozinha também é sublinhado de título em Markdown.
-      - name: Marcas de conflito de merge
+      - name: Procurar marcas <<<<<<< e >>>>>>>
         run: |
-          if git grep -nE '^(<<<<<<<|>>>>>>>)( |$)' -- .; then
-            echo "::error::Há marcas de conflito de merge nos arquivos acima."
-            exit 1
-          fi
+          achou=0
+          while IFS=: read -r arquivo linha _; do
+            echo "::error file=${arquivo},line=${linha},title=Marca de conflito de merge::Resto de um merge mal resolvido. Resolva o conflito e apague a marca."
+            achou=1
+          done < <(git grep -nE '^(<<<<<<<|>>>>>>>)( |$)' -- . || true)
+          [ "$achou" = 0 ] || exit 1
           echo "Nenhuma marca de conflito."
+
+  # ruff, regras em ruff.toml (E: estilo PEP 8, como linha maior que 100; F: import sem uso,
+  # nome indefinido), alvo Python 3.10 = Humble. Cada aviso aparece em cima da linha do arquivo.
+  ruff:
+    name: Estilo e erros do Python (ruff)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
         with:
           python-version: '3.10'
-      - name: Instalar ruff e actionlint (versões fixas)
-        run: python -m pip install ruff==0.17.3 actionlint-py==1.7.12.25
-      - name: ruff
+      - name: Instalar ruff (versão fixa)
+        run: python -m pip install ruff==0.17.3
+      - name: ruff check
         run: ruff check --output-format=github .
+
+  # actionlint confere este próprio arquivo: chave errada, expressão ${{ }} inválida, script
+  # com erro de shell.
+  workflow:
+    name: Sintaxe do workflow do GitHub Actions (actionlint)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
+        with:
+          python-version: '3.10'
+      - name: Instalar actionlint (versão fixa)
+        run: python -m pip install actionlint-py==1.7.12.25
       - name: actionlint
         run: actionlint -color
-      # Documento vivo que cita arquivo inexistente (spec enxugamento, P3). Python puro.
-      - name: Caminhos citados nos documentos
-        run: python infra/ferramentas/checar_caminhos.py
+
+  # Documento vivo que cita arquivo inexistente (spec enxugamento, P3). Python puro, sem pip.
+  caminhos:
+    name: Documentos citando arquivo que não existe
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - name: Conferir os caminhos citados nos .md
+        run: python3 infra/ferramentas/checar_caminhos.py
 
   # ------------------------------------------------------------------ L0
   # Os testes L0 dentro da imagem oficial do ROS, com o pytest e o PyYAML do apt. Assim o

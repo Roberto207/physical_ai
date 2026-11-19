@@ -31,7 +31,7 @@ Consequências:
 ## 2. PC do laboratório
 
 - Roda as imagens Humble `physical-ai:base`, `physical-ai:robo` e `physical-ai:sim`, construídas por `infra/docker/construir_imagem.sh`.
-- Imagens de 2026-11-16 (Jazzy): `physical-ai:robo` 5,37 GB e `physical-ai:sim` 5,81 GB. A migração para Humble está commitada (F0 a F4), e falta rodar a V1, o teste de fumaça do Gazebo, a V3 e os 11 cenários L1 nesse PC (`docs/contexto/pendencias.md`).
+- Imagens de 2026-11-16 (Jazzy): `physical-ai:robo` 5,37 GB e `physical-ai:sim` 5,81 GB. A migração para Humble está commitada (F0 a F4), e falta rodar a V1, o teste de fumaça do Gazebo, a V3 e os 11 cenários L1 nesse PC.
 - O `lab.sh` recusa imagem de outra distro (SEG-01).
 
 ## 3. Robô TurtleBot 4 e rede (conferido no robô em 2026-11-16)
@@ -50,4 +50,4 @@ Consequências:
 
 Detalhes e a medição que originou esses fatos: `docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md` e `specs/patrol-inf/kit-de-campo.md` (etapa 1).
 
-Em aberto (ver `pendencias.md`): se o robô é Lite ou padrão (o log mostra `Device type: OAK-D-PRO`, a câmera do modelo padrão) e a reserva de DHCP do 192.168.7.7.
+Em aberto: se o robô é Lite ou padrão (o log mostra `Device type: OAK-D-PRO`, a câmera do modelo padrão) e a reserva de DHCP do 192.168.7.7.

@@ -3,12 +3,15 @@
 
 Lê os `.md` do projeto, menos `docs/historico/` e `docs/tarefas/` (históricos não são
 atualizados), as specs `enxugamento` e `migracao-humble` (descrevem arquivos que saem ou
-mudam de lugar) e `estudo/` (local, fora do git), e extrai os trechos entre crases cujo primeiro segmento é uma pasta de topo do
-projeto (`docs/`, `infra/`, `specs/`, `workspace/`). Sai com 1 e lista cada citação cujo
-arquivo ou pasta não existe. Python puro, sem dependências: roda no job `lint` do CI.
+mudam de lugar) e `estudo/` (local, fora do git), e extrai os trechos entre crases cujo primeiro
+segmento é uma pasta de topo do projeto (`docs/`, `infra/`, `specs/`, `workspace/`). Sai com
+1 e lista cada citação cujo arquivo ou pasta não existe, dizendo em qual documento ela está.
+Python puro, sem dependências: roda no job `caminhos` do CI, onde cada erro vira uma anotação
+no arquivo.
 
 Uso: python3 infra/ferramentas/checar_caminhos.py
 """
+import os
 import re
 import sys
 from pathlib import Path
@@ -43,15 +46,20 @@ def main():
     erros = []
     for md in sorted(RAIZ.rglob('*.md')):
         rel = md.relative_to(RAIZ).as_posix()
-        if rel.startswith(HISTORICO + SPECS_DE_MUDANCA) or rel.startswith('estudo/') or '/build/' in rel:
+        ignorar = HISTORICO + SPECS_DE_MUDANCA + ('estudo/',)
+        if rel.startswith(ignorar) or '/build/' in rel:
             continue
         for caminho in dict.fromkeys(citacoes(md.read_text(encoding='utf-8'))):
             if caminho.startswith(FORA_DO_GIT):
                 continue
             if not (RAIZ / caminho).exists():
-                erros.append(f'{rel}: `{caminho}` não existe')
-    for erro in erros:
-        print(erro)
+                erros.append((rel, caminho))
+    for rel, caminho in erros:
+        print(f'{rel}: `{caminho}` não existe')
+        if os.environ.get('GITHUB_ACTIONS'):   # anotação em cima do arquivo, na tela do GitHub
+            print(f'::error file={rel},title=Citação a arquivo inexistente::'
+                  f'O documento cita `{caminho}`, que não existe. '
+                  'Corrija o caminho ou remova a citação.')
     print(f'{len(erros)} citação(ões) quebrada(s)' if erros else 'caminhos ok')
     return 1 if erros else 0
 
