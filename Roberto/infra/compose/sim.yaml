@@ -1,4 +1,5 @@
-# Treino no Gazebo (mundo maze), com os MESMOS serviços do robo.yaml. Só muda o mundo.
+# Simulação no PC do laboratório: Gazebo (Ignition Fortress, o simulador principal, ADR-002),
+# com os MESMOS serviços do robo.yaml. Só muda o mundo.
 #
 # Use pelo atalho infra/docker/lab.sh sim ..., ou direto:
 #   docker compose -f infra/compose/sim.yaml up -d gazebo slam
@@ -8,8 +9,9 @@
 # - Domínio diferente: ROS_DOMAIN_ID=42 (o robô usa 0). Mesmo se um pacote vazasse da rede
 #   isolada, o ROS 2 ignora mensagens de outro domínio. São duas barreiras, de propósito.
 # - Todo serviço tem "profiles", como no robo.yaml: "up" sem nome não sobe nada.
+# - O entrypoint da imagem carrega o ROS da distro dela: nenhum comando aqui escreve a distro.
 # Peso: o Gazebo precisa de máquina boa (no notebook do Roberto, NÃO rode: 7,4 GiB).
-# Explicação: docs/tarefas/2026-11-16-compose-e-alvos.md
+# Explicação: docs/tarefas/2026-11-16-compose-e-alvos.md e specs/migracao-humble/
 name: tb4-sim
 
 x-ros: &ros
@@ -30,26 +32,22 @@ x-ros: &ros
     - /tmp/.X11-unix:/tmp/.X11-unix:ro
 
 services:
-  # Gazebo sem janela + o TurtleBot 4 simulado (base, doca, lidar, bateria da Create 3).
-  # Comando do manual (tutorials/navigation.html, seção do simulador), com SLAM, localização
-  # e Nav2 desligados aqui: cada um é um serviço próprio, igual ao robô real.
-  # O nosso sim_headless.launch.py substitui o sim.launch.py oficial para rodar o Gazebo só
-  # como servidor (-s --headless-rendering). O Xvfb é a tela falsa onde o lidar renderiza.
+  # Gazebo sem janela + o TurtleBot 4 simulado (base, doca, lidar, bateria da Create 3), pelo
+  # nosso lab_tb4/launch/gazebo.launch.py (servidor -s e --headless-rendering; SIM-01, SIM-01b).
+  # O Xvfb é uma tela falsa: fica como garantia para o lidar, caso o --headless-rendering não
+  # funcione na GPU do PC (foi o que funcionou no Jazzy em 16/11). MUNDO: maze, depot, warehouse.
   gazebo:
     <<: *ros
     profiles: [mundo]
     mem_limit: ${MEM_GAZEBO:-4g}
     memswap_limit: ${MEM_GAZEBO:-4g}
-    volumes:
-      - ../../workspace:/workspace
-      - ../../workspace/mapas:/mapas
-      - ../../workspace/logs:/logs
-      - ../docker/sim_headless.launch.py:/opt/ros/jazzy/share/turtlebot4_gz_bringup/launch/sim.launch.py:ro
+    environment:
+      ROS_DOMAIN_ID: "42"
+      RMW_IMPLEMENTATION: rmw_fastrtps_cpp
+      COMPILAR_WS: lab_tb4
     command: >-
       bash -c "Xvfb :99 -screen 0 1280x720x24 -nolisten tcp & sleep 2 && export DISPLAY=:99 &&
-      source /opt/ros/jazzy/setup.bash &&
-      exec ros2 launch turtlebot4_gz_bringup turtlebot4_gz.launch.py world:=maze
-      rviz:=false slam:=false localization:=false nav2:=false"
+      exec ros2 launch lab_tb4 gazebo.launch.py world:=${MUNDO:-maze}"
 
   ferramentas:
     <<: *ros
@@ -64,9 +62,7 @@ services:
     profiles: [manual]
     mem_limit: 256m
     memswap_limit: 256m
-    command: >-
-      bash -c "source /opt/ros/jazzy/setup.bash &&
-      exec ros2 action send_goal /undock irobot_create_msgs/action/Undock '{}'"
+    command: ros2 action send_goal /undock irobot_create_msgs/action/Undock '{}'
 
   # Daqui para baixo: os mesmos serviços do robo.yaml, com use_sim_time:=true (relógio do Gazebo).
   slam:
@@ -75,18 +71,23 @@ services:
     mem_limit: 2g
     memswap_limit: 2g
     command: >-
-      bash -c "source /opt/ros/jazzy/setup.bash &&
-      exec ros2 launch turtlebot4_navigation slam.launch.py sync:=${SYNC:-true} use_sim_time:=true"
+      ros2 launch turtlebot4_navigation slam.launch.py sync:=${SYNC:-true} use_sim_time:=true
 
+  # Sem MAPA, o mapa maze que vem no turtlebot4_navigation (o caminho do share é resolvido no
+  # container, sem a distro escrita aqui).
   localizacao:
     <<: *ros
     profiles: [navegacao]
     mem_limit: 1g
     memswap_limit: 1g
-    command: >-
-      bash -c "source /opt/ros/jazzy/setup.bash &&
-      exec ros2 launch turtlebot4_navigation localization.launch.py use_sim_time:=true
-      map:=${MAPA:-/opt/ros/jazzy/share/turtlebot4_navigation/maps/maze.yaml}"
+    command:
+      - bash
+      - -c
+      - |
+        MAPA='${MAPA:-}'   # o MAPA do host, posto aqui pelo Compose (vazio = o maze do pacote)
+        [ -n "$$MAPA" ] || MAPA="$$(ros2 pkg prefix turtlebot4_navigation)/share/turtlebot4_navigation/maps/maze.yaml"
+        test -f "$$MAPA" || { echo "Mapa $$MAPA não existe."; exit 1; }
+        exec ros2 launch turtlebot4_navigation localization.launch.py use_sim_time:=true map:="$$MAPA"
 
   # No sim, o nav2.yaml oficial (velocidade normal): aqui ninguém se machuca.
   nav2:
@@ -94,19 +95,16 @@ services:
     profiles: [navegacao]
     mem_limit: 2g
     memswap_limit: 2g
-    command: >-
-      bash -c "source /opt/ros/jazzy/setup.bash &&
-      exec ros2 launch turtlebot4_navigation nav2.launch.py use_sim_time:=true"
+    command: ros2 launch turtlebot4_navigation nav2.launch.py use_sim_time:=true
 
   rviz:
     <<: *ros
     profiles: [tela]
     mem_limit: 1g
     memswap_limit: 1g
-    command: >-
-      bash -c "source /opt/ros/jazzy/setup.bash &&
-      exec ros2 launch turtlebot4_viz view_navigation.launch.py use_sim_time:=true"
+    command: ros2 launch turtlebot4_viz view_robot.launch.py use_sim_time:=true
 
+  # A Create 3 simulada do Humble também recebe Twist sem carimbo, como o robô real.
   teleop:
     <<: *ros
     profiles: [manual]
@@ -115,12 +113,10 @@ services:
     mem_limit: 256m
     memswap_limit: 256m
     command: >-
-      bash -c "source /opt/ros/jazzy/setup.bash &&
-      exec ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args
-      -p stamped:=${STAMPED:-true} -p speed:=${VEL:-0.15} -p turn:=${GIRO:-0.5}"
+      ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args
+      -p stamped:=false -p speed:=${VEL:-0.15} -p turn:=${GIRO:-0.5}
 
-  # A nossa patrulha no Gazebo = degrau L3 da spec (config gazebo_maze.yaml). Pela spec, o L3
-  # vem depois da medição M-GZ: rode só quando o Roberto decidir.
+  # A nossa patrulha no Gazebo = degrau L3 da spec patrol-inf (config gazebo_maze.yaml).
   patrulha:
     <<: *ros
     profiles: [patrulha]
@@ -128,15 +124,15 @@ services:
     tty: true
     mem_limit: 512m
     memswap_limit: 512m
+    environment:
+      ROS_DOMAIN_ID: "42"
+      RMW_IMPLEMENTATION: rmw_fastrtps_cpp
+      DISPLAY: ${DISPLAY:-}
+      COMPILAR_WS: patrulha_tb4
     command:
       - bash
       - -c
       - |
-        source /opt/ros/jazzy/setup.bash
         CONFIG=${CONFIG:-/workspace/meu_ws/src/patrulha_tb4/config/gazebo_maze.yaml}
-        colcon build --base-paths /workspace/meu_ws/src --packages-select patrulha_tb4 \
-          --build-base /tmp/build --install-base /tmp/install > /tmp/colcon.log 2>&1 \
-          || { cat /tmp/colcon.log; exit 1; }
-        source /tmp/install/setup.bash
         validar_pontos "$$CONFIG" || { echo 'Patrulha NÃO iniciada.'; exit 2; }
         exec ros2 launch patrulha_tb4 patrulha.launch.py config:="$$CONFIG" pasta_log:=/logs

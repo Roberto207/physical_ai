@@ -2,6 +2,16 @@
 
 Tudo o que foi alterado no projeto, o que foi feito e com que objetivo. A entrada mais nova fica em cima. Cada linha diz também como a mudança foi verificada: "medido" é o que eu rodei e vi; "não verificado" é o que ainda depende de um teste.
 
+## 2026-11-18 (noite): migração para Humble, F2 (Gazebo e `lab_tb4`)
+
+Documento: `docs/tarefas/2026-11-18-f2-gazebo-lab-tb4.md`.
+
+| # | O que mudou | Arquivos | Objetivo | Como foi verificado |
+|---|---|---|---|---|
+| 71 | Pacote novo `lab_tb4` e a base falsa como nó (`ros2 run lab_tb4 base_falsa`) | `workspace/meu_ws/src/lab_tb4/` (o `infra/tools/fake_tb4_base.py` foi movido) | LCH-01, LCH-03 | `git mv`: código igual |
+| 72 | `gazebo.launch.py`: Fortress só servidor + spawn oficial do TB4 | `lab_tb4/launch/gazebo.launch.py` | SIM-01, SIM-01b | `py_compile`, ruff. No Gazebo: **não verificado** (PC) |
+| 73 | `sim.yaml` sem distro, com o `gazebo` pelo launch e o `MAPA` do host chegando à `localizacao` | `infra/compose/sim.yaml` | IMG-04, SIM-02 | Medido: `docker compose config` |
+
 ## 2026-11-18 (noite): migração para Humble, F1 (modo robo)
 
 Documento: `docs/tarefas/2026-11-18-f1-robo-humble.md`. **Nada rodou com o Docker nem com o robô.**

@@ -4,6 +4,9 @@
 Só para treino sem Gazebo. Bateria e base aqui são INVENTADAS: servem para exercitar
 a lógica da missão, não para medir nada sobre o robô real. Nada deste arquivo vai para o robô.
 
+Rode com `ros2 run lab_tb4 base_falsa --ros-args -p battery_start:=0.9 ...` (até 2026-11-18,
+era infra/tools/fake_tb4_base.py; os parâmetros e os padrões não mudaram, LCH-03).
+
 O que este nó oferece:
 - /battery_state: bateria que descarrega fora da base e carrega nela
 - /dock_status e as actions /dock e /undock: base de carga falsa, que "encaixa" na hora
