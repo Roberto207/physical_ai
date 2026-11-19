@@ -124,7 +124,7 @@ Antes, no mesmo PC, treine o roteiro no Gazebo, com os mesmos serviços: `lab.sh
 | RViz | `infra/docker/lab.sh robo subir rviz` | `ros2 launch turtlebot4_viz view_robot.launch.py namespace:=/robot1` |
 | Undock | **À mão, pela etapa 3** | O script não faz dock nem undock no robô real |
 | Dirigir | `infra/docker/lab.sh robo teleop` (pede `SIM`) | `teleop_twist_keyboard` com `__ns:=/robot1`, `stamped:=false` (robô Humble), `speed:=0.15` e `turn:=0.5` |
-| Salvar | `infra/docker/lab.sh robo salvar lab` | `ros2 service call /slam_toolbox/save_map slam_toolbox/srv/SaveMap "{name: {data: '/mapas/lab'}}"` |
+| Salvar | `infra/docker/lab.sh robo salvar lab` | `ros2 run nav2_map_server map_saver_cli -f /mapas/lab --ros-args -r map:=/robot1/map -p map_subscribe_transient_local:=true` (o `save_map` do `slam_toolbox` dá `result=255` no robô com namespace; 2026-11-19) |
 
 Dirija devagar pelo laboratório até o mapa fechar no RViz. Com a área livre de obstáculos soltos e sem gente andando, o manual diz que o mapa sai melhor. Ao salvar, o script pergunta se o mapeamento começou na doca, grava a ficha `.info.txt` e roda o `conferir_mapa`.
 
