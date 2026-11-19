@@ -6,6 +6,7 @@ A entrada mais nova fica em cima. Ao fechar uma tarefa, crie `AAAA-MM-DD-<nome>.
 
 | Data | Tarefa | Documento |
 |---|---|---|
+| 2026-11-19 | Pedido de retorno à doca sob demanda (PAT-23, spec `specs/patrol-inf/`) | `2026-11-19-voltar-doca.md` |
 | 2026-11-19 | Enxugamento e organização do projeto (spec `specs/enxugamento/`) | `2026-11-19-enxugamento.md` |
 | 2026-11-18 | Migração para Humble, F4 (limpeza, CI, documentação) | `2026-11-18-f4-limpeza.md` |
 | 2026-11-18 | Migração para Humble, F3 (L1 leve vendorizado) | `2026-11-18-f3-l1-leve.md` |
