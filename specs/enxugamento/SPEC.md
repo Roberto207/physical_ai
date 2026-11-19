@@ -6,7 +6,7 @@
 
 ## 1. Objetivo
 
-Um agente de IA ou um colega novo acha, em até 3 leituras a partir do `Roberto/README.md`, como rodar, a spec em vigor e as decisões. Nenhum arquivo versionado fica sem uso, e nenhum contradiz as regras atuais (ROS 2 Humble, o PC do laboratório simula, o notebook só roda o L0, sem analogias nas explicações).
+Um agente de IA ou um colega novo acha, em até 3 leituras a partir do `README.md`, como rodar, a spec em vigor e as decisões. Nenhum arquivo versionado fica sem uso, e nenhum contradiz as regras atuais (ROS 2 Humble, o PC do laboratório simula, o notebook só roda o L0, sem analogias nas explicações).
 
 ## 2. Contexto
 
@@ -40,7 +40,7 @@ Decisões do Roberto (2026-11-18):
 |---|---|
 | `progresso/` | Sai. O essencial do `testes.md` vira `docs/historico/resultados-jazzy.md`. As evidências novas do L1 vão para `workspace/logs/l1/` |
 | `estudo/` | Sai do git e fica no disco (`git rm --cached`) |
-| Estrutura | `Roberto/README.md` como porta de entrada e um `docs/` só. A pasta `contexto/` some. `specs/` fica onde está: o `checar_rastreio.py` lê `specs/patrol-inf/DESIGN.md` pelo caminho |
+| Estrutura | `README.md` como porta de entrada e um `docs/` só. A pasta `contexto/` some. `specs/` fica onde está: o `checar_rastreio.py` lê `specs/patrol-inf/DESIGN.md` pelo caminho |
 
 ## 3. Critério do que fica
 

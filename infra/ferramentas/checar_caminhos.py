@@ -13,7 +13,7 @@ import re
 import sys
 from pathlib import Path
 
-RAIZ = Path(__file__).resolve().parents[2]  # a pasta Roberto/
+RAIZ = Path(__file__).resolve().parents[2]  # a raiz do repositório
 PASTAS = ('docs', 'infra', 'specs', 'workspace')
 HISTORICO = ('docs/historico', 'docs/tarefas')
 # Specs que descrevem a própria mudança de arquivos: citam o que sai e o que muda de lugar.

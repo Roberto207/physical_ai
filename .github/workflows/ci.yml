@@ -1,10 +1,10 @@
 # ============================================================================================
-# CI da pasta Roberto/: Fase A, o "commit stage" (lint + testes L0 + rastreio da spec).
+# CI do repositório: Fase A, o "commit stage" (lint + testes L0 + rastreio da spec).
 #
 # É informativo: um vermelho aparece no commit e no PR, mas nada bloqueia o merge (a main
 # não tem proteção de branch, por decisão do projeto). Explicação completa, com o que cada
 # job pega e o que fica para as próximas fases:
-#   Roberto/docs/tarefas/2026-11-18-ci-fase-a.md
+#   docs/tarefas/2026-11-18-ci-fase-a.md
 #
 # Segurança (estudo 02_ci_cd, secrets e supply chain):
 #   - permissions: só leitura do código, nenhum secret é usado aqui;
@@ -16,10 +16,8 @@ name: CI
 on:
   push:
     branches: [main]
-    paths: ['Roberto/**', '.github/workflows/ci.yml']
   pull_request:
     branches: [main]
-    paths: ['Roberto/**', '.github/workflows/ci.yml']
   workflow_dispatch:   # botão "Run workflow" na aba Actions
 
 permissions:
@@ -32,7 +30,7 @@ concurrency:
 
 jobs:
   # ------------------------------------------------------------------ lint
-  # ruff (regras em Roberto/ruff.toml, alvo Python 3.10 = Humble) e actionlint, que confere
+  # ruff (regras em ruff.toml, alvo Python 3.10 = Humble) e actionlint, que confere
   # este próprio arquivo: chave errada, expressão ${{ }} inválida, script com erro de shell.
   lint:
     name: Lint (ruff + actionlint)
@@ -45,7 +43,7 @@ jobs:
       # a linha "=======" sozinha também é sublinhado de título em Markdown.
       - name: Marcas de conflito de merge
         run: |
-          if git grep -nE '^(<<<<<<<|>>>>>>>)( |$)' -- Roberto; then
+          if git grep -nE '^(<<<<<<<|>>>>>>>)( |$)' -- .; then
             echo "::error::Há marcas de conflito de merge nos arquivos acima."
             exit 1
           fi
@@ -56,13 +54,11 @@ jobs:
       - name: Instalar ruff e actionlint (versões fixas)
         run: python -m pip install ruff==0.17.3 actionlint-py==1.7.12.25
       - name: ruff
-        working-directory: Roberto
         run: ruff check --output-format=github .
       - name: actionlint
         run: actionlint -color
       # Documento vivo que cita arquivo inexistente (spec enxugamento, P3). Python puro.
       - name: Caminhos citados nos documentos
-        working-directory: Roberto
         run: python infra/ferramentas/checar_caminhos.py
 
   # ------------------------------------------------------------------ L0
@@ -89,16 +85,16 @@ jobs:
           python3 --version
           python3 -m pytest --version
       - name: Testes do patrulha_tb4 (decisão, config, pontos, registro, lint de poses)
-        working-directory: Roberto/workspace/meu_ws/src/patrulha_tb4
+        working-directory: workspace/meu_ws/src/patrulha_tb4
         run: python3 -m pytest -ra
       # O teste de rastreio dá "skip" se não achar o DESIGN.md. Aqui ele roda sozinho, para
       # falhar de verdade se algum requisito L0 do DESIGN ficar sem teste (TST-02).
       - name: Rastreio requisito -> teste (TST-02)
-        working-directory: Roberto/workspace/meu_ws/src/patrulha_tb4
+        working-directory: workspace/meu_ws/src/patrulha_tb4
         run: python3 test/checar_rastreio.py
       - name: Testes do lab_tb4 (cenários do L1 e conferidor; sem ROS)
-        working-directory: Roberto/workspace/meu_ws/src/lab_tb4
+        working-directory: workspace/meu_ws/src/lab_tb4
         run: python3 -m pytest -ra
       - name: Testes dos exemplos (decisão da patrulha, validador de ações da LLM)
-        working-directory: Roberto/workspace/exemplos
+        working-directory: workspace/exemplos
         run: python3 -m pytest -ra

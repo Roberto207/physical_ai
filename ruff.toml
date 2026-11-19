@@ -1,6 +1,6 @@
-# Lint do Python da pasta Roberto/ (usado pelo CI em .github/workflows/ci.yml e à mão).
+# Lint do Python do repositório (usado pelo CI em .github/workflows/ci.yml e à mão).
 #
-#   pip install ruff==0.17.3 && ruff check .      (rodar de dentro de Roberto/)
+#   pip install ruff==0.17.3 && ruff check .      (rodar da raiz do repositório)
 #
 # Regras mínimas de propósito: E (estilo PEP 8 que vira bug, como linha gigante e nome
 # ambíguo) e F (pyflakes: import sem uso, nome indefinido, variável nunca lida).

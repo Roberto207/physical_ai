@@ -191,7 +191,7 @@ Pelo Compose, a patrulha grava o log JSONL em `workspace/logs/`. Essa pasta est�
 ## 6. Como usar no laboratório
 
 ```bash
-cd ~/dev/physical_ai/Roberto/infra/docker
+cd ~/dev/physical_ai/infra/docker
 ./construir_imagem.sh robo sim            # 1ª vez no PC do lab
 
 # 1) Treino do mapa no Gazebo

@@ -22,7 +22,7 @@
 # docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md e specs/migracao-humble/
 set -euo pipefail
 ESTE=$(readlink -f "$0")
-cd "$(dirname "$ESTE")/../.."   # raiz do projeto (pasta Roberto/)
+cd "$(dirname "$ESTE")/../.."   # raiz do projeto (raiz do repositório)
 # Pastas montadas nos containers: criadas aqui para não nascerem como root.
 mkdir -p workspace/mapas workspace/logs
 

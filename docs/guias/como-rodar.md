@@ -2,7 +2,7 @@
 
 Desde 2026-11-18, tudo roda em **ROS 2 Humble**, a mesma distro do robô do laboratório (ADR-001, `docs/decisoes/`). O **PC do laboratório simula** e comanda o robô. O **notebook** só edita código e roda os testes L0. A versão Jazzy está na tag git `jazzy-final`.
 
-Os caminhos abaixo partem da pasta `Roberto/` do repositório. No notebook ela fica em `~/dev/physical_ai/Roberto`; no PC do lab, em `~/physical_ai/Roberto`.
+Os caminhos abaixo partem da raiz do repositório. No notebook ela fica em `~/dev/physical_ai`; no PC do lab, em `~/physical_ai`.
 
 ## 1. Testes da lógica (L0): notebook ou PC, sem ROS e sem Docker
 

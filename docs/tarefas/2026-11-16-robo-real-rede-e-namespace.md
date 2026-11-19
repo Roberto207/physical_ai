@@ -148,7 +148,7 @@ O robô Humble só aceita `geometry_msgs/msg/Twist`. No modo `robo`, o padrão d
    sudo nmcli connection modify "PixelLab-2.4GHz" +ipv4.routes "192.168.186.0/24 192.168.7.7 500, 192.168.185.0/24 192.168.7.7 500"
    sudo nmcli connection up "PixelLab-2.4GHz"
    ```
-2. `cd ~/physical_ai/Roberto/infra/docker` e `./lab.sh robo checar-rede`. Espere `REDE OK: /robot1/scan, /robot1/tf e /robot1/odom`. Se aparecer `permission denied` no Docker, o terminal é anterior ao `usermod`: rode `newgrp docker` ou entre de novo na sessão.
+2. `cd ~/physical_ai/infra/docker` e `./lab.sh robo checar-rede`. Espere `REDE OK: /robot1/scan, /robot1/tf e /robot1/odom`. Se aparecer `permission denied` no Docker, o terminal é anterior ao `usermod`: rode `newgrp docker` ou entre de novo na sessão.
 3. Daí em diante, o roteiro do `como_rodar.md` e do kit de campo (etapas 1 a 4) vale como está: `./lab.sh robo subir slam rviz`, e o teleop só com alguém ao lado.
 
 ## 7. O que foi e o que não foi verificado

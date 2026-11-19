@@ -64,7 +64,7 @@ Ele é iniciante em robótica. Um plano com termos soltos e sem links já foi cr
 
 Pedido do Roberto, que vale para toda tarefa, nesta máquina e no PC do laboratório:
 
-- **Documento por tarefa.** Ao fim de cada tarefa, crie `Roberto/docs/tarefas/AAAA-MM-DD-<nome>.md` com a data e a explicação detalhada do pipeline: o que foi feito, em qual arquivo, para que serve, como foi verificado e o que não foi. Abra com a resposta direta, e termine com o efeito prático. Sem analogias.
+- **Documento por tarefa.** Ao fim de cada tarefa, crie `docs/tarefas/AAAA-MM-DD-<nome>.md` com a data e a explicação detalhada do pipeline: o que foi feito, em qual arquivo, para que serve, como foi verificado e o que não foi. Abra com a resposta direta, e termine com o efeito prático. Sem analogias.
 - **Registro.** O `docs/historico/registro-de-mudancas.md` está congelado. O registro agora é uma linha por tarefa (data, tarefa, documento) na tabela de `docs/tarefas/README.md`. O que mudou fica no documento da tarefa; a tabela só aponta.
 - **Código comentado na medida certa.** Comente o porquê das escolhas e o que não é óbvio. Não comente o que o código já diz.
 - **Documentação oficial.** Siga a documentação oficial (TurtleBot 4, ROS 2, Nav2, Create 3, slam_toolbox) e cite a página no código ou no documento quando um comando vier dela.
@@ -72,7 +72,7 @@ Pedido do Roberto, que vale para toda tarefa, nesta máquina e no PC do laborat�
 
 ## 7. Onde achar o resto
 
-Comece pelo `Roberto/README.md`. Caminhos relativos a `Roberto/`.
+Comece pelo `README.md`. Caminhos relativos à raiz do repositório.
 
 | O que | Arquivo |
 |---|---|
