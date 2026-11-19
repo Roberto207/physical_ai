@@ -37,6 +37,13 @@ services:
   ferramentas:
     <<: *ros
     profiles: [ferramentas]
+    # No Discovery Server, um nó comum só fica sabendo dos tópicos que ele mesmo usa. O
+    # "ros2 topic list" precisa ser super client para ver todos. O configure_discovery.sh
+    # oficial liga isto só nos terminais interativos; aqui, só neste serviço de inspeção.
+    # Sem ROS_DISCOVERY_SERVER definido (Simple Discovery), a variável não tem efeito.
+    environment:
+      DISPLAY: ${DISPLAY:-}
+      ROS_SUPER_CLIENT: "True"
     mem_limit: 512m
     memswap_limit: 512m
     command: bash
