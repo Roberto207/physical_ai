@@ -2,6 +2,19 @@
 
 Tudo o que foi alterado no projeto, o que foi feito e com que objetivo. A entrada mais nova fica em cima. Cada linha diz também como a mudança foi verificada: "medido" é o que eu rodei e vi; "não verificado" é o que ainda depende de um teste.
 
+## 2026-11-18 (noite): migração para Humble, F3 (L1 leve vendorizado)
+
+Documento: `docs/tarefas/2026-11-18-f3-l1-leve.md`.
+
+| # | O que mudou | Arquivos | Objetivo | Como foi verificado |
+|---|---|---|---|---|
+| 74 | `nav2_loopback_sim` do ramo `jazzy` (commit `c704655`), sem patch, com `LICENSE` e `ORIGEM.md`; o ruff ignora `terceiros/` | `workspace/meu_ws/src/terceiros/nav2_loopback_sim/`, `ruff.toml` | SIM-07 | Medido: `diff -r` contra o upstream |
+| 75 | `sim_leve.launch.py` (equivalente Humble do `tb4_loopback_simulation`) e `l1.launch.py` | `lab_tb4/launch/` | SIM-03, LCH-01 | `py_compile`. No PC: **não verificado** |
+| 76 | Os 11 cenários em YAML, o leitor e o `vigia_l1` (o laço do `l1_dentro.sh`) | `lab_tb4/config/cenarios_l1.yaml`, `lab_tb4/cenarios.py`, `lab_tb4/vigia_l1.py`; `l1_dentro.sh` removido | SIM-04, SIM-04b, SIM-06 | Medido: 17 testes L0 |
+| 77 | `teste_l1.sh` só com o host: container como usuário, tentativas pelo marcador, logs por parte | `infra/docker/teste_l1.sh` | SIM-05, SIM-06b, LCH-02 | Medido: `lista` e nome desconhecido. Cenários: **não verificado** |
+| 78 | `conferir_l1.py` movido para o `lab_tb4` | `lab_tb4/lab_tb4/conferir_l1.py` | Tudo do L1 num pacote | `git mv` |
+| 79 | Serviço `leve` no `sim.yaml` | `infra/compose/sim.yaml` | O leve à mão no PC | Medido: `docker compose config` |
+
 ## 2026-11-18 (noite): migração para Humble, F2 (Gazebo e `lab_tb4`)
 
 Documento: `docs/tarefas/2026-11-18-f2-gazebo-lab-tb4.md`.

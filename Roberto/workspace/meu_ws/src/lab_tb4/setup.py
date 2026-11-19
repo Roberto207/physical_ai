@@ -23,6 +23,7 @@ setup(
     entry_points={
         'console_scripts': [
             'base_falsa = lab_tb4.base_falsa:main',
+            'vigia_l1 = lab_tb4.vigia_l1:main',
         ],
     },
 )

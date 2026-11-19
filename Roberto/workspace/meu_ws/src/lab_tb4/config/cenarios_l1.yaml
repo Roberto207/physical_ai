@@ -1,0 +1,60 @@
+# Os 11 cenários do teste L1 (simulador leve), lidos pelo lab_tb4/cenarios.py (SIM-04b).
+#
+# Até 2026-11-18 eles eram um "case" do infra/docker/teste_l1.sh (tag jazzy-final). Os valores
+# são os mesmos, com uma exceção, o l1b (ver abaixo).
+#
+# Campos de cada cenário (o que faltar vem de "padrao"):
+#   config          arquivo em patrulha_tb4/config/
+#   base            parâmetros da base falsa (lab_tb4 base_falsa)
+#   limite_s        tempo de relógio máximo do cenário
+#   subir_nav2      sobe o simulador leve com o Nav2
+#   subir_base      sobe a base falsa
+#   nav2_extra      argumentos a mais para o sim_leve.launch.py (nome:=valor, separados por espaço)
+#   patrulha_extra  argumentos a mais para o patrulha.launch.py
+#   sinal_no_fim    manda SIGINT quando o cenário chega ao ponto esperado (prova o PAT-15)
+padrao:
+  config: leve_reduzido.yaml
+  base: {battery_start: 0.90, drain_per_s: 0.002, charge_per_s: 0.05}
+  limite_s: 900
+  subir_nav2: true
+  subir_base: true
+  nav2_extra: ''
+  patrulha_extra: ''
+  sinal_no_fim: true
+
+cenarios:
+  ciclo: {}                                  # TST-03: um ciclo de recarga completo
+  # H4: o nav2.yaml oficial do TurtleBot 4 no simulador leve. No Jazzy, o cenário precisava de
+  # um perfil montado em /tmp que ligava enable_stamped_cmd_vel no loopback, porque o nav2.yaml
+  # do Jazzy publica TwistStamped. No Humble tudo é Twist: basta trocar o perfil (desvio
+  # registrado em docs/tarefas/2026-11-18-f3-l1-leve.md).
+  l1b:
+    nav2_extra: 'nav2_perfil:=turtlebot4'
+  dock_falha:                                # TST-04
+    base: {battery_start: 0.90, drain_per_s: 0.004, charge_per_s: 0.05, falhar_dock_n: 1}
+  queda_bateria:                             # TST-05
+    base: {battery_start: 0.99, drain_per_s: 0.001, charge_per_s: 0.05,
+           queda_bateria_em_s: 12.0, queda_bateria_para: 0.30}
+  sem_bateria:                               # PAT-04
+    base: {battery_start: 0.90, drain_per_s: 0.002, charge_per_s: 0.05, simular_bateria: false}
+    limite_s: 120
+  fora_da_doca:                              # PAT-17
+    base: {battery_start: 0.99, comecar_na_doca: false}
+    limite_s: 120
+  sem_servidor:                              # PAT-20
+    base: {battery_start: 0.90, drain_per_s: 0.002, charge_per_s: 0.05, simular_doca: false}
+    limite_s: 120
+  sem_relogio:                               # PAT-22
+    subir_nav2: false
+    subir_base: false
+    patrulha_extra: 'use_sim_time:=true'
+    limite_s: 60
+  bateria_perdida:                           # PAT-18 e 18b
+    base: {battery_start: 0.99, drain_per_s: 0.0005, charge_per_s: 0.05, parar_bateria_em_s: 12.0}
+    limite_s: 400
+  falhas_seguidas:                           # PAT-07, 08 e 19
+    config: teste_tempo_curto.yaml
+    base: {battery_start: 0.99, drain_per_s: 0.0005}
+    limite_s: 400
+  sigint:                                    # PAT-15
+    base: {battery_start: 0.99, drain_per_s: 0.0005}

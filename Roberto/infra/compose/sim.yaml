@@ -49,6 +49,27 @@ services:
       bash -c "Xvfb :99 -screen 0 1280x720x24 -nolisten tcp & sleep 2 && export DISPLAY=:99 &&
       exec ros2 launch lab_tb4 gazebo.launch.py world:=${MUNDO:-maze}"
 
+  # Simulador leve à mão (o L1 sem roteiro): loopback + Nav2 + base falsa, sem Gazebo
+  # (lab_tb4/launch/sim_leve.launch.py, SIM-03). Não rode junto com o gazebo: os dois publicam
+  # /tf e /clock. Para os 11 cenários com veredito, use infra/docker/teste_l1.sh.
+  leve:
+    <<: *ros
+    profiles: [leve]
+    mem_limit: 2g
+    memswap_limit: 2g
+    environment:
+      ROS_DOMAIN_ID: "42"
+      RMW_IMPLEMENTATION: rmw_fastrtps_cpp
+      DISPLAY: ${DISPLAY:-}
+      COMPILAR_WS: lab_tb4,nav2_loopback_sim
+    command:
+      - bash
+      - -c
+      - |
+        MAPA='${MAPA:-}'   # vazio = o maze do turtlebot4_navigation
+        [ -n "$$MAPA" ] || MAPA="$$(ros2 pkg prefix turtlebot4_navigation)/share/turtlebot4_navigation/maps/maze.yaml"
+        exec ros2 launch lab_tb4 sim_leve.launch.py map:="$$MAPA" rviz:=${RVIZ_LEVE:-false}
+
   ferramentas:
     <<: *ros
     profiles: [ferramentas]

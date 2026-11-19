@@ -11,5 +11,9 @@ line-length = 100
 # existe em versões mais novas (por exemplo, `except*` do 3.11).
 target-version = "py310"
 
+# Código de terceiros copiado sem mudança (ver o ORIGEM.md de cada pasta): não é nosso estilo
+# para corrigir, e editar quebraria o "diff -r" contra o upstream.
+extend-exclude = ["workspace/meu_ws/src/terceiros"]
+
 [lint]
 select = ["E", "F"]

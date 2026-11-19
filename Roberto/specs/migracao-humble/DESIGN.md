@@ -134,9 +134,10 @@ workspace/meu_ws/src/lab_tb4/
 
 ### `l1.launch.py` e `vigia_l1`
 
+- **Desvio no `l1b` (F3):** o `nav2_extra: params_file:=/tmp/nav2_l1b.yaml` do Jazzy vira `nav2_perfil:=turtlebot4`. O perfil em `/tmp` só existia para ligar o `enable_stamped_cmd_vel` do loopback contra o `TwistStamped` do Nav2 Jazzy. No Humble tudo é `Twist`, e basta trocar o perfil.
 - `cenario:=<nome>` lê o `cenarios_l1.yaml` e monta os parâmetros da base, a configuração da patrulha e o limite de tempo, o que hoje o `case` do `teste_l1.sh` faz.
 - O `vigia_l1` é um nó Python que faz o laço do `l1_dentro.sh`. Ele confere o JSONL com `conferir_l1 --pronto`, aplica o tempo-limite e manda o SIGINT para a patrulha (PAT-15). Também procura `Aborting bringup` no log do Nav2 e pede a retentativa (SIM-06).
-- **Ponto de atenção:** a retentativa exige derrubar e subir de novo um include inteiro. O launch do ROS 2 não tem "reiniciar include". Proposta: se o `vigia_l1` achar `Aborting bringup` no `nav2.log` nos primeiros `[15 s]`, ele sai com o código `10`. O `teste_l1.sh` (host) então roda o cenário de novo num container novo, até `[3]` tentativas, e anota cada uma no `nav2_tentativas.txt` (SIM-06). Esgotadas as tentativas, o veredito é `REPROVADO`, com o motivo `nav2_nao_subiu` (SIM-06b). Assim a retentativa fica no host, que já é dono do ciclo de vida do container. Isso muda o comportamento de hoje: o `l1_dentro.sh` reinicia só os processos do Nav2, e não o container inteiro. É a única lógica de orquestração que fica fora do launch, e o motivo está aqui.
+- **Ponto de atenção:** a retentativa exige derrubar e subir de novo um include inteiro. O launch do ROS 2 não tem "reiniciar include". Proposta: se o `vigia_l1` achar `Aborting bringup` no `/rosout` nos primeiros `[15 s]`, ele grava o marcador `nav2_abortou` na pasta de evidências e encerra o launch. **Ajuste da implementação (F3, 2026-11-18):** a proposta original era o código de saída `10`, mas o código de saída do `ros2 launch` não reflete o de um nó, então o sinal passou a ser o arquivo marcador. Pelo mesmo motivo, o vigia sobe junto com o Nav2 (aos 0 s), e não com a patrulha (aos 18 s): senão perderia o log. O `teste_l1.sh` (host) então roda o cenário de novo num container novo, até `[3]` tentativas, e anota cada uma no `nav2_tentativas.txt` (SIM-06). Esgotadas as tentativas, o veredito é `REPROVADO`, com o motivo `nav2_nao_subiu` (SIM-06b). Assim a retentativa fica no host, que já é dono do ciclo de vida do container. Isso muda o comportamento de hoje: o `l1_dentro.sh` reinicia só os processos do Nav2, e não o container inteiro. É a única lógica de orquestração que fica fora do launch, e o motivo está aqui.
 
 ### Loopback vendorizado
 
@@ -183,7 +184,7 @@ Ela é chamada no começo de toda ação do modo `robo`, antes do `exigir_sozinh
 
 ### `teste_l1.sh`
 
-Fica no host e faz menos coisa. O `case` dos cenários sai (vai para o `cenarios_l1.yaml`). A imagem passa a ser `physical-ai:sim`. O comando do container vira `ros2 launch lab_tb4 l1.launch.py cenario:=$CENARIO pasta:=/evidencias`. Continuam no host: a pasta de evidências, a amostra de RAM, o `OOMKilled`, a retentativa do código 10 e o veredito com o `conferir_l1.py`. O TST-06 (guarda de memória) continua: no PC do lab ele não atrapalha, e a revisão dele é da spec de enxugamento.
+Fica no host e faz menos coisa. O `case` dos cenários sai (vai para o `cenarios_l1.yaml`). A imagem passa a ser `physical-ai:sim`. O comando do container vira `ros2 launch lab_tb4 l1.launch.py cenario:=$CENARIO pasta:=/evidencias`. Continuam no host: a pasta de evidências, a amostra de RAM, o `OOMKilled`, a retentativa pelo marcador `nav2_abortou` e o veredito com o `conferir_l1.py`. O TST-06 (guarda de memória) continua: no PC do lab ele não atrapalha, e a revisão dele é da spec de enxugamento.
 
 ## 8. Configurações (CFG-01 a CFG-04)
 
