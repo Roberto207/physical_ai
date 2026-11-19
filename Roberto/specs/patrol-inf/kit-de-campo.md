@@ -55,9 +55,6 @@ O que o manual diz, e que muda o nosso plano:
 
 Pergunte à equipe do INF qual dos dois modos o robô usa. **Não mude a configuração de rede do robô sem autorização.**
 
-<<<<<<< HEAD
-No PC, a resposta vai para o `infra/lab/rede_lab.env`. Pergunte três coisas: o `ROS_DOMAIN_ID`, o modo e, se for Discovery Server, o IP do Raspberry Pi e o server ID. O que preencher em cada caso está em `docs/tarefas/2026-11-16-modo-slam.md`, seção 3.2. Depois, `infra/docker/lab.sh robo checar-rede` faz a conferência abaixo pelo container.
-=======
 **Atenção:** os nós Jazzy do PC derrubam este robô, que é Humble (falta de memória no serviço `turtlebot4`, medido em 2026-11-16). Não use o `lab.sh robo` até o modo `robo` do PC ir para Humble (`docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md`, seção 8).
 
 **O robô do laboratório, conferido em 2026-11-16** (detalhes em `docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md`):
@@ -67,7 +64,8 @@ No PC, a resposta vai para o `infra/lab/rede_lab.env`. Pergunte três coisas: o 
 - Publica tudo no namespace **`/robot1`**: `/robot1/scan`, `/robot1/battery_state`, `/robot1/dock` etc.
 - O PC precisa de rotas para `192.168.186.0/24` (Create 3) e `192.168.185.0/24` (cabo) **pelo IP do robô**. Sem elas, o PC não completa a descoberta e não vê nenhum tópico. O `lab.sh robo checar-rede` confere isso e mostra o comando.
 - `ROS_DOMAIN_ID=0` nos dois.
->>>>>>> 5f5ac963d74460ac43adbe8763be832a9da309c2
+
+No PC, a resposta vai para o `infra/lab/rede_lab.env`. Pergunte três coisas: o `ROS_DOMAIN_ID`, o modo e, se for Discovery Server, o IP do Raspberry Pi e o server ID. O que preencher em cada caso está em `docs/tarefas/2026-11-16-modo-slam.md`, seção 3.2. Depois, `infra/docker/lab.sh robo checar-rede` faz a conferência abaixo pelo container.
 
 ```bash
 ros2 topic list                          # deve listar /robot1/battery_state, /robot1/dock_status, /robot1/scan

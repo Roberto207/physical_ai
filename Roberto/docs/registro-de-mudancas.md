@@ -2,6 +2,15 @@
 
 Tudo o que foi alterado no projeto, o que foi feito e com que objetivo. A entrada mais nova fica em cima. Cada linha diz também como a mudança foi verificada: "medido" é o que eu rodei e vi; "não verificado" é o que ainda depende de um teste.
 
+## 2026-11-18 (noite): migração para Humble, F0 (preparo)
+
+Documento: `docs/tarefas/2026-11-18-f0-preparo.md`.
+
+| # | O que mudou | Arquivos | Objetivo | Como foi verificado |
+|---|---|---|---|---|
+| 63 | Marcas de conflito do merge `f1009a4` resolvidas, mantendo os dois lados (itens do `rede_lab.env` renumerados para 46b a 49b) | `docs/registro-de-mudancas.md`, `specs/patrol-inf/kit-de-campo.md` | O job `lint` do CI deixa de falhar, e nenhuma informação se perde | Medido: `git grep` sem marcas |
+| 64 | Commit da F0 e tag anotada `jazzy-final` (as pendências já estavam em `8677319` e `d5d7716`) | Repositório (local, sem push) | Ponto de retorno do ADR-001 (PRE-01) | Medido: `git cat-file -t jazzy-final` |
+
 ## 2026-11-18 (noite): spec da migração para Humble, ADRs e prévia do enxugamento
 
 Pedido do Roberto: escolher entre enxugamento e migração para Humble, especificar a migração pela skill `/sdd`, registrar a decisão em ADR e anotar o enxugamento numa prévia. Documento da tarefa: `docs/tarefas/2026-11-18-spec-migracao-humble.md`. **Só documentos: nenhum código, imagem ou compose mudou.**
@@ -24,18 +33,6 @@ Pedido do Roberto: um pipeline de CI baseado nos estudos de CI/CD, começando pe
 | 57 | 3 linhas longas e a variável `l` renomeada para `lin` em `motivo_da_pose` | `patrulha_tb4/pontos.py`, `patrulha_tb4/decisao.py`, `test/test_pontos.py` | Passar no ruff sem mudar comportamento | Medido: 130 testes passam, rastreio com 31 requisitos L0 |
 | 58 | Achado: o merge `f1009a4` deixou marcas de conflito neste arquivo (logo abaixo) e em `specs/patrol-inf/kit-de-campo.md` | (não corrigido) | O job `lint` fica vermelho até a equipe escolher o texto que fica | Medido com `git grep` |
 
-<<<<<<< HEAD
-## 2026-11-16 (noite): o `rede_lab.env` explicado
-
-Pedido do Roberto: ele não entendeu a seção 3.2 do documento do modo SLAM (o que pôr no `rede_lab.env`) e pediu para atualizar o documento com o que mudou no Compose. Documento da tarefa: `docs/tarefas/2026-11-16-rede-lab-explicada.md`.
-
-| # | O que mudou | Arquivos | Objetivo | Como foi verificado |
-|---|---|---|---|---|
-| 46 | Passo a passo de preenchimento dentro do arquivo, e a regra "a posição na lista é o server ID" | `infra/lab/rede_lab.env` | Preencher no dia sem precisar do documento | Regra lida no `configure_discovery.sh` oficial (ramo `jazzy`). Medido: o Compose lê `IP:11811;` e `;IP:11811;` corretamente |
-| 47 | `ROS_SUPER_CLIENT: "True"` no serviço `ferramentas` | `infra/compose/robo.yaml` | No Discovery Server, sem isso, o `checar-rede` reprovaria uma rede boa | Lido no script oficial. Medido: `docker compose config` mostra a variável só no `ferramentas` |
-| 48 | Seção 3.2 reescrita; seções 1, 3.3, 4 e 5 atualizadas para o Compose | `docs/tarefas/2026-11-16-modo-slam.md` | Explicação clara e documento coerente com o sistema atual | |
-| 49 | Ponteiros para a seção 3.2 | `docs/tarefas/2026-11-16-compose-e-alvos.md`, `specs/patrol-inf/kit-de-campo.md` (etapa 1) | | |
-=======
 ## 2026-11-16 (noite): PC do laboratório e robô real (rede, Wi-Fi e namespace)
 
 Pedido do Roberto: fazer o `lab.sh` funcionar no PC do laboratório, no Gazebo e com o robô real, e adaptar o PC ao robô (opção 2: o PC muda, o robô não). Explicação completa: `docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md`. **O robô não recebeu nenhum comando de movimento.**
@@ -53,7 +50,19 @@ Pedido do Roberto: fazer o `lab.sh` funcionar no PC do laboratório, no Gazebo e
 | 53 | Documentos: acesso por cabo e Wi-Fi com as rotas, kit de campo com o robô do lab, caminhos corrigidos no `como_rodar.md` (`~/physical_ai` e `conferir workspace/...`), pendências e aviso no documento do Compose | `docs/acesso-ao-robo-por-cabo.md`, `specs/patrol-inf/kit-de-campo.md`, `como_rodar.md`, `contexto/pendencias.md`, `docs/tarefas/2026-11-16-compose-e-alvos.md`, documento da tarefa | Regra de entrega (`AGENTES.md`, seção 6) | |
 
 Resultado do Gazebo pelo Compose: mapa `workspace/mapas/teste_maze`, `UTILIZÁVEL` (17 m x 15 m). Rotas para `192.168.186.0/24` e `192.168.185.0/24` pelo robô, criadas pelo Roberto na conexão `PixelLab-2.4GHz`: **`REDE OK`**, com `/robot1/scan` a 8,4 Hz, `/robot1/odom` a 21,4 Hz e `/robot1/battery_state` a 0,2 Hz no PC (medido).
->>>>>>> 5f5ac963d74460ac43adbe8763be832a9da309c2
+
+*Os dois blocos desta noite vieram de ramos diferentes e entraram no merge `f1009a4` com marcas de conflito. Resolvido em 2026-11-18 mantendo os dois: os itens do bloco do `rede_lab.env` ganharam o sufixo `b` porque os números 46 a 49 se repetiam.*
+
+## 2026-11-16 (noite): o `rede_lab.env` explicado
+
+Pedido do Roberto: ele não entendeu a seção 3.2 do documento do modo SLAM (o que pôr no `rede_lab.env`) e pediu para atualizar o documento com o que mudou no Compose. Documento da tarefa: `docs/tarefas/2026-11-16-rede-lab-explicada.md` (**não está no repositório**; a explicação ficou em `docs/tarefas/2026-11-16-modo-slam.md`, seção 3.2).
+
+| # | O que mudou | Arquivos | Objetivo | Como foi verificado |
+|---|---|---|---|---|
+| 46b | Passo a passo de preenchimento dentro do arquivo, e a regra "a posição na lista é o server ID" | `infra/lab/rede_lab.env` | Preencher no dia sem precisar do documento | Regra lida no `configure_discovery.sh` oficial (ramo `jazzy`). Medido: o Compose lê `IP:11811;` e `;IP:11811;` corretamente |
+| 47b | `ROS_SUPER_CLIENT: "True"` no serviço `ferramentas` | `infra/compose/robo.yaml` | No Discovery Server, sem isso, o `checar-rede` reprovaria uma rede boa | Lido no script oficial. Medido: `docker compose config` mostra a variável só no `ferramentas` |
+| 48b | Seção 3.2 reescrita; seções 1, 3.3, 4 e 5 atualizadas para o Compose | `docs/tarefas/2026-11-16-modo-slam.md` | Explicação clara e documento coerente com o sistema atual | |
+| 49b | Ponteiros para a seção 3.2 | `docs/tarefas/2026-11-16-compose-e-alvos.md`, `specs/patrol-inf/kit-de-campo.md` (etapa 1) | | |
 
 ## 2026-11-16 (tarde): Docker Compose e imagens em camadas
 
