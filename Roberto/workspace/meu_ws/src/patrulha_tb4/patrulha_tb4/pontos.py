@@ -46,7 +46,7 @@ class Mapa:
     limiar_livre: float
 
     def celula(self, x, y):
-        """Converte (x, y) em metros para (coluna, linha a partir de baixo), ou None se cair fora."""
+        """Converte (x, y) em metros para (coluna, linha a partir de baixo); None se cair fora."""
         dx, dy = x - self.origem_x, y - self.origem_y
         cos, sen = math.cos(-self.origem_yaw), math.sin(-self.origem_yaw)
         mx, my = dx * cos - dy * sen, dx * sen + dy * cos
@@ -162,10 +162,11 @@ def motivo_da_pose(mapa, x, y, margem_m):
     alcance = math.ceil(margem_m / mapa.resolucao)
     for dl in range(-alcance, alcance + 1):
         for dc in range(-alcance, alcance + 1):
-            c, l = coluna + dc, linha + dl
-            if not (0 <= c < mapa.largura and 0 <= l < mapa.altura):
+            c, lin = coluna + dc, linha + dl
+            if not (0 <= c < mapa.largura and 0 <= lin < mapa.altura):
                 continue
-            if math.hypot(dc, dl) * mapa.resolucao < margem_m and mapa.estado(c, l) == OCUPADA:
+            perto = math.hypot(dc, dl) * mapa.resolucao < margem_m
+            if perto and mapa.estado(c, lin) == OCUPADA:
                 return PERTO_DE_OBSTACULO
     return None
 

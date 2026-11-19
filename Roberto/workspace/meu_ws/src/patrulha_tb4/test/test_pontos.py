@@ -122,7 +122,8 @@ def test_o_modulo_de_validacao_nao_importa_ros():
 
 
 def test_pgm_em_texto_e_com_comentarios(tmp_path):
-    (tmp_path / 'm.pgm').write_bytes(b'P2\n# feito a mao\n3 2\n# outro\n255\n0 254 254\n254 205 0\n')
+    (tmp_path / 'm.pgm').write_bytes(
+        b'P2\n# feito a mao\n3 2\n# outro\n255\n0 254 254\n254 205 0\n')
     largura, altura, maximo, pixels = pontos.ler_pgm(tmp_path / 'm.pgm')
     assert (largura, altura, maximo) == (3, 2, 255)
     assert pixels == bytes([0, 254, 254, 254, 205, 0])

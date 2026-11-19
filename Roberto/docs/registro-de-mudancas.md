@@ -2,6 +2,17 @@
 
 Tudo o que foi alterado no projeto, o que foi feito e com que objetivo. A entrada mais nova fica em cima. Cada linha diz também como a mudança foi verificada: "medido" é o que eu rodei e vi; "não verificado" é o que ainda depende de um teste.
 
+## 2026-11-18: CI, Fase A (commit stage)
+
+Pedido do Roberto: um pipeline de CI baseado nos estudos de CI/CD, começando pela Fase A, informativo, limitado a `Roberto/` e de olho na migração para Humble. Documento da tarefa: `docs/tarefas/2026-11-18-ci-fase-a.md`.
+
+| # | O que mudou | Arquivos | Objetivo | Como foi verificado |
+|---|---|---|---|---|
+| 55 | Workflow com os jobs `lint` (marcas de conflito, ruff, actionlint) e `l0` (matriz humble e jazzy, nas imagens `ros:<distro>-ros-base`) | `.github/workflows/ci.yml` (raiz do repositório) | Rodar L0 e rastreio a cada push ou PR em `Roberto/`, sem bloquear merge | Medido: actionlint limpo, e acusa label errado num teste. Nas imagens do ROS e no GitHub: **não verificado** (Docker desligado; o primeiro push responde) |
+| 56 | Regras do ruff: `E` e `F`, linha de 100, alvo Python 3.10 | `ruff.toml` | Lint igual no CI e à mão, já no Python do Humble | Medido: `ruff check .` limpo |
+| 57 | 3 linhas longas e a variável `l` renomeada para `lin` em `motivo_da_pose` | `patrulha_tb4/pontos.py`, `patrulha_tb4/decisao.py`, `test/test_pontos.py` | Passar no ruff sem mudar comportamento | Medido: 130 testes passam, rastreio com 31 requisitos L0 |
+| 58 | Achado: o merge `f1009a4` deixou marcas de conflito neste arquivo (logo abaixo) e em `specs/patrol-inf/kit-de-campo.md` | (não corrigido) | O job `lint` fica vermelho até a equipe escolher o texto que fica | Medido com `git grep` |
+
 <<<<<<< HEAD
 ## 2026-11-16 (noite): o `rede_lab.env` explicado
 

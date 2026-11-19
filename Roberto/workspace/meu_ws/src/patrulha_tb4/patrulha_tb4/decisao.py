@@ -64,7 +64,7 @@ class Entrada:
     """O que o nó sabe neste instante."""
 
     parede: float                          # tempo de relógio (time.time)
-    agora: Optional[float]                 # relógio do ROS; None se o tempo simulado ainda não chegou
+    agora: Optional[float]                 # relógio do ROS; None se o tempo simulado não chegou
     bateria: Optional[float] = None        # última fração recebida, de 0 a 1
     t_bateria: Optional[float] = None      # relógio do ROS na chegada da última bateria
     na_base: Optional[bool] = None         # is_docked do último /dock_status

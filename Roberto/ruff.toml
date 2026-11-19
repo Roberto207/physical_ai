@@ -1,0 +1,15 @@
+# Lint do Python da pasta Roberto/ (usado pelo CI em .github/workflows/ci.yml e à mão).
+#
+#   pip install ruff==0.17.3 && ruff check .      (rodar de dentro de Roberto/)
+#
+# Regras mínimas de propósito: E (estilo PEP 8 que vira bug, como linha gigante e nome
+# ambíguo) e F (pyflakes: import sem uso, nome indefinido, variável nunca lida).
+# Dá para ligar mais famílias depois, uma por vez, quando o código já passar nas atuais.
+line-length = 100
+
+# Humble roda no Ubuntu 22.04, com Python 3.10. Com isso o ruff acusa sintaxe que só
+# existe em versões mais novas (por exemplo, `except*` do 3.11).
+target-version = "py310"
+
+[lint]
+select = ["E", "F"]
