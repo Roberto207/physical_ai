@@ -29,6 +29,36 @@ class ConfigInvalida(Exception):
         self.detalhe = detalhe
 
 
+PREFIXO_PKG = 'pkg://'
+
+
+def resolver_pkg(mapa, share=None):
+    """`pkg://<pacote>/<caminho>` -> `<share do pacote>/<caminho>` (CFG-01).
+
+    Assim a configuração não escreve a distro no caminho (`/opt/ros/<distro>/share/...`):
+    o ament_index acha o pacote na distro instalada. Outros textos voltam sem mudança.
+    `share` existe para os testes L0 rodarem sem ROS.
+    """
+    if not mapa.startswith(PREFIXO_PKG):
+        return mapa
+    pacote, _, resto = mapa[len(PREFIXO_PKG):].partition('/')
+    if share is None:
+        # Import aqui dentro: o resto deste módulo roda sem ROS (notebook, CI).
+        try:
+            from ament_index_python.packages import (PackageNotFoundError,
+                                                     get_package_share_directory)
+        except ImportError:
+            raise ConfigInvalida('pkg_sem_ros', mapa) from None  # CFG-02b
+        try:
+            return os.path.join(get_package_share_directory(pacote), resto)
+        except PackageNotFoundError:
+            raise ConfigInvalida('mapa_pacote_inexistente', pacote) from None  # CFG-02
+    try:
+        return os.path.join(share(pacote), resto)
+    except LookupError:
+        raise ConfigInvalida('mapa_pacote_inexistente', pacote) from None
+
+
 @dataclass(frozen=True)
 class Pose:
     nome: str
@@ -137,7 +167,7 @@ def montar(raiz, caminho='', hash_config=''):
     mapa = raiz.get('mapa')
     if not isinstance(mapa, str) or not mapa.strip():
         raise ConfigInvalida('campo_faltando', 'mapa')
-    mapa = os.path.expandvars(os.path.expanduser(mapa))
+    mapa = os.path.expandvars(os.path.expanduser(resolver_pkg(mapa)))
     if not os.path.isabs(mapa):
         mapa = os.path.normpath(os.path.join(os.path.dirname(caminho), mapa))
 

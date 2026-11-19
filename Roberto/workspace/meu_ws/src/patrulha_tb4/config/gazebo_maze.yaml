@@ -6,7 +6,7 @@
 patrulha:
   ambiente: gazebo
   modelo: standard
-  mapa: /opt/ros/jazzy/share/turtlebot4_navigation/maps/maze.yaml
+  mapa: pkg://turtlebot4_navigation/maps/maze.yaml
   pose_inicial: {x: 0.0, y: 0.0, yaw_graus: 0}
   aproximacao_doca: {x: -0.6, y: 0.0, yaw_graus: 0}
   pontos:

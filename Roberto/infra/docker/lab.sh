@@ -14,18 +14,19 @@
 #   ./lab.sh <modo> compose <args...>        qualquer comando do docker compose, no arquivo certo
 #   ./lab.sh conferir <mapa.yaml>            confere um mapa salvo (sem ROS, sem Docker)
 #
-# Serviços: gazebo (só sim), slam, localizacao, nav2, rviz, teleop, patrulha, undock (só sim),
-# ferramentas. Variáveis: MAPA, CONFIG, SYNC, VEL, GIRO, STAMPED, NAV2_PARAMS, MEM_GAZEBO,
+# Serviços: gazebo e leve (só sim), slam, localizacao, nav2, rviz, teleop, patrulha, undock (só
+# sim), ferramentas. Variáveis: MAPA, CONFIG, SYNC, VEL, GIRO, NAV2_PARAMS, MEM_GAZEBO, MUNDO,
 # ROBO_NS (namespace do robô real; padrão /robot1, ROBO_NS= vazio para nenhum).
-# Explicação: docs/tarefas/2026-11-16-compose-e-alvos.md e
-# docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md
+# No modo robo, toda ação confere antes se as imagens são Humble, a distro do robô (SEG-01).
+# Explicação: docs/tarefas/2026-11-16-compose-e-alvos.md,
+# docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md e specs/migracao-humble/
 set -euo pipefail
 ESTE=$(readlink -f "$0")
 cd "$(dirname "$ESTE")/../.."   # raiz do projeto (pasta Roberto/)
 # Pastas montadas nos containers: criadas aqui para não nascerem como root.
 mkdir -p workspace/mapas workspace/logs
 
-uso() { sed -n 2,21p "$ESTE"; }
+uso() { sed -n 2,22p "$ESTE"; }
 
 if [ "${1:-}" = conferir ]; then
   [ -n "${2:-}" ] || { echo "Uso: ./lab.sh conferir <mapa.yaml>"; exit 1; }
@@ -43,8 +44,33 @@ shift 2 2>/dev/null || shift $#
 ARQ=infra/compose/$MODO.yaml
 dc()        { docker compose -f "$ARQ" "$@"; }
 rodando()   { [ -n "$(docker compose -f "infra/compose/$1.yaml" ps -q 2>/dev/null)" ]; }
-# Roda um comando ROS num container de passagem do serviço ferramentas.
-ferramenta() { dc run --rm -T ferramentas bash -c "source /opt/ros/jazzy/setup.bash; $1"; }
+# Roda um comando ROS num container de passagem do serviço ferramentas. O entrypoint da imagem
+# já carregou o ROS.
+ferramenta() { dc run --rm -T ferramentas bash -c "$1"; }
+
+# SEG-01: o robô do lab é Humble, e nós de outra distro na rede dele já o derrubaram (16/11:
+# o Humble lê mal a ParticipantEntitiesInfo do Jazzy e o serviço turtlebot4 morre sem memória).
+# Antes de qualquer container do modo robo, confere a distro gravada em cada imagem do robo.yaml.
+DISTRO_ESPERADA=humble   # a única distro escrita num script de host, além do PRE-02 (IMG-04)
+distro_de() {
+  docker image inspect -f '{{range .Config.Env}}{{println .}}{{end}}' "$1" 2>/dev/null \
+    | sed -n 's/^ROS_DISTRO=//p'
+}
+distro_ok() {
+  local img distro ok=0
+  for img in $(docker compose -f infra/compose/robo.yaml --profile '*' config --images | sort -u); do
+    distro=$(distro_de "$img")
+    if [ "$distro" != "$DISTRO_ESPERADA" ]; then
+      echo "RECUSADO (SEG-01): a imagem $img tem ROS_DISTRO='${distro:-sem variável ou sem imagem}'."
+      ok=1
+    fi
+  done
+  if [ "$ok" != 0 ]; then
+    echo "O robô é $DISTRO_ESPERADA. Outra distro na rede dele pode derrubá-lo (2026-11-16)."
+    echo "Construa as imagens Humble: infra/docker/construir_imagem.sh base robo"
+  fi
+  return "$ok"
+}
 
 # O sim e o robo não rodam juntos: com os dois ligados, fica fácil mandar um comando para o
 # robô errado no terminal errado. (A rede isolada e o domínio 42 do sim já separam os dois.)
@@ -111,6 +137,16 @@ liberar_tela() {
   xhost +SI:localuser:root >/dev/null   # o container roda como root
 }
 
+# SEG-01 vale para toda ação do modo robo. A exceção é o "parar", que com imagem errada só
+# derruba o que estiver rodando (docker compose down) e não sobe o container de chown.
+GUARDA_OK=1
+if [ "$MODO" = robo ]; then
+  if ! distro_ok; then
+    GUARDA_OK=0
+    [ "$ACAO" = parar ] || exit 1
+  fi
+fi
+
 case "$ACAO" in
   subir)
     [ $# -gt 0 ] || { echo "Diga quais serviços. Ex.: ./lab.sh $MODO subir slam rviz"; exit 1; }
@@ -147,7 +183,8 @@ case "$ACAO" in
     # Serviço do manual. Com caminho absoluto, o slam_toolbox chama o map_saver_cli e grava
     # direto em /mapas (= workspace/mapas/). O serviço sempre responde; o resultado real é o
     # campo result (0 = sucesso).
-    saida=$(dc exec -T slam bash -c "source /opt/ros/jazzy/setup.bash; ros2 service call \
+    # O exec não passa pelo entrypoint: carrega o ROS pela ROS_DISTRO do próprio container.
+    saida=$(dc exec -T slam bash -c "source /opt/ros/\$ROS_DISTRO/setup.bash; ros2 service call \
       /slam_toolbox/save_map slam_toolbox/srv/SaveMap \"{name: {data: '/mapas/$nome'}}\"" 2>&1 || true)
     if ! grep -q 'result=0' <<<"$saida" || [ ! -f "workspace/mapas/$nome.yaml" ]; then
       echo "$saida" | tail -5
@@ -177,7 +214,9 @@ EOF
     ;;
   parar)
     # Devolve ao usuário o que os containers (root) gravaram nas pastas montadas.
-    ferramenta "chown -R $(id -u):$(id -g) /workspace/mapas /workspace/logs" >/dev/null 2>&1 || true
+    if [ "$GUARDA_OK" = 1 ]; then
+      ferramenta "chown -R $(id -u):$(id -g) /workspace/mapas /workspace/logs" >/dev/null 2>&1 || true
+    fi
     dc --profile '*' down
     xhost -SI:localuser:root >/dev/null 2>&1 || true
     echo "Parado (modo $MODO)."

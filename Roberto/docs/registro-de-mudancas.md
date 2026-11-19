@@ -2,6 +2,19 @@
 
 Tudo o que foi alterado no projeto, o que foi feito e com que objetivo. A entrada mais nova fica em cima. Cada linha diz também como a mudança foi verificada: "medido" é o que eu rodei e vi; "não verificado" é o que ainda depende de um teste.
 
+## 2026-11-18 (noite): migração para Humble, F1 (modo robo)
+
+Documento: `docs/tarefas/2026-11-18-f1-robo-humble.md`. **Nada rodou com o Docker nem com o robô.**
+
+| # | O que mudou | Arquivos | Objetivo | Como foi verificado |
+|---|---|---|---|---|
+| 65 | Imagens Humble (4 alvos) e entrypoint que carrega o ROS pela `ROS_DISTRO` | `infra/docker/Dockerfile`, `infra/docker/entrypoint.sh` | IMG-01 a IMG-05 | Leitura. Build: **não verificado** (só no PC) |
+| 66 | Conferência de RAM primeiro e tag `jazzy-<alvo>` antes do build | `infra/docker/construir_imagem.sh` | IMG-06, PRE-02 | `bash -n` |
+| 67 | Guarda de distro em toda ação do modo `robo` | `infra/docker/lab.sh` | SEG-01 | `bash -n`. Com imagem Jazzy: **não verificado** |
+| 68 | `robo.yaml` sem distro escrita, perfil Nav2 direto, teleop com `stamped:=false`, `view_robot` | `infra/compose/robo.yaml` | SEG-02 a SEG-06 | Medido: `docker compose config`, G4 |
+| 69 | Perfil lento do Nav2 refeito do Humble 1.0.5 | `config/nav2_inf_devagar.yaml` | CFG-04 | Medido: diff só nos 2 valores |
+| 70 | `pkg://` no mapa das configurações | `config.py`, 4 configs, `test/test_config.py` | CFG-01 a CFG-03 | Medido: 134 testes |
+
 ## 2026-11-18 (noite): migração para Humble, F0 (preparo)
 
 Documento: `docs/tarefas/2026-11-18-f0-preparo.md`.

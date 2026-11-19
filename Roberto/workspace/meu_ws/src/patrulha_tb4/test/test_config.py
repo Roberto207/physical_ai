@@ -1,12 +1,13 @@
 """Testes da configuração (L0): o que vem do YAML e o que reprova o arquivo."""
 import math
+import sys
 
 import pytest
 import yaml
 from conftest import dados_config, fazer_config
 
 from patrulha_tb4.config import (ConfigInvalida, Deltas, Limites, calcular_limites, carregar,
-                                 limites_validos)
+                                 limites_validos, resolver_pkg)
 
 
 def gravar(pasta, dados):
@@ -163,8 +164,64 @@ def test_perfil_inf_devagar_limita_a_velocidade_a_0_15():
 @pytest.mark.req('PAT-01')
 @pytest.mark.parametrize('arquivo', ['leve_reduzido.yaml', 'teste_tempo_curto.yaml',
                                      'gazebo_maze.yaml', 'warehouse_original.yaml'])
-def test_as_configuracoes_do_pacote_carregam(arquivo):
+def test_as_configuracoes_do_pacote_carregam(arquivo, monkeypatch):
     from pathlib import Path
+    # As configs usam pkg://turtlebot4_navigation/... (CFG-01). Sem ROS, um ament_index falso.
+    monkeypatch.setitem(sys.modules, 'ament_index_python.packages',
+                        _ament_falso({'turtlebot4_navigation': '/share/turtlebot4_navigation'}))
     cfg = carregar(Path(__file__).resolve().parents[1] / 'config' / arquivo)
+    assert cfg.mapa.startswith('/share/turtlebot4_navigation/maps/')
     assert len(cfg.pontos) >= 3
     assert cfg.usa_tempo_simulado
+
+
+# ---------------------------------------------------------------- pkg:// (spec migracao-humble)
+# O ament_index só existe com ROS. Os testes trocam o módulo dele por um falso em sys.modules,
+# para rodar igual no notebook (sem ROS) e no CI (imagem do ROS).
+
+def _ament_falso(pacotes):
+    """Módulo ament_index_python.packages de mentira, que conhece só `pacotes`."""
+    import types
+
+    class PackageNotFoundError(KeyError):
+        pass
+
+    def get_package_share_directory(nome):
+        if nome not in pacotes:
+            raise PackageNotFoundError(nome)
+        return pacotes[nome]
+
+    modulo = types.ModuleType('ament_index_python.packages')
+    modulo.PackageNotFoundError = PackageNotFoundError
+    modulo.get_package_share_directory = get_package_share_directory
+    return modulo
+
+
+@pytest.mark.req('CFG-01')
+def test_mapa_pkg_resolvido_pelo_share(tmp_path, monkeypatch):
+    share = {'turtlebot4_navigation': '/opt/x/share/turtlebot4_navigation'}
+    monkeypatch.setitem(sys.modules, 'ament_index_python.packages', _ament_falso(share))
+    cfg = carregar(gravar(tmp_path, dados_config(mapa='pkg://turtlebot4_navigation/maps/maze.yaml')))
+    assert cfg.mapa == '/opt/x/share/turtlebot4_navigation/maps/maze.yaml'
+
+
+@pytest.mark.req('CFG-02')
+def test_mapa_pkg_de_pacote_inexistente_reprova(tmp_path, monkeypatch):
+    monkeypatch.setitem(sys.modules, 'ament_index_python.packages', _ament_falso({}))
+    with pytest.raises(ConfigInvalida) as erro:
+        carregar(gravar(tmp_path, dados_config(mapa='pkg://nao_existe/maps/x.yaml')))
+    assert erro.value.motivo == 'mapa_pacote_inexistente'
+
+
+@pytest.mark.req('CFG-02b')
+def test_mapa_pkg_sem_ros_reprova(tmp_path, monkeypatch):
+    # None em sys.modules faz o import falhar com ImportError, como numa máquina sem ROS.
+    monkeypatch.setitem(sys.modules, 'ament_index_python', None)
+    monkeypatch.setitem(sys.modules, 'ament_index_python.packages', None)
+    with pytest.raises(ConfigInvalida) as erro:
+        carregar(gravar(tmp_path, dados_config(mapa='pkg://turtlebot4_navigation/maps/maze.yaml')))
+    assert erro.value.motivo == 'pkg_sem_ros'
+
+
+def test_mapa_sem_pkg_nao_muda():
+    assert resolver_pkg('/mapas/lab.yaml') == '/mapas/lab.yaml'
