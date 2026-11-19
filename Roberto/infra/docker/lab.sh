@@ -175,20 +175,26 @@ case "$ACAO" in
     [ -n "$(dc ps -q slam 2>/dev/null)" ] || { echo "O serviço slam não está rodando: ./lab.sh $MODO subir slam"; exit 1; }
     padrao=$([ "$MODO" = robo ] && echo lab || echo sim_maze)_$(date +%F_%H-%M)
     nome=${1:-$padrao}
-    # O slam_toolbox só aceita estes caracteres no nome (regex em src/map_saver.cpp).
+    # Caracteres aceitos (herdado do regex do slam_toolbox; também mantém o nome seguro no shell).
     [[ "$nome" =~ ^[A-Za-z0-9_.-]+$ ]] || { echo "Nome inválido: use só letras, números, _ . -"; exit 1; }
     [ ! -e "workspace/mapas/$nome.yaml" ] || { echo "Já existe workspace/mapas/$nome.yaml. Escolha outro nome."; exit 1; }
     read -r -p "O mapeamento começou com o robô encaixado na doca? [s/n] " doca
     case "$doca" in s|S) doca=sim ;; n|N) doca=nao ;; *) doca=nao_informado ;; esac
-    # Serviço do manual. Com caminho absoluto, o slam_toolbox chama o map_saver_cli e grava
-    # direto em /mapas (= workspace/mapas/). O serviço sempre responde; o resultado real é o
-    # campo result (0 = sucesso).
+    # Chama o map_saver_cli direto, e não o serviço /slam_toolbox/save_map do manual. No robô real
+    # o SLAM roda em /robot1: o serviço sem namespace não tem quem atenda (o comando trava) e o
+    # /robot1/slam_toolbox/save_map responde result=255, porque o map_saver_cli que ele chama
+    # assina /map e o mapa está em /robot1/map (medido em 2026-11-19). Aqui o remapeamento leva
+    # o map_saver_cli ao tópico certo: ROBO_NS no modo robo; no sim o SLAM não usa namespace.
+    # map_subscribe_transient_local: o /map do slam_toolbox é transient_local, e sem isso o
+    # map_saver perde o mapa já publicado. Grava direto em /mapas (= workspace/mapas/).
     # O exec não passa pelo entrypoint: carrega o ROS pela ROS_DISTRO do próprio container.
-    saida=$(dc exec -T slam bash -c "source /opt/ros/\$ROS_DISTRO/setup.bash; ros2 service call \
-      /slam_toolbox/save_map slam_toolbox/srv/SaveMap \"{name: {data: '/mapas/$nome'}}\"" 2>&1 || true)
-    if ! grep -q 'result=0' <<<"$saida" || [ ! -f "workspace/mapas/$nome.yaml" ]; then
+    ns_mapa=""; [ "$MODO" = robo ] && ns_mapa=${ROBO_NS-/robot1}
+    saida=$(timeout 60 docker compose -f "$ARQ" exec -T slam bash -c "source /opt/ros/\$ROS_DISTRO/setup.bash; \
+      ros2 run nav2_map_server map_saver_cli -f '/mapas/$nome' --ros-args \
+      -r map:=${ns_mapa}/map -p map_subscribe_transient_local:=true -p save_map_timeout:=10.0" 2>&1 || true)
+    if ! grep -q 'Map saved successfully' <<<"$saida" || [ ! -f "workspace/mapas/$nome.yaml" ]; then
       echo "$saida" | tail -5
-      echo "FALHOU ao salvar. O SLAM já publicou algum mapa? Veja ./lab.sh $MODO logs slam"
+      echo "FALHOU ao salvar. O SLAM já publicou ${ns_mapa}/map? Veja ./lab.sh $MODO logs slam"
       exit 1
     fi
     dc exec -T slam chown "$(id -u):$(id -g)" "/mapas/$nome.yaml" "/mapas/$nome.pgm"
