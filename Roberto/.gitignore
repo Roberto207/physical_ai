@@ -1,6 +1,5 @@
 #Pastas pessoais
 estudo/
-progresso/
 
 # Saída do colcon: refeita em cada máquina (tem caminhos de quem compilou)
 workspace/meu_ws/build/
