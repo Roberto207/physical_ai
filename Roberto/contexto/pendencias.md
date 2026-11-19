@@ -6,7 +6,7 @@ Perguntar ao coordenador (prazo das missões: cerca de 1 mês e meio, a partir d
 - [ ] Qual modelo de TurtleBot (TurtleBot 4 padrão ou Lite) e quantos há no INF?
 - [ ] Como reservar/acessar os robôs no INF? Há rede Wi-Fi dedicada?
 - [ ] Qual é a plataforma do gêmeo digital (versão do Gazebo? há um repositório?) e quem a mantém?
-- [ ] Qual versão do ROS e distro a equipe vai padronizar?
+- [ ] Qual versão do ROS e distro a equipe vai padronizar? (2026-11-16: o robô do lab roda Humble e o PC, Jazzy; a equipe disse que isso não tem problema)
 - [ ] Qual provedor de LLM usar (a OpenAI exige chave paga)? O INF/AKCIT tem GPU ou créditos de API?
 - [ ] Existe um marco ou entrega intermediária nos 10 meses?
 - [ ] O notebook pode ser só cliente? O INF oferece servidor para simulação?
@@ -20,7 +20,7 @@ Testar na minha máquina (ver `infra/teste-simulacao-2026-11-05.md`):
 
 Verificar:
 - [x] Compilar `turtlebot4_python_tutorials` e `turtlebot4_openai_tutorials` do GitHub (não há apt para Jazzy)
-- [ ] O robô físico é Lite ou padrão? O launch de topo da simulação usa `standard` por padrão
+- [ ] O robô físico é Lite ou padrão? O launch de topo da simulação usa `standard` por padrão. Indício de 2026-11-16: o log do robô diz `Device type: OAK-D-PRO`, a câmera do modelo padrão (o Lite usa a OAK-D Lite). Confirmar com o INF
 - [x] Extrair os links do PDF do colega (estão em `estudo/fontes.md`)
 - [ ] Causa da navegação falhando no simulador leve (ver `infra/teste-simulacao-2026-11-05.md`)
 - [x] Caminho de docking do `patrol_loop` e da base falsa: rodou em 2026-11-09 (ver `progresso/`)
@@ -41,9 +41,11 @@ Spec `patrol-inf` (execução iniciada em 2026-11-12, ver `docs/registro-de-muda
 - [x] L1b aprovado em 2026-11-13: H4 confirmada, desde que o simulador leve receba `enable_stamped_cmd_vel: true`
 - [ ] Falha do Nav2 ao subir no leve ("transform from base_link to odom did not become available"), vista 2 vezes em 16 subidas (12 e 13/nov), com e sem carga no notebook. Pode ser a mesma falha intermitente de 5/nov. Causa não confirmada (hipótese: corrida com a pose inicial). O `teste_l1.sh` tenta de novo sozinho, mas isso ainda não foi exercitado
 - [ ] Revisar as decisões tomadas onde a spec não dizia (tabela em `docs/registro-de-mudancas.md`), e decidir se entram no DEFINE e no DESIGN
-- [ ] Como o PC fala com o robô real: **feito em 2026-11-16** (`infra/compose/robo.yaml`, com `network_mode: host` e `infra/lab/rede_lab.env`, pelo atalho `infra/docker/lab.sh robo`). Falta testar no laboratório e perguntar à equipe do INF o modo de discovery e o `ROS_DOMAIN_ID` do robô
-- [ ] Modo SLAM (2026-11-16): testar no PC do laboratório, primeiro `lab.sh sim` (Gazebo) e depois `lab.sh robo`. Detalhes e o que não foi verificado: `docs/tarefas/2026-11-16-modo-slam.md` e `docs/tarefas/2026-11-16-compose-e-alvos.md`
-- [ ] Construir as imagens no PC do lab (`construir_imagem.sh robo sim`) e anotar o tamanho de cada uma (`docker images physical-ai`), para confirmar que o Gazebo é a parte pesada
+- [x] Como o PC fala com o robô real: configurado em 2026-11-16 e conferido no robô (Humble, Discovery Server id 1, domínio 0, namespace `/robot1`). Rotas criadas no PC e `lab.sh robo checar-rede` com `REDE OK` (dados chegando). **Falta:** SLAM, teleop e Nav2 com o robô. Detalhes: `docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md`
+- [ ] Robô no Wi-Fi `PixelLab-2.4GHz` (2026-11-16): confirmar que reconecta sozinho depois de reiniciar, pedir ao INF a reserva de DHCP do `192.168.7.7` e, se for preciso, descobrir por que o canal 157 (`PixelLab-5GHz`) some (`docs/acesso-ao-robo-por-cabo.md`)
+- [ ] **Imagem Humble para o modo `robo` do PC (próxima tarefa, decidida em 2026-11-16).** Os nós Jazzy do PC derrubam o robô Humble por falta de memória (`docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md`, seção 8). Até lá, **não usar o `lab.sh robo`**. Plano na mesma seção. Depois, testar com o robô `Dock`, `Undock` e `DockStatus` e o Nav2
+- [ ] Modo SLAM (2026-11-16): `lab.sh sim` testado no PC do laboratório (mapa `teste_maze`, `UTILIZÁVEL`, 17 m x 15 m). Falta o `lab.sh robo`. Detalhes: `docs/tarefas/2026-11-16-modo-slam.md` e `docs/tarefas/2026-11-16-compose-e-alvos.md`
+- [x] Imagens no PC do lab (2026-11-16): `physical-ai:robo` 5,37 GB e `physical-ai:sim` 5,81 GB (`docker images`). A `physical-ai:base` não tinha sido construída: hoje é um apelido da `robo` (`docker tag`). Para ter a base de verdade: `construir_imagem.sh base`
 - [ ] Tela do TurtleBot 4 com ruído (foto `erro_tela.jpeg`, 2026-11-12): não investigado
 - [ ] `git init`: recomendado no DESIGN, decisão do Roberto
 - [ ] L1 com um destino abortado pelo próprio Nav2 (ponto livre, mas inalcançável): hoje só o L0 prova esse caminho

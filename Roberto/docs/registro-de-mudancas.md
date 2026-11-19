@@ -2,6 +2,7 @@
 
 Tudo o que foi alterado no projeto, o que foi feito e com que objetivo. A entrada mais nova fica em cima. Cada linha diz também como a mudança foi verificada: "medido" é o que eu rodei e vi; "não verificado" é o que ainda depende de um teste.
 
+<<<<<<< HEAD
 ## 2026-11-16 (noite): o `rede_lab.env` explicado
 
 Pedido do Roberto: ele não entendeu a seção 3.2 do documento do modo SLAM (o que pôr no `rede_lab.env`) e pediu para atualizar o documento com o que mudou no Compose. Documento da tarefa: `docs/tarefas/2026-11-16-rede-lab-explicada.md`.
@@ -12,6 +13,25 @@ Pedido do Roberto: ele não entendeu a seção 3.2 do documento do modo SLAM (o 
 | 47 | `ROS_SUPER_CLIENT: "True"` no serviço `ferramentas` | `infra/compose/robo.yaml` | No Discovery Server, sem isso, o `checar-rede` reprovaria uma rede boa | Lido no script oficial. Medido: `docker compose config` mostra a variável só no `ferramentas` |
 | 48 | Seção 3.2 reescrita; seções 1, 3.3, 4 e 5 atualizadas para o Compose | `docs/tarefas/2026-11-16-modo-slam.md` | Explicação clara e documento coerente com o sistema atual | |
 | 49 | Ponteiros para a seção 3.2 | `docs/tarefas/2026-11-16-compose-e-alvos.md`, `specs/patrol-inf/kit-de-campo.md` (etapa 1) | | |
+=======
+## 2026-11-16 (noite): PC do laboratório e robô real (rede, Wi-Fi e namespace)
+
+Pedido do Roberto: fazer o `lab.sh` funcionar no PC do laboratório, no Gazebo e com o robô real, e adaptar o PC ao robô (opção 2: o PC muda, o robô não). Explicação completa: `docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md`. **O robô não recebeu nenhum comando de movimento.**
+
+| # | O que mudou | Arquivos | Objetivo | Como foi verificado |
+|---|---|---|---|---|
+| 46 | Discovery Server do robô (`;192.168.7.7:11811;`, id 1) e `ROS_SUPER_CLIENT=True` | `infra/lab/rede_lab.env` | O robô usa Discovery Server, e o PC estava em Simple Discovery | Medido no robô: `fast-discovery-server -i 1 -p 11811` e `/etc/turtlebot4/setup.bash` |
+| 47 | Namespace `/robot1` (variável `ROBO_NS`) em `slam`, `localizacao`, `nav2`, `rviz`, `teleop` e `patrulha` | `infra/compose/robo.yaml` | O robô publica tudo em `/robot1` | Launches oficiais aceitam `namespace` (`--show-args`). `docker compose config` gera os comandos certos com e sem namespace |
+| 48 | `STAMPED=false` no modo `robo`: teleop com `stamped:=false` e Nav2 com uma cópia do perfil em `/tmp` com `enable_stamped_cmd_vel: false` | `infra/compose/robo.yaml` | O robô é Humble e o `/robot1/cmd_vel` dele é `Twist` | Medido: tipo no robô; teleop publica `Twist` em `/robot1/cmd_vel` num container sem rede. Nav2 com o robô: **não testado** |
+| 49 | Argumento `namespace` no launch da patrulha, e o `TurtleBot4Navigator` recebe o namespace | `patrulha_tb4/launch/patrulha.launch.py`, `patrulha_tb4/no_patrulha.py` | O navegador e o monitor acham `/robot1/navigate_to_pose`, `/robot1/dock` e `/robot1/battery_state` | Medido: o nó sobe como `robot1.patrulha_monitor`; `128 passed, 2 skipped`. Com o robô: **não rodado** |
+| 50 | `checar-rede` confere as rotas, mostra o erro do container e procura os tópicos no namespace | `infra/docker/lab.sh` | O erro "imagem faltando" aparecia como "rede reprovada", e faltava a causa das rotas | Medido: reprova nas rotas com o comando `nmcli` certo (saída 2) |
+| 51 | Apelido local `physical-ai:base` → `physical-ai:robo` (fora do git) | `docker tag` | O `robo.yaml` usa a `base`, que nunca tinha sido construída | Medido: o container `ferramentas` sobe. Para a base de verdade: `construir_imagem.sh base` |
+| 52 | Robô no Wi-Fi `PixelLab-2.4GHz` e `cfg80211-br.conf` no robô (autorizado pelo Roberto); apelidos `robo` e `robo-wifi` no `~/.ssh/config` do PC | Robô e `~/.ssh/config` (fora do git) | Entrar no robô sem cabo | Medido: `ssh robo-wifi`, 2 min estável, ping nos dois sentidos. Reconexão depois de reiniciar: **não testada** |
+| 54 | **Descoberta:** os nós Jazzy do PC derrubam o robô Humble (`Bad alloc` ao ler o `ParticipantEntitiesInfo`, e depois `oom-kill` do serviço `turtlebot4`). Demanda registrada: modo `robo` em Humble. Avisos no `robo.yaml`, no `como_rodar.md`, no kit de campo e nas pendências. Containers do PC parados e Raspberry Pi do robô desligado | `docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md` (seção 8), `infra/compose/robo.yaml`, `como_rodar.md`, `specs/patrol-inf/kit-de-campo.md`, `contexto/pendencias.md` | Não derrubar o robô de novo, e não perder o plano | Medido: log do serviço e do kernel do robô às 22:58 |
+| 53 | Documentos: acesso por cabo e Wi-Fi com as rotas, kit de campo com o robô do lab, caminhos corrigidos no `como_rodar.md` (`~/physical_ai` e `conferir workspace/...`), pendências e aviso no documento do Compose | `docs/acesso-ao-robo-por-cabo.md`, `specs/patrol-inf/kit-de-campo.md`, `como_rodar.md`, `contexto/pendencias.md`, `docs/tarefas/2026-11-16-compose-e-alvos.md`, documento da tarefa | Regra de entrega (`AGENTES.md`, seção 6) | |
+
+Resultado do Gazebo pelo Compose: mapa `workspace/mapas/teste_maze`, `UTILIZÁVEL` (17 m x 15 m). Rotas para `192.168.186.0/24` e `192.168.185.0/24` pelo robô, criadas pelo Roberto na conexão `PixelLab-2.4GHz`: **`REDE OK`**, com `/robot1/scan` a 8,4 Hz, `/robot1/odom` a 21,4 Hz e `/robot1/battery_state` a 0,2 Hz no PC (medido).
+>>>>>>> 5f5ac963d74460ac43adbe8763be832a9da309c2
 
 ## 2026-11-16 (tarde): Docker Compose e imagens em camadas
 
