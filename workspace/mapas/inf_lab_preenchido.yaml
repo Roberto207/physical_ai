@@ -1,0 +1,19 @@
+# Config da patrulha no laboratório do INF (robô real). Mapa: lab_teste (SLAM de 2026-11-19).
+# Pontos pegos no RViz (Publish Point) em 2026-11-19. Os yaw foram calculados (direção do
+# próximo ponto); pose_inicial e aproximacao_doca ainda são PROVISÓRIOS: conferir no RViz.
+patrulha:
+  ambiente: real
+  modelo: standard
+  mapa: lab_teste.yaml
+  pose_inicial: {x: 0.0, y: 0.0, yaw_graus: 0}        # PROVISÓRIO: doca = origem do SLAM?
+  aproximacao_doca: {x: -0.6, y: 0.0, yaw_graus: 0}   # PROVISÓRIO: copiado do gazebo_maze
+  pontos:
+    - {x: 4.074, y: 0.867, yaw_graus: -15}     # 1: pouco à frente do início
+    - {x: 6.864, y: 0.101, yaw_graus: -110}    # 2: esquerda em cima
+    - {x: 6.243, y: -1.616, yaw_graus: 180}    # 3: direita em cima
+    - {x: 3.550, y: -1.636, yaw_graus: 78}     # 4: meio direita
+  bateria: {modo: absoluto, alta: 0.95, baixa: 0.20, critica: 0.10,
+            delta_alta: 0.005, delta_baixa: 0.01, delta_critica: 0.02}
+  tempos: {bateria_perdida_s: 30, espera_bateria_s: 30, confirma_dock_s: 5, destino_s: 120, servidor_s: 30}
+  limites: {falhas_seguidas: 3, tentativas_dock: 3}
+  validacao: {margem_obstaculo_m: 0.25}
