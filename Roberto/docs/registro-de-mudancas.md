@@ -2,6 +2,17 @@
 
 Tudo o que foi alterado no projeto, o que foi feito e com que objetivo. A entrada mais nova fica em cima. Cada linha diz também como a mudança foi verificada: "medido" é o que eu rodei e vi; "não verificado" é o que ainda depende de um teste.
 
+## 2026-11-18 (noite): spec da migração para Humble, ADRs e prévia do enxugamento
+
+Pedido do Roberto: escolher entre enxugamento e migração para Humble, especificar a migração pela skill `/sdd`, registrar a decisão em ADR e anotar o enxugamento numa prévia. Documento da tarefa: `docs/tarefas/2026-11-18-spec-migracao-humble.md`. **Só documentos: nenhum código, imagem ou compose mudou.**
+
+| # | O que mudou | Arquivos | Objetivo | Como foi verificado |
+|---|---|---|---|---|
+| 59 | ADR-001 (todas as imagens em Humble, Jazzy na tag `jazzy-final`) e ADR-002 (Gazebo no PC do lab como principal, loopback vendorizado como L1). Status: Aceito no portão | `docs/decisoes/` (pasta nova) | Registrar as decisões e o caminho de volta | Medido: até 200 palavras cada (`wc -w`) |
+| 60 | Linhas dos ADRs no índice. As decisões antigas de Jazzy e do leve marcam "será substituída" | `contexto/projeto/decisoes.md` | Índice coerente | Leitura |
+| 61 | DEFINE (43 requisitos EARS) e DESIGN (camadas, imagens, `lab_tb4`, inventário, F0 a F4, V1 a V5, rastreio). Status: Aprovado no portão em 2026-11-18 | `specs/migracao-humble/` | Spec da migração antes de qualquer código | Fatos do Humble lidos no GitHub (ramos `humble`). Crítica EARS: subagente `sdd-ears-critico` |
+| 62 | Prévia do enxugamento | `specs/enxugamento/PREVIA.md` | Não perder os pontos achados na análise | |
+
 ## 2026-11-18: CI, Fase A (commit stage)
 
 Pedido do Roberto: um pipeline de CI baseado nos estudos de CI/CD, começando pela Fase A, informativo, limitado a `Roberto/` e de olho na migração para Humble. Documento da tarefa: `docs/tarefas/2026-11-18-ci-fase-a.md`.
