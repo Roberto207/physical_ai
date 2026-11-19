@@ -6,7 +6,7 @@
 
 ## Resposta direta
 
-Queremos que o TurtleBot 4 real do INF patrulhe o laboratório, volte à doca com bateria baixa, carregue e retome. Hoje, nada do nosso código está pronto para isso (medição em `../../progresso/patrol-loop.md`, seção "Pronto para o robô do INF?"). A ideia central desta spec é **fazer daqui tudo o que não depende do robô**, de forma que no INF só falte:
+Queremos que o TurtleBot 4 real do INF patrulhe o laboratório, volte à doca com bateria baixa, carregue e retome. Hoje, nada do nosso código está pronto para isso (medição em `docs/historico/resultados-jazzy.md`, seção "Pronto para o robô do INF?"). A ideia central desta spec é **fazer daqui tudo o que não depende do robô**, de forma que no INF só falte:
 
 1. fazer o mapa (SLAM);
 2. marcar os pontos num arquivo YAML;
@@ -57,7 +57,7 @@ Queremos que o TurtleBot 4 real do INF patrulhe o laboratório, volte à doca co
 
 | Já sustentado | Falta validar |
 |---|---|
-| Em 9/nov, com o Opera fechado, havia cerca de 4,5 a 5 GiB livres. O Gazebo com janela usou 2,6 GiB com teto de 3,5 GiB, sem OOM (`progresso/testes.md`) | O Gazebo **com Nav2 e localização** nunca foi medido. O valor provável passa de 3 GiB, mas é estimativa |
+| Em 9/nov, com o Opera fechado, havia cerca de 4,5 a 5 GiB livres. O Gazebo com janela usou 2,6 GiB com teto de 3,5 GiB, sem OOM (`docs/historico/resultados-jazzy.md`) | O Gazebo **com Nav2 e localização** nunca foi medido. O valor provável passa de 3 GiB, mas é estimativa |
 | O teto com `--memory` e `--memory-swap` iguais já protegeu o notebook (só o container morre) | Se 3,5 GiB bastam, e se o notebook fica usável. Com a regra de folga (teto mais 1 GiB) e 4,5 a 5 GiB livres, o teto possível é de 3,5 a 4 GiB, e não de 4,5 |
 | Mais RAM evita a morte do container, mas **não acelera** o Gazebo: a lentidão é de CPU e GPU | Quanto tirar a câmera OAK-D ajuda (hipótese) |
 
@@ -67,7 +67,7 @@ Proposta: um "modo enxuto" que só sobe o teste se a memória livre (`free`) for
 
 | Já sustentado | Falta validar |
 |---|---|
-| O tempo cresce com a distância. No leve, o trecho `(-5, 1)` a `(-5, -23)` (24 m) levou 222 s, cerca de 0,11 m/s efetivos (`progresso/evidencias/patrol_loop-leve-2026-11-09.log`) | Quanto tempo leva um ciclo inteiro com pontos a 1,5 a 3 m |
+| O tempo cresce com a distância. No leve, o trecho `(-5, 1)` a `(-5, -23)` (24 m) levou 222 s, cerca de 0,11 m/s efetivos (`docs/historico/resultados-jazzy.md`, seção 3) | Quanto tempo leva um ciclo inteiro com pontos a 1,5 a 3 m |
 | No Gazebo, a 0,18 do tempo real, 2 m levariam entre cerca de 45 s (a 0,26 m/s) e 100 s (a 0,11 m/s efetivos) de relógio | Estimativa: medir |
 | Os mapas `depot` e `maze` e os mundos `depot.sdf` e `maze.sdf` já estão na imagem | Escolher uma região pequena e livre e conferir os pontos contra o mapa |
 
@@ -75,7 +75,7 @@ Estimativa no leve: pontos a 2 m levam cerca de 20 s cada. Com a descarga aceler
 
 ### Ideias extras
 
-1. **Máquina de estados em Python puro**, com um navegador falso: testa em segundos casos difíceis de provocar no simulador (bateria cai no meio do trecho, dock falha duas vezes, destino inalcançável). Segue a decisão de 2026-11-05 (`contexto/projeto/decisoes.md`).
+1. **Máquina de estados em Python puro**, com um navegador falso: testa em segundos casos difíceis de provocar no simulador (bateria cai no meio do trecho, dock falha duas vezes, destino inalcançável). Segue a decisão de 2026-11-05 (`docs/decisoes/README.md`).
 2. **Injeção de falhas pela base falsa**: dock que falha N vezes e queda de bateria num instante escolhido. Assim o leve exercita os caminhos de erro.
 3. **Limites de bateria temporários no robô real** (H5): provocam a volta à doca em minutos.
 4. **Validar os pontos contra o mapa antes de andar**: pega um erro de digitação no YAML antes de o robô ir para uma parede.

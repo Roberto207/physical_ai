@@ -53,7 +53,7 @@ infra/docker/teste_l1.sh ciclo            # ciclo de recarga completo
 infra/docker/teste_l1.sh dock_falha       # o dock falha 1 vez e a patrulha tenta de novo
 ```
 
-Cada execução deixa uma pasta em `progresso/evidencias/l1/` com o log JSONL, os logs do Nav2, da base falsa e da patrulha, e o veredito (APROVADO ou REPROVADO). Os parâmetros de cada cenário estão em `workspace/meu_ws/src/lab_tb4/config/cenarios_l1.yaml`.
+Cada execução deixa uma pasta em `workspace/logs/l1/` com o log JSONL, os logs do Nav2, da base falsa e da patrulha, e o veredito (APROVADO ou REPROVADO). Os parâmetros de cada cenário estão em `workspace/meu_ws/src/lab_tb4/config/cenarios_l1.yaml`.
 
 O leve à mão, sem cenário: `infra/docker/lab.sh sim subir leve` (não junto com o `gazebo`).
 
@@ -82,7 +82,7 @@ CONFIG=/mapas/inf_lab_preenchido.yaml infra/docker/lab.sh robo patrulha   # vali
 - Conferir um mapa: `infra/docker/lab.sh conferir workspace/mapas/lab.yaml`.
 - O robô do lab é Humble, usa Discovery Server e o namespace `/robot1` (`ROBO_NS` muda; `ROBO_NS=` para nenhum).
 - O PC precisa de rotas pelo robô para `192.168.186.0/24` e `192.168.185.0/24`: o `checar-rede` mostra o comando.
-- Acesso ao robô por cabo e por Wi-Fi: `docs/acesso-ao-robo-por-cabo.md`. A rede do PC fica em `infra/lab/rede_lab.env`.
+- Acesso ao robô por cabo e por Wi-Fi: `docs/guias/acesso-ao-robo.md`. A rede do PC fica em `infra/lab/rede_lab.env`.
 
 ## Onde está a explicação
 
@@ -90,4 +90,4 @@ CONFIG=/mapas/inf_lab_preenchido.yaml infra/docker/lab.sh robo patrulha   # vali
 |---|---|
 | A migração para Humble (requisitos, design, fases) | `specs/migracao-humble/` e `docs/tarefas/2026-11-18-f*.md` |
 | A patrulha (requisitos e testes) | `specs/patrol-inf/` |
-| O que mudou e quando | `docs/registro-de-mudancas.md` |
+| O que mudou e quando | `docs/tarefas/README.md` (e `docs/historico/registro-de-mudancas.md` até 2026-11-16) |

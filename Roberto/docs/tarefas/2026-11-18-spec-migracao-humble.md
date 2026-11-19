@@ -1,5 +1,7 @@
 # Tarefa: spec da migração para Humble, ADRs e prévia do enxugamento
 
+*Nota (2026-11-19): os caminhos deste documento são da época. Depois do enxugamento (`specs/enxugamento/SPEC.md`), o mapa das pastas está no `README.md` da raiz.*
+
 **Data:** 2026-11-18
 **Pedido:** analisar as duas frentes (enxugamento e migração Jazzy → Humble), escolher qual especificar primeiro, registrar os pontos do enxugamento numa prévia, abrir a spec da migração pela skill `/sdd`, registrar a decisão em ADR e as mudanças num documento. Cenário novo: o PC do laboratório simula e o robô físico testa. Preferência por `launch.py` em vez de scripts, quando não piorar nada.
 **Situação:** só documentos. **Nenhum código, imagem, compose ou script mudou.** A spec e os ADRs foram **aprovados pelo Roberto no portão** em 2026-11-18. A implementação é outra tarefa, a começar pela F0.

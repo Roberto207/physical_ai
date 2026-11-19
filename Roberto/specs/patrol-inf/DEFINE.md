@@ -121,7 +121,7 @@ Os valores entre colchetes, como `[30 s]`, são **padrões propostos** e ficam n
 
 - **INF-02** (Optional): ONDE o perfil de configuração `inf_devagar` estiver ativo o Nav2 DEVE ter o `velocity_smoother.max_velocity` em x de até `[0,15 m/s]`. (No `turtlebot4_navigation/config/nav2.yaml`, linha 285, o valor atual é 0,26.)
 - **INF-03** (Event-driven): QUANDO o teste de aceite rodar no robô real ENTÃO o sistema DEVE completar, nesta ordem, `[2]` voltas e `[1]` ciclo de recarga. O teste é invalidado por qualquer comando manual ao robô ou reposicionamento à mão durante a execução. Uma parada pelo protocolo de segurança também invalida a execução.
-- **INF-04** (Ubiquitous): Cada execução no INF DEVE gerar um rosbag e o log JSONL, guardados em `progresso/evidencias/`.
+- **INF-04** (Ubiquitous): Cada execução no INF DEVE gerar um rosbag e o log JSONL, guardados em `workspace/logs/`.
 
 ## Protocolo no INF (procedimentos, fora dos requisitos EARS)
 

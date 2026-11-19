@@ -1,5 +1,7 @@
 # Tarefa: ligar o PC do laboratório ao robô real (rede, Wi-Fi e namespace)
 
+*Nota (2026-11-19): os caminhos deste documento são da época. Depois do enxugamento (`specs/enxugamento/SPEC.md`), o mapa das pastas está no `README.md` da raiz.*
+
 **Aviso (2026-11-16, 22:58): não use o `lab.sh robo` até a imagem Humble existir.** Os nós Jazzy do PC derrubam o robô Humble: ele morreu por falta de memória quando o `slam` e o `rviz` subiram. Explicação e plano: `docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md`, seção 8.
 
 **Data:** 2026-11-16 (noite)

@@ -1,5 +1,7 @@
 # Tarefa: F2 da migração para Humble (Gazebo e pacote `lab_tb4`)
 
+*Nota (2026-11-19): os caminhos deste documento são da época. Depois do enxugamento (`specs/enxugamento/SPEC.md`), o mapa das pastas está no `README.md` da raiz.*
+
 **Data:** 2026-11-18
 **Spec:** `specs/migracao-humble/`, fase F2. Requisitos: LCH-01, LCH-03, SIM-01, SIM-01b, SIM-02, SIM-02b.
 **Situação:** código pronto. **O teste de fumaça do Gazebo (SIM-01) só roda no PC do lab.**

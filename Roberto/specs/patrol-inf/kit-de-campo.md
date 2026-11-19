@@ -74,7 +74,7 @@ ros2 topic echo /robot1/dock_status --once
 ros2 topic hz /robot1/battery_state      # deixe rodar 1 minuto e anote
 ```
 
-Se o `ros2 topic hz` disser que o tópico não é publicado, tente com `--qos-profile sensor_data` (esses tópicos usam QoS de sensor; foi o que vimos no simulador, em `progresso/testes.md`).
+Se o `ros2 topic hz` disser que o tópico não é publicado, tente com `--qos-profile sensor_data` (esses tópicos usam QoS de sensor; foi o que vimos no simulador, em `docs/historico/resultados-jazzy.md`).
 
 **Feito quando:** os três tópicos respondem no PC. **Anote** a frequência do `/battery_state` e o maior intervalo entre mensagens: o campo `tempos.bateria_perdida_s` da configuração deve ser pelo menos 3 vezes esse intervalo (PAT-18).
 
@@ -128,7 +128,7 @@ Antes, no mesmo PC, treine o roteiro no Gazebo, com os mesmos serviços: `lab.sh
 
 Dirija devagar pelo laboratório até o mapa fechar no RViz. Com a área livre de obstáculos soltos e sem gente andando, o manual diz que o mapa sai melhor. Ao salvar, o script pergunta se o mapeamento começou na doca, grava a ficha `.info.txt` e roda o `conferir_mapa`.
 
-**Feito quando:** existem `workspace/mapas/lab.yaml` e `lab.pgm`, o `conferir_mapa` diz `UTILIZÁVEL`, e a imagem mostra as paredes do laboratório sem "fantasmas" (paredes duplicadas). A pasta `workspace/mapas/` vai para o git (a `progresso/` não vai).
+**Feito quando:** existem `workspace/mapas/lab.yaml` e `lab.pgm`, o `conferir_mapa` diz `UTILIZÁVEL`, e a imagem mostra as paredes do laboratório sem "fantasmas" (paredes duplicadas). A pasta `workspace/mapas/` vai para o git (a `workspace/logs/` não vai).
 
 Esse par de arquivos é o formato que o nosso `validar_pontos` lê. Qualquer mapa nosso, feito por SLAM ou por outro método, serve, desde que saia nesse formato (`.yaml` com `image`, `resolution` e `origin`, e a imagem em `.pgm`).
 
@@ -176,7 +176,7 @@ Deixe só 1 ponto na lista `pontos`, perto da doca, e rode de novo o `validar_po
 ros2 launch patrulha_tb4 patrulha.launch.py config:=<caminho>/inf_lab_preenchido.yaml
 ```
 
-Pelo Compose (2026-11-16): guarde a configuração preenchida **ao lado do mapa**, em `workspace/mapas/inf_lab_preenchido.yaml`, e deixe `mapa: lab.yaml`. O caminho é relativo ao arquivo, então funciona igual no container (`/mapas/`) e no notebook. Depois: `CONFIG=/mapas/inf_lab_preenchido.yaml infra/docker/lab.sh robo patrulha`. O serviço compila o pacote, roda o `validar_pontos`, pede `SIM` e só então sobe a patrulha.
+Pelo Compose (2026-11-16): guarde a configuração preenchida **ao lado do mapa**, em `inf_lab_preenchido.yaml` na pasta `workspace/mapas/`, e deixe `mapa: lab.yaml`. O caminho é relativo ao arquivo, então funciona igual no container (`/mapas/`) e no notebook. Depois: `CONFIG=/mapas/inf_lab_preenchido.yaml infra/docker/lab.sh robo patrulha`. O serviço compila o pacote, roda o `validar_pontos`, pede `SIM` e só então sobe a patrulha.
 
 O nó faz o undock, vai ao ponto e repete. Pare com `Ctrl+C` depois de 2 ou 3 idas. O log fica em `~/.ros/patrulha/`, ou em `workspace/logs/` se a patrulha rodou pelo Compose.
 
@@ -217,7 +217,7 @@ Página: [Recording and playing back data](https://docs.ros.org/en/humble/Tutori
 
 A execução é **invalidada** por qualquer comando manual, reposicionamento à mão ou parada de segurança.
 
-**Feito quando:** o log JSONL e o rosbag estão em `progresso/evidencias/`, com o registro de que o protocolo foi cumprido (quem estava ao lado, a velocidade usada e o resultado do `validar_pontos`).
+**Feito quando:** o log JSONL e o rosbag estão em `workspace/logs/`, com o registro de que o protocolo foi cumprido (quem estava ao lado, a velocidade usada e o resultado do `validar_pontos`).
 
 ## Folha de anotações do dia
 

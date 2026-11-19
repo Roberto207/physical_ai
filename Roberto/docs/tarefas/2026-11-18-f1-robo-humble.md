@@ -1,5 +1,7 @@
 # Tarefa: F1 da migração para Humble (o modo robo)
 
+*Nota (2026-11-19): os caminhos deste documento são da época. Depois do enxugamento (`specs/enxugamento/SPEC.md`), o mapa das pastas está no `README.md` da raiz.*
+
 **Data:** 2026-11-18
 **Spec:** `specs/migracao-humble/`, fase F1. Requisitos: IMG-01 a IMG-06, PRE-02, SEG-01 a SEG-06, CFG-01 a CFG-05.
 **Situação:** código pronto e conferido no notebook. **A V1 (build), a SEG-01 com imagem real e a V5 (robô) dependem do PC do laboratório.** O robô não recebeu nada.

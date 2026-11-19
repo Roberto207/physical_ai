@@ -60,6 +60,10 @@ jobs:
         run: ruff check --output-format=github .
       - name: actionlint
         run: actionlint -color
+      # Documento vivo que cita arquivo inexistente (spec enxugamento, P3). Python puro.
+      - name: Caminhos citados nos documentos
+        working-directory: Roberto
+        run: python infra/ferramentas/checar_caminhos.py
 
   # ------------------------------------------------------------------ L0
   # Os testes L0 dentro da imagem oficial do ROS, com o pytest e o PyYAML do apt. Assim o

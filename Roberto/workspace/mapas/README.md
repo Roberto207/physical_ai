@@ -1,6 +1,6 @@
 # Mapas feitos por nós (SLAM)
 
-Esta pasta fica no git de propósito: é por ela que o mapa feito no PC do laboratório chega ao notebook (a pasta `progresso/` está no `.gitignore`).
+Esta pasta fica no git de propósito: é por ela que o mapa feito no PC do laboratório chega ao notebook (a pasta `workspace/logs/` está no `.gitignore`).
 
 Cada mapa tem três arquivos, gravados por `infra/docker/lab.sh <modo> salvar <nome>`:
 

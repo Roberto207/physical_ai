@@ -1,5 +1,7 @@
 # Tarefa: Docker Compose e imagens em camadas
 
+*Nota (2026-11-19): os caminhos deste documento são da época. Depois do enxugamento (`specs/enxugamento/SPEC.md`), o mapa das pastas está no `README.md` da raiz.*
+
 **Aviso (2026-11-16, noite):** no PC do laboratório, o modo `sim` rodou (mapa `teste_maze` salvo e `UTILIZÁVEL`). O modo `robo` precisou de ajustes, descritos em `docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md`: o robô é Humble e usa o namespace `/robot1`, então os serviços do `robo.yaml` passaram a receber `namespace:=/robot1` e `STAMPED=false`. O `checar-rede` também passou a conferir as rotas e a mostrar o erro quando o container não sobe. A imagem `physical-ai:base` não tinha sido construída. Este documento fica como registro do desenho do Compose, que não mudou.
 
 **Data:** 2026-11-16 (tarde)

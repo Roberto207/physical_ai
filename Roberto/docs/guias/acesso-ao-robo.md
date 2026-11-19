@@ -87,7 +87,7 @@ O robô conectava nos 5 GHz logo depois de ligar e caía cerca de 20 s depois (`
 - **Isolamento de clientes:** alguns Wi-Fi institucionais impedem aparelhos de se enxergarem. Neste laboratório isso **não** aconteceu: o PC e o robô se alcançam.
 - **ROS:** o `ssh` funcionando não basta para o ROS. Veja a seção abaixo.
 - **Senha do `ssh`:** o robô ainda usa a senha padrão do `ubuntu`. Vale trocar com `passwd` no robô.
-- **Autorização:** a mudança de Wi-Fi no robô (perfil `PixelLab-2.4GHz` e o arquivo `cfg80211-br.conf`) foi feita a pedido do Roberto, em 2026-11-16, como pede o `contexto/AGENTES.md` (seção 1).
+- **Autorização:** a mudança de Wi-Fi no robô (perfil `PixelLab-2.4GHz` e o arquivo `cfg80211-br.conf`) foi feita a pedido do Roberto, em 2026-11-16, como pede o `docs/contexto/AGENTES.md` (seção 1).
 
 ## ROS pelo Wi-Fi: rotas no PC
 

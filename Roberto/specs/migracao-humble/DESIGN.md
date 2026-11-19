@@ -231,7 +231,7 @@ O `nav2_inf_devagar.yaml` é copiado de `/opt/ros/humble/share/turtlebot4_naviga
 | `infra/docker/treino_leve.sh` | Sai: rodava o `patrol_loop` oficial no leve; o L1 nosso cobre | F4 |
 | `.github/workflows/ci.yml` | Matriz só `humble` (CI-01) | F4 |
 | `infra/lab/rede_lab.env` | Mantém: confere o RMW e o Discovery no Humble | F1 (V5) |
-| `como_rodar.md`, `kit-de-campo.md`, `pendencias.md`, adendo da `patrol-inf` | DOC-01 a DOC-03 | F4 |
+| `docs/guias/como-rodar.md`, `kit-de-campo.md`, `pendencias.md`, adendo da `patrol-inf` | DOC-01 a DOC-03 | F4 |
 
 ## 10. Fases
 

@@ -24,14 +24,14 @@ Local: `workspace/meu_ws/src/patrulha_tb4/`, do tipo `ament_python`. **Criar o p
 
 | Arquivo | Papel | Depende do ROS? | Requisitos |
 |---|---|---|---|
-| `patrulha_tb4/decisao.py` | Máquina de estados pura: recebe bateria, idade da última bateria, `na_base`, o resultado do último destino, a ação ativa e os contadores, e devolve a próxima ação e o evento. Evolução de `workspace/exemplos/decisao_patrulha.py` (reaproveitar `decidir()` e os testes de `test_decisao_patrulha.py`) | Não | PAT-03 a PAT-22 |
+| `patrulha_tb4/decisao.py` | Máquina de estados pura: recebe bateria, idade da última bateria, `na_base`, o resultado do último destino, a ação ativa e os contadores, e devolve a próxima ação e o evento. Evolução do exemplo `decisao_patrulha.py` (tag `jazzy-final`; reaproveitar `decidir()` e os testes de `test_decisao_patrulha.py`) | Não | PAT-03 a PAT-22 |
 | `patrulha_tb4/config.py` | Carrega e confere o YAML (campos obrigatórios e limites em ordem: crítica < baixa < alta). No modo relativo, calcula os limites a partir de `b0` | Não | PAT-01, PAT-21, VAL-04 |
 | `patrulha_tb4/pontos.py` | Valida as poses contra o mapa: lê o `.yaml` e o `.pgm` e converte (x, y) em célula com `origin` e `resolution`. Rejeita pose fora do mapa, ocupada ou desconhecida. Também tem um comando de linha `validar_pontos` | Não | VAL-01 a VAL-03 |
 | `patrulha_tb4/registro.py` | Log JSONL e resumo final | Não | OBS-01 a OBS-03 |
 | `patrulha_tb4/no_patrulha.py` | O nó: um `BatteryMonitor` numa thread (o mesmo padrão do `patrol_loop.py`, linhas 37 a 59) e o `TurtleBot4Navigator`. Laço de 1 s: `goToPose`, depois `isTaskComplete` e `getResult`, consulta `decidir()` e executa (`cancelTask`, `dock`, `undock`) | Sim | PAT, AMB e OBS |
 | `config/leve_reduzido.yaml` | Pontos de 1,5 a 3 m de distância, num mapa pequeno (a escolher e validar: `depot` ou `maze`) | Não | TST-03 |
 | `config/gazebo_maze.yaml` | Os mesmos pontos curtos do `maze`, com `ambiente: gazebo`, `bateria.modo: relativo` e `bateria_perdida_s: 30` | Não | TST-08 |
-| `config/warehouse_original.yaml` | Os mesmos pontos do oficial, para comparar com o `patrol_loop` | Não | AMB-01 |
+| `config/warehouse_original.yaml` (removido em 2026-11-19, P2 de `specs/enxugamento/SPEC.md`) | Os mesmos pontos do oficial, para comparar com o `patrol_loop` | Não | AMB-01 |
 | `config/inf_lab.yaml` | Modelo **sem pontos**, para preencher no INF | Não | Protocolo, item 1 |
 | `launch/patrulha.launch.py` | Argumentos `config`, `ambiente` e `use_sim_time`. Não abre o RViz | Sim | AMB-01 a AMB-03 |
 | `test/` | pytest de `decisao`, `config`, `pontos` e `registro`, com `@pytest.mark.req("<ID>")` em cada teste. Também `test_lint_poses.py`, que procura `getPoseStamped` e poses com números literais fora de `test/`, e `checar_rastreio.py`, que falha se faltar um ID L0 | Não | TST-01, TST-02, TST-07 |
@@ -102,7 +102,7 @@ patrulha:
 
 ### Esquema do log (OBS-01)
 
-Uma linha JSON por evento, em `~/.ros/patrulha/<data-hora>.jsonl`. Ao terminar, o arquivo é copiado para `progresso/evidencias/`.
+Uma linha JSON por evento, em `~/.ros/patrulha/<data-hora>.jsonl`. Ao terminar, o arquivo é copiado para `workspace/logs/`.
 
 | Campo | Obrigatório | Exemplo |
 |---|---|---|
@@ -146,7 +146,7 @@ Lista fechada de eventos:
 
 Os códigos de saída estão no `DEFINE.md`.
 
-## 2. Mudanças na base falsa (`infra/tools/fake_tb4_base.py`)
+## 2. Mudanças na base falsa (a base falsa, hoje `workspace/meu_ws/src/lab_tb4/lab_tb4/base_falsa.py`)
 
 Também é um pedido separado. Tudo vale só para o leve. No Gazebo, a base falsa fica **desligada** por padrão, porque a Create 3 simulada já responde à bateria, à doca e às ações. Ela só volta, com uma das chaves abaixo, se a medição M-GZ mostrar que alguma dessas partes não funciona.
 
@@ -161,7 +161,7 @@ Também é um pedido separado. Tudo vale só para o leve. No Gazebo, a base fals
 
 ## 3. Escada de testes
 
-Só se sobe de degrau quando o anterior passa. RAM e tempo de L0 a L2 vêm de `progresso/testes.md`, e o resto é estimativa.
+Só se sobe de degrau quando o anterior passa. RAM e tempo de L0 a L2 vêm de `docs/historico/resultados-jazzy.md`, e o resto é estimativa.
 
 | Degrau | O que roda | RAM | Tempo de relógio | Prova | Onde |
 |---|---|---|---|---|---|
@@ -195,13 +195,13 @@ Não foi feita. Fica para quando o Roberto pedir. Ela **não depende do pacote**
 
 1. O Roberto fecha o navegador e os programas pesados.
 2. `free -m`. Pela regra do TST-06, o teto do container pode ser no máximo a memória livre menos 1 GiB. Em 9/nov, com o Opera fechado, havia cerca de 4,5 a 5 GiB livres. Portanto, o teto realista é de **3,5 GiB**, e não de 4,5 como chegou a ser pensado.
-3. Container com `--memory` e `--memory-swap` iguais a 3,5 GiB, GPU Intel e sem janela, como em `infra/docker/run_sim_headless.sh`.
+3. Container com `--memory` e `--memory-swap` iguais a 3,5 GiB, GPU Intel e sem janela, como no `run_sim_headless.sh` da época (removido na migração para Humble; hoje o `lab.sh sim` e o `lab_tb4` fazem isso).
 
 **Etapas** (cada uma num container novo, da mais leve para a mais pesada)
 
 | Etapa | O que sobe | O que se mede | Como se mede |
 |---|---|---|---|
-| **E1** | Gazebo `world:=maze`, sem Nav2 e sem localização | Fator de tempo real, pico de RAM, `/battery_state`, `/dock_status` no início, lidar | O fator de tempo real é o avanço do `/clock` dividido pelo relógio, em janelas de 60 s (o método de 5/nov usava 10 s). O pico de RAM vem do `docker stats` amostrado a cada 5 s. A bateria: esperar **pelo menos 3 min de relógio** e contar as mensagens (a 0,18 do tempo real, devem chegar cerca de 3). A doca: o primeiro `/dock_status` deve dizer `is_docked: true`, se o robô nasce na doca (a conferir). O lidar: mínimo, máximo e quantos raios valem 0,16 m, com o `progresso/evidencias/sensores.py` |
+| **E1** | Gazebo `world:=maze`, sem Nav2 e sem localização | Fator de tempo real, pico de RAM, `/battery_state`, `/dock_status` no início, lidar | O fator de tempo real é o avanço do `/clock` dividido pelo relógio, em janelas de 60 s (o método de 5/nov usava 10 s). O pico de RAM vem do `docker stats` amostrado a cada 5 s. A bateria: esperar **pelo menos 3 min de relógio** e contar as mensagens (a 0,18 do tempo real, devem chegar cerca de 3). A doca: o primeiro `/dock_status` deve dizer `is_docked: true`, se o robô nasce na doca (a conferir). O lidar: mínimo, máximo e quantos raios valem 0,16 m, com um script que assine os tópicos com QoS `best_effort` (o `sensores.py` da época não foi mantido) |
 | **E2** | O mesmo, com `localization:=true nav2:=true` e o mapa do `maze` (conferir o nome do argumento do mapa no launch antes) | Os mesmos números, mais um destino de 2 m | Pose inicial pelo `/initialpose`. Depois, um destino a 2 m enviado à mão (`ros2 action send_goal /navigate_to_pose ...`), cronometrando o relógio. Procurar no log do Nav2 erros de tempo (`transform timeout`, `extrapolation`, `patience exceeded`) |
 | **E3** (opcional) | E2 sem a câmera OAK-D | Quanto o fator de tempo real melhora | Exige uma cópia nossa do URDF sem o `oakd`. Por isso é um pedido separado |
 
@@ -216,16 +216,16 @@ Não foi feita. Fica para quando o Roberto pedir. Ela **não depende do pacote**
 | `/battery_state` não chega nem em 3 min | Ligar só a `simular_bateria` da base falsa e seguir, anotando a perda de realismo. Essas execuções testam o resto (doca e AMCL), mas **não contam como TST-08** |
 | O robô não nasce na doca (primeiro `/dock_status` com `is_docked: false`) | Procurar no launch os argumentos de pose de nascimento do robô e da doca. Se não houver como, o L3 trava, porque o PAT-17 encerraria com o código 6 |
 
-**Registro:** uma linha em `progresso/testes.md` e os arquivos (CSV do `docker stats`, logs e números do lidar) em `progresso/evidencias/`.
+**Registro:** uma linha no documento da tarefa (`docs/tarefas/`) e os arquivos (CSV do `docker stats`, logs e números do lidar) em `workspace/logs/`.
 
 **Tempo previsto:** cerca de 15 min para E1 e 30 min para E2, ou cerca de 1 h com o preparo.
 
-### "Modo enxuto" (script a criar depois: `infra/docker/teste_enxuto.sh`)
+### "Modo enxuto" (script a criar depois: `teste_enxuto.sh` em `infra/docker/`)
 
 1. Pede para fechar o navegador e os programas pesados, e mostra o `free -m`.
 2. Recusa subir se a memória livre for menor que o teto mais 1 GiB (TST-06).
-3. Sobe o container com `--memory` e `--memory-swap` iguais ao teto, sem RViz e sem janela do Gazebo (Xvfb ou modo sem janela, como em `infra/docker/run_sim_headless.sh`).
-4. Grava o pico do `docker stats` e o log JSONL em `progresso/evidencias/`.
+3. Sobe o container com `--memory` e `--memory-swap` iguais ao teto, sem RViz e sem janela do Gazebo (Xvfb ou modo sem janela, como no `run_sim_headless.sh` da época (removido na migração para Humble; hoje o `lab.sh sim` e o `lab_tb4` fazem isso)).
+4. Grava o pico do `docker stats` e o log JSONL em `workspace/logs/`.
 5. Para tudo ao terminar, ou com Ctrl+C.
 
 ## 4. Kit de campo do INF
@@ -253,7 +253,7 @@ Ficam com o robô o tempo todo (protocolo, item 2): uma pessoa ao lado, a área 
 |---|---|---|
 | **Identidade** (quem e qual versão rodou) | OBS-03: a versão do pacote, o hash do código instalado (prova do AMB-01 sem depender de git), o hash da configuração, o ambiente e o modelo do robô no início do log | O projeto **não é repositório git**, então não há o hash do commit. Recomendação: `git init` (decisão do Roberto) |
 | **Observabilidade** (está funcionando?) | Log JSONL, resumo final e rosbag no INF. O pico de RAM nos testes locais | Sem painel ao vivo. Basta para a primeira entrega |
-| **Rastreabilidade** (por que fez isso?) | Tabela abaixo, que liga cada requisito ao teste. Evidências de cada execução em `progresso/evidencias/` | INF-02 a INF-04 e o protocolo só se provam no INF |
+| **Rastreabilidade** (por que fez isso?) | Tabela abaixo, que liga cada requisito ao teste. Evidências de cada execução em `workspace/logs/` | INF-02 a INF-04 e o protocolo só se provam no INF |
 
 ### Requisito → teste
 
