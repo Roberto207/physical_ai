@@ -24,11 +24,11 @@ Local: `workspace/meu_ws/src/patrulha_tb4/`, do tipo `ament_python`. **Criar o p
 
 | Arquivo | Papel | Depende do ROS? | Requisitos |
 |---|---|---|---|
-| `patrulha_tb4/decisao.py` | Máquina de estados pura: recebe bateria, idade da última bateria, `na_base`, o resultado do último destino, a ação ativa e os contadores, e devolve a próxima ação e o evento. Evolução do exemplo `decisao_patrulha.py` (tag `jazzy-final`; reaproveitar `decidir()` e os testes de `test_decisao_patrulha.py`) | Não | PAT-03 a PAT-22 |
+| `patrulha_tb4/decisao.py` | Máquina de estados pura: recebe bateria, idade da última bateria, `na_base`, o resultado do último destino, a ação ativa e os contadores, e devolve a próxima ação e o evento. Evolução do exemplo `decisao_patrulha.py` (tag `jazzy-final`; reaproveitar `decidir()` e os testes de `test_decisao_patrulha.py`) | Não | PAT-03 a PAT-23d |
 | `patrulha_tb4/config.py` | Carrega e confere o YAML (campos obrigatórios e limites em ordem: crítica < baixa < alta). No modo relativo, calcula os limites a partir de `b0` | Não | PAT-01, PAT-21, VAL-04 |
 | `patrulha_tb4/pontos.py` | Valida as poses contra o mapa: lê o `.yaml` e o `.pgm` e converte (x, y) em célula com `origin` e `resolution`. Rejeita pose fora do mapa, ocupada ou desconhecida. Também tem um comando de linha `validar_pontos` | Não | VAL-01 a VAL-03 |
 | `patrulha_tb4/registro.py` | Log JSONL e resumo final | Não | OBS-01 a OBS-03 |
-| `patrulha_tb4/no_patrulha.py` | O nó: um `BatteryMonitor` numa thread (o mesmo padrão do `patrol_loop.py`, linhas 37 a 59) e o `TurtleBot4Navigator`. Laço de 1 s: `goToPose`, depois `isTaskComplete` e `getResult`, consulta `decidir()` e executa (`cancelTask`, `dock`, `undock`) | Sim | PAT, AMB e OBS |
+| `patrulha_tb4/no_patrulha.py` | O nó: um `BatteryMonitor` numa thread (o mesmo padrão do `patrol_loop.py`, linhas 37 a 59) e o `TurtleBot4Navigator`. Laço de 1 s: `goToPose`, depois `isTaskComplete` e `getResult`, consulta `decidir()` e executa (`cancelTask`, `dock`, `undock`). O `Monitor` também oferece o serviço `patrulha/voltar_doca` (`std_srvs/srv/Trigger`), que só liga um `Event`; o laço lê esse `Event` a cada ciclo e o passa à decisão como `pedido_doca` (nível, nunca limpo: a decisão é idempotente, PAT-23 a PAT-23e) | Sim | PAT, AMB e OBS |
 | `config/leve_reduzido.yaml` | Pontos de 1,5 a 3 m de distância, num mapa pequeno (a escolher e validar: `depot` ou `maze`) | Não | TST-03 |
 | `config/gazebo_maze.yaml` | Os mesmos pontos curtos do `maze`, com `ambiente: gazebo`, `bateria.modo: relativo` e `bateria_perdida_s: 30` | Não | TST-08 |
 | `config/warehouse_original.yaml` (removido em 2026-11-19, P2 de `specs/enxugamento/SPEC.md`) | Os mesmos pontos do oficial, para comparar com o `patrol_loop` | Não | AMB-01 |
@@ -141,6 +141,7 @@ Lista fechada de eventos:
 - `dock_falhou`
 - `carga_completa`
 - `falhas_seguidas`
+- `doca_pedida`
 - `encerrado`
 - `resumo`
 
@@ -267,6 +268,8 @@ Ficam com o robô o tempo todo (protocolo, item 2): uma pessoa ao lado, a área 
 | PAT-09 a PAT-11 | Sim | Sim (TST-04) | Sim (doca da Create 3 simulada) | Sim |
 | PAT-12, PAT-13 | Sim | Sim (TST-03) | Sim (TST-08) | Sim |
 | PAT-15, PAT-16 | Sim | Sim | | Sim |
+| PAT-23, PAT-23b, PAT-23c, PAT-23d | Sim | | Sim (checagem manual no Gazebo; sem cenário L1 nesta versão, o SIM-04 continua com os 11 cenários) | |
+| PAT-23e | | | Sim (checagem manual: `ros2 service call` no Gazebo) | |
 | PAT-17 | Sim | Sim (base falsa começando fora da doca) | | |
 | PAT-18, PAT-18b | Sim | Sim (base falsa para de publicar a bateria, fora e dentro da doca) | | |
 | PAT-22 | Sim | Sim (subir o nó com `use_sim_time` e sem simulador) | | |

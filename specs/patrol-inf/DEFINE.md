@@ -1,6 +1,6 @@
 # DEFINE: requisitos da patrulha no TurtleBot 4 do INF
 
-**Status:** Aprovado em 2026-11-10 (portão da skill `/sdd`). Revisado em 2026-11-10, a pedido do Roberto: entram o PAT-21 (limites relativos), o tempo do PAT-18 por ambiente, o relógio dos tempos-limite e o TST-08 (Gazebo). Na mesma data, corrigido pelo crítico EARS (segunda rodada): entram o PAT-18b, o PAT-21b, o PAT-22, o código 9, a sequência de início e o campo `t_parede`, e foram reescritos o PAT-18, o PAT-21, o VAL-04, o AMB-01, o OBS-03, o TST-03 e o TST-08.
+**Status:** Aprovado em 2026-11-10 (portão da skill `/sdd`). Revisado em 2026-11-10, a pedido do Roberto: entram o PAT-21 (limites relativos), o tempo do PAT-18 por ambiente, o relógio dos tempos-limite e o TST-08 (Gazebo). Na mesma data, corrigido pelo crítico EARS (segunda rodada): entram o PAT-18b, o PAT-21b, o PAT-22, o código 9, a sequência de início e o campo `t_parede`, e foram reescritos o PAT-18, o PAT-21, o VAL-04, o AMB-01, o OBS-03, o TST-03 e o TST-08. Revisado em 2026-11-19, a pedido do Roberto: entram o PAT-23 a PAT-23e (pedido de retorno à doca, sob demanda), o evento `doca_pedida` e o termo "Pedido de retorno à doca".
 **Data:** 2026-11-10
 **Base:** `BRAINSTORM.md` desta pasta
 
@@ -21,7 +21,8 @@ Os requisitos abaixo dizem **o que** a nossa patrulha deve fazer, em frases test
 | Na doca / fora da doca | Segundo o `is_docked` do último `/dock_status` recebido |
 | Sequência de início | 1. `inicio` (OBS-03). 2. VAL-01 a VAL-04 sobre a configuração. 3. PAT-20 e PAT-03 (servidores e primeira bateria), em qualquer ordem. 4. No modo relativo: PAT-21, PAT-21b e a segunda checagem do VAL-04. 5. PAT-17 (primeiro `/dock_status`). 6. Undock |
 | Ação ativa | Qualquer destino de navegação, dock ou undock em andamento |
-| Destino falho | Destino de patrulha cujo resultado do Nav2 é `ABORTED` ou `FAILED`, ou que estourou o tempo do PAT-19. **Os cancelamentos feitos pelo próprio sistema (PAT-06, PAT-14, PAT-15 e PAT-18) não contam** |
+| Pedido de retorno à doca | Uma chamada ao serviço `patrulha/voltar_doca` (`std_srvs/srv/Trigger`), no namespace do nó: `/robot1/patrulha/voltar_doca` no robô real e `/patrulha/voltar_doca` sem namespace. O serviço só registra o pedido, e o pedido vale como um nível: ele continua verdadeiro depois de registrado. Quem decide o que fazer é a máquina de estados (PAT-23 a PAT-23d), e o pedido fica pendente enquanto a decisão não puder agir (por exemplo, sem `/clock` no `leve` ou no `gazebo`) |
+| Destino falho | Destino de patrulha cujo resultado do Nav2 é `ABORTED` ou `FAILED`, ou que estourou o tempo do PAT-19. **Os cancelamentos feitos pelo próprio sistema (PAT-06, PAT-14, PAT-15, PAT-18 e PAT-23) não contam** |
 | Volta | Uma passagem por todos os pontos da lista, em ordem, cada um com resultado de sucesso ou de destino falho |
 | Ciclo de recarga | Sair da doca, visitar pelo menos 2 pontos, ir à doca por bateria baixa, dock confirmado (PAT-09), carregar até `alta`, undock e chegar com sucesso a mais 1 ponto |
 | Evento | Linha do log JSONL. A lista fechada de eventos e os campos estão no `DESIGN.md`, seção "Esquema do log" |
@@ -32,7 +33,7 @@ Os valores entre colchetes, como `[30 s]`, são **padrões propostos** e ficam n
 
 | Código | Motivo | Evento |
 |---|---|---|
-| 0 | Encerramento pedido (SIGINT ou SIGTERM) | `encerrado` |
+| 0 | Encerramento pedido (SIGINT ou SIGTERM) ou retorno à doca por comando (PAT-23) | `encerrado` |
 | 2 | Configuração ou pose inválida (VAL) | `config_invalida` |
 | 3 | Sem leitura de bateria: no início (PAT-04) ou na doca (PAT-18b) | `sem_bateria` ou `bateria_perdida` |
 | 4 | Dock falhou depois de todas as tentativas (PAT-11) | `dock_falhou` |
@@ -77,6 +78,11 @@ Os valores entre colchetes, como `[30 s]`, são **padrões propostos** e ficam n
   - No robô real, os deltas talvez precisem crescer por causa do ruído da leitura, que é desconhecido: a confirmar no INF.
 - **PAT-21b** (Optional): ONDE a configuração tiver `bateria.modo: relativo` o sistema DEVE gravar o evento `limites_bateria`, com os campos `b0` e `limites` (`alta`, `baixa` e `critica`), logo depois do cálculo do PAT-21 e antes da segunda checagem do VAL-04.
 - **PAT-22** (Unwanted): SE `use_sim_time` for verdadeiro e nenhuma mensagem de `/clock` chegar por `[10 s]` de tempo de relógio, desde o início ou desde a última mensagem, ENTÃO o sistema DEVE cancelar a ação ativa, gravar `sem_relogio` e o resumo (OBS-02), e encerrar com o código 9. (Sem `/clock`, nenhum tempo-limite simulado venceria.)
+- **PAT-23** (Event-driven): QUANDO o sistema receber um pedido de retorno à doca com a patrulha em andamento (fase `patrulhando`) ENTÃO o sistema DEVE gravar `doca_pedida` e cancelar a ação ativa, e enviar o destino de aproximação da doca em até `[2 s]` de relógio do ROS, contados do recebimento do pedido. Depois, DEVE fazer o dock (PAT-09 a PAT-11) e, com o dock confirmado, gravar `encerrado` com o `detalhe` `voltar_doca` e encerrar com o código 0, sem carregar a bateria nem retomar a patrulha. Ordem de precedência no mesmo ciclo de decisão: o resultado de um destino que terminou nesse ciclo é tratado primeiro (PAT-07, e o destino falho conta); depois vem o pedido, que prevalece sobre o PAT-06, o PAT-08, o PAT-14 e o PAT-18; o PAT-15 prevalece sobre o pedido. O cancelamento feito pelo pedido não conta como destino falho. Se o dock falhar em todas as tentativas, vale o PAT-11 (código 4).
+- **PAT-23b** (Event-driven): QUANDO o sistema receber um pedido de retorno à doca com o último `/dock_status` informando `is_docked: true` e o sistema nas fases `iniciando` ou `carregando` ENTÃO o sistema DEVE gravar `doca_pedida` e `encerrado` (`detalhe` `voltar_doca`), sem enviar nenhuma ação, e encerrar com o código 0. Nessa situação o PAT-23b prevalece sobre o PAT-04, o PAT-12 e o PAT-18b, porque o robô já está onde o pedido o leva. Enquanto o `is_docked` não for `true` (sem `/dock_status` ou fora da doca), o pedido DEVE ficar pendente e valer assim que a condição se cumprir, e valem o PAT-17 e o ramo atual da fase `carregando`, que volta a encaixar.
+- **PAT-23c** (State-driven): ENQUANTO o undock estiver em andamento (fase `saindo_doca`) o sistema DEVE manter o pedido de retorno à doca pendente e NÃO DEVE gravar `doca_pedida`. Se o undock terminar com `SUCCEEDED`, o sistema DEVE aplicar o PAT-23 no mesmo ciclo de decisão, sem enviar nenhum destino de patrulha, e o prazo de `[2 s]` do PAT-23 passa a contar desse resultado. Se o undock terminar com outro resultado, vale o PAT-16 (código 5). Se, durante o undock, valerem o PAT-14 ou o PAT-18, a ida à doca por bateria começa como hoje, e vale o PAT-23d.
+- **PAT-23d** (Event-driven): QUANDO o sistema receber um pedido de retorno à doca com a ida à doca ou o encaixe em andamento (fases `indo_doca` ou `encaixando`) cujo motivo seja bateria ENTÃO o sistema DEVE manter a ação ativa, gravar `doca_pedida` e, com o dock confirmado, gravar `encerrado` com o `detalhe` `voltar_doca` e encerrar com o código 0, sem carregar a bateria. Se o motivo da ida for `falhas_seguidas` (PAT-08), o sistema NÃO DEVE gravar `doca_pedida` e DEVE manter o encerramento do PAT-08, com o código 7. Em qualquer dos dois casos, se o dock falhar em todas as tentativas, vale o PAT-11 (código 4), e uma nova tentativa de aproximação mantém o mesmo motivo.
+- **PAT-23e** (Ubiquitous): O sistema DEVE oferecer o serviço `patrulha/voltar_doca`, do tipo `std_srvs/srv/Trigger`, no namespace do nó, e DEVE responder a toda chamada com `success: true` na hora, sem esperar o efeito do pedido, inclusive em chamadas repetidas e com o sistema já encerrando. Um pedido repetido NÃO DEVE gravar outro `doca_pedida`, e um pedido recebido depois do início do encerramento NÃO DEVE ter efeito.
 
 ## VAL: validação da configuração
 
@@ -144,3 +150,4 @@ Estes itens são de pessoas, e não do sistema. O crítico apontou que não cabe
 | Gravar o log, o início e o resumo (OBS-01 a OBS-03) | Alterar pacotes oficiais (regra de projeto, `DESIGN.md`) |
 | Com `bateria.modo: relativo`, calcular os limites a partir da primeira leitura e gravar `limites_bateria` (PAT-21, PAT-21b) | Rodar o aceite em ambientes com hashes de código diferentes (AMB-01, OBS-03) |
 | Encerrar sem bateria na doca, ou sem `/clock` (PAT-18b, PAT-22) | Ficar parado sem evento e sem código de saída |
+| Voltar à doca e encerrar quando o operador pedir (PAT-23 a PAT-23e) | Contar o cancelamento do PAT-23 como destino falho |

@@ -37,6 +37,7 @@ CANCELADO = 'cancelado'
 # Motivos da ida à doca.
 POR_BATERIA = 'bateria'
 POR_FALHAS = 'falhas_seguidas'
+POR_COMANDO = 'comando'      # pedido de retorno à doca pelo serviço voltar_doca (PAT-23)
 
 # PAT-05: o nó chama decidir() pelo menos 1 vez por segundo.
 PERIODO_S = 1.0
@@ -73,6 +74,9 @@ class Entrada:
     sinal: bool = False                    # chegou SIGINT ou SIGTERM
     usa_sim_time: bool = False
     parede_relogio: Optional[float] = None  # tempo de relógio da última mensagem de /clock
+    # PAT-23: o serviço voltar_doca foi chamado. É um nível: continua verdadeiro depois de
+    # chamado, e a decisão é idempotente (a fase e o motivo mudam, e o evento sai uma vez).
+    pedido_doca: bool = False
 
 
 @dataclass(frozen=True)
@@ -166,6 +170,11 @@ def decidir(estado, entrada, cfg):
         p.mudar(perda_gravada=False)  # chegou mensagem nova: o evento pode voltar (PAT-18)
 
     fase = p.estado.fase
+    # PAT-23b: pedido de retorno com o robô já na doca. Prevalece sobre o PAT-04, o PAT-12 e o
+    # PAT-18b: o robô já está onde o pedido o leva, e nenhuma ação é enviada.
+    if entrada.pedido_doca and fase in (INICIANDO, CARREGANDO) and entrada.na_base is True:
+        p.evento('doca_pedida', detalhe=fase)
+        return p.encerrar(CODIGO_ENCERRADO, 'encerrado', detalhe='voltar_doca')
     if fase == INICIANDO:
         return _iniciando(p, entrada, cfg, perdida)
     if fase == SAINDO_DOCA:
@@ -216,6 +225,14 @@ def _ir_para_doca(p, entrada, motivo):
     p.enviar(entrada.agora, APROXIMACAO)
     p.mudar(fase=INDO_DOCA, motivo_doca=motivo, t_resultado_dock=None)
     return p.saida()
+
+
+def _pedido_na_ida(p, entrada):
+    """PAT-23d: pedido durante a ida à doca ou o encaixe por bateria. Mantém a ação e troca o
+    motivo, para o dock confirmado encerrar em vez de carregar. Não se aplica ao PAT-08."""
+    if entrada.pedido_doca and p.estado.motivo_doca not in (POR_FALHAS, POR_COMANDO):
+        p.evento('doca_pedida', detalhe=p.estado.fase)
+        p.mudar(motivo_doca=POR_COMANDO)
 
 
 def _iniciando(p, entrada, cfg, perdida):
@@ -331,6 +348,11 @@ def _patrulhando(p, entrada, cfg, perdida):
             _avancar(p, cfg)
             em_andamento = False
 
+    # PAT-23: pedido de retorno. Vem depois do resultado do destino (que conta como falho, se
+    # for o caso) e antes da bateria e das falhas seguidas: o operador quer encerrar na doca.
+    if entrada.pedido_doca:
+        p.evento('doca_pedida', detalhe=PATRULHANDO)
+        return _ir_para_doca(p, entrada, POR_COMANDO)
     # PAT-18: a bateria sumiu, fora da doca.
     if perdida:
         _gravar_perda(p)
@@ -363,6 +385,7 @@ def _avancar(p, cfg):
 
 
 def _indo_doca(p, entrada, cfg, perdida):
+    _pedido_na_ida(p, entrada)
     # PAT-18: já está indo à doca, então segue. Só registra a perda.
     if perdida:
         _gravar_perda(p)
@@ -379,6 +402,7 @@ def _indo_doca(p, entrada, cfg, perdida):
 
 
 def _encaixando(p, entrada, cfg, perdida):
+    _pedido_na_ida(p, entrada)
     if perdida:
         _gravar_perda(p)
     if p.estado.t_resultado_dock is None:
@@ -399,6 +423,9 @@ def _encaixando(p, entrada, cfg, perdida):
         if motivo == POR_FALHAS:
             # PAT-08: encerra depois do dock confirmado.
             return p.encerrar(CODIGO_FALHAS, 'falhas_seguidas')
+        if motivo == POR_COMANDO:
+            # PAT-23 e PAT-23d: o pedido encerra encaixado, sem carregar nem retomar.
+            return p.encerrar(CODIGO_ENCERRADO, 'encerrado', detalhe='voltar_doca')
         return p.saida()
     if entrada.agora - p.estado.t_resultado_dock > cfg.tempos.confirma_dock_s:
         return _dock_nao_confirmado(p, entrada, cfg, 'sem_is_docked', None)

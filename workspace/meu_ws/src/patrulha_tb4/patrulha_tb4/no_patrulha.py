@@ -30,6 +30,7 @@ from rclpy.qos import QoSProfile, ReliabilityPolicy, qos_profile_sensor_data
 from rclpy.signals import SignalHandlerOptions
 from rosgraph_msgs.msg import Clock
 from sensor_msgs.msg import BatteryState
+from std_srvs.srv import Trigger
 from turtlebot4_navigation.turtlebot4_navigator import TurtleBot4Navigator
 
 from patrulha_tb4 import __version__, decisao
@@ -43,9 +44,10 @@ ESPERA_CANCELAMENTO_S = 1.0  # tempo de relógio; cabe no prazo do PAT-15
 class Monitor(Node):
     """Guarda as últimas leituras. Roda numa thread própria, para nunca ficar para trás."""
 
-    def __init__(self, acordar):
+    def __init__(self, acordar, ao_pedir_doca):
         super().__init__('patrulha_monitor')
         self._acordar = acordar
+        self._ao_pedir_doca = ao_pedir_doca
         self._trava = threading.Lock()
         self._bateria = None
         self._t_bateria = None
@@ -59,6 +61,9 @@ class Monitor(Node):
         self.create_subscription(
             Clock, '/clock', self._ao_receber_relogio,
             QoSProfile(depth=1, reliability=ReliabilityPolicy.BEST_EFFORT))
+        # PAT-23e: o nome é relativo, então vale no namespace do nó (/robot1/patrulha/voltar_doca).
+        # O serviço roda na thread do monitor: responde mesmo com o laço de decisão ocupado.
+        self.create_service(Trigger, 'patrulha/voltar_doca', self._ao_pedir_retorno)
 
     def agora(self):
         """Relógio do ROS em segundos. None enquanto o tempo simulado não chegou."""
@@ -87,6 +92,14 @@ class Monitor(Node):
         with self._trava:
             self._parede_relogio = time.time()
 
+    def _ao_pedir_retorno(self, _pedido, resposta):
+        """PAT-23e: só registra o pedido e acorda o laço. Quem decide é a `decidir()`."""
+        self._ao_pedir_doca()
+        self.get_logger().info('Pedido de retorno à doca recebido.')
+        resposta.success = True
+        resposta.message = 'pedido registrado'
+        return resposta
+
 
 class Patrulha:
     """Executa as ações que `decidir()` pede e devolve os resultados."""
@@ -94,7 +107,8 @@ class Patrulha:
     def __init__(self, caminho_config, ambiente_pedido, pasta_log):
         self._acordar = threading.Event()
         self._sinal = threading.Event()
-        self.monitor = Monitor(self._acordar)
+        self._pedido_doca = threading.Event()   # PAT-23: nível, nunca limpo
+        self.monitor = Monitor(self._acordar, self._pedir_doca)
         self._executor = SingleThreadedExecutor()
         self._executor.add_node(self.monitor)
         threading.Thread(target=self._executor.spin, daemon=True).start()
@@ -113,6 +127,10 @@ class Patrulha:
         self._nav2_pronto = threading.Event()
 
     # ------------------------------------------------------------ início e fim
+
+    def _pedir_doca(self):
+        self._pedido_doca.set()
+        self._acordar.set()   # a decisão roda já: o PAT-23 pede reação em até 2 s
 
     def tratar_sinal(self, _numero, _quadro):
         self._sinal.set()
@@ -201,7 +219,8 @@ class Patrulha:
                 parede=time.time(), agora=self.monitor.agora(), bateria=bateria,
                 t_bateria=t_bateria, na_base=na_base, servidores_ok=self._servidores_ok(),
                 resultado=self._colher_resultado(), sinal=self._sinal.is_set(),
-                usa_sim_time=self.monitor.usa_sim_time, parede_relogio=parede_relogio)
+                usa_sim_time=self.monitor.usa_sim_time, parede_relogio=parede_relogio,
+                pedido_doca=self._pedido_doca.is_set())
             saida = decisao.decidir(self.estado, entrada, self.cfg)
             self.estado = saida.estado
             # O destino_enviado só é gravado depois que o pedido saiu de fato: assim o

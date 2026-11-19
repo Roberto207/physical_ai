@@ -77,7 +77,8 @@ class Mundo:
                  duracao_destino=10, duracao_aproximacao=10, duracao_base=2,
                  falhar_dock=0, dock_sem_confirmar=0, falhar_undock=False,
                  pontos_inalcancaveis=(), publica_bateria=True, parar_bateria_em=None,
-                 servidores_ok=True, publica_doca=True, usa_sim_time=False, relogio_ate=None):
+                 servidores_ok=True, publica_doca=True, usa_sim_time=False, relogio_ate=None,
+                 pedido_doca_em=None):
         self.cfg = cfg
         self.estado = d.Estado()
         self.t = 0.0
@@ -96,6 +97,7 @@ class Mundo:
         self.publica_doca = publica_doca
         self.usa_sim_time = usa_sim_time
         self.relogio_ate = relogio_ate  # o /clock para neste instante (tempo de relógio)
+        self.pedido_doca_em = pedido_doca_em  # o serviço voltar_doca é chamado neste instante
         self.sinal = False
         self.ativa = None  # (ação, argumento, instante em que termina)
         self.ultima_bateria = None
@@ -133,7 +135,9 @@ class Mundo:
             bateria=self.ultima_bateria, t_bateria=self.t_bateria,
             na_base=self.na_base if self.publica_doca else None,
             servidores_ok=self.servidores_ok, resultado=resultado, sinal=self.sinal,
-            usa_sim_time=self.usa_sim_time, parede_relogio=parede_relogio)
+            usa_sim_time=self.usa_sim_time, parede_relogio=parede_relogio,
+            # Nível, como no nó: depois de chamado, o pedido não some (PAT-23e).
+            pedido_doca=self.pedido_doca_em is not None and self.t >= self.pedido_doca_em)
         saida = d.decidir(self.estado, entrada, self.cfg)
         self.estado = saida.estado
         for evento in saida.eventos:

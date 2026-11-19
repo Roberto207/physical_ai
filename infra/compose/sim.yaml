@@ -37,8 +37,8 @@ services:
   # O Xvfb é uma tela falsa: fica como garantia para o lidar, caso o --headless-rendering não
   # funcione na GPU do PC (foi o que funcionou no Jazzy em 16/11). MUNDO: maze, depot, warehouse.
   gazebo:
-    <<: *ros
-    profiles: [mundo]
+    <<: *ros # herda a imagem, volumes, etc.
+    profiles: [mundo] 
     mem_limit: ${MEM_GAZEBO:-4g}
     memswap_limit: ${MEM_GAZEBO:-4g}
     environment:

@@ -77,6 +77,7 @@ def test_todo_evento_que_a_decisao_gera_esta_na_lista(cfg):
         Mundo(cfg, servidores_ok=False).rodar(60),
         Mundo(cfg, bateria=0.99, falhar_undock=True).rodar(30),
         Mundo(cfg, usa_sim_time=True, relogio_ate=0).rodar(30),
+        Mundo(cfg, bateria=0.99, descarga=0.0001, pedido_doca_em=40).rodar(400),
     ]
     vistos = set()
     for mundo in cenarios:
