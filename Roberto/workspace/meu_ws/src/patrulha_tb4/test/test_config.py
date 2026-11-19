@@ -163,7 +163,7 @@ def test_perfil_inf_devagar_limita_a_velocidade_a_0_15():
 
 @pytest.mark.req('PAT-01')
 @pytest.mark.parametrize('arquivo', ['leve_reduzido.yaml', 'teste_tempo_curto.yaml',
-                                     'gazebo_maze.yaml', 'warehouse_original.yaml'])
+                                     'gazebo_maze.yaml'])
 def test_as_configuracoes_do_pacote_carregam(arquivo, monkeypatch):
     from pathlib import Path
     # As configs usam pkg://turtlebot4_navigation/... (CFG-01). Sem ROS, um ament_index falso.

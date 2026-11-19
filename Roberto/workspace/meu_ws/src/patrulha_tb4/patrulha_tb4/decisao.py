@@ -5,7 +5,7 @@ devolvidas. Como aqui não há relógio, rede nem robô, cada situação difíci
 num simulador (a bateria cai no meio do trecho, o dock falha duas vezes, a bateria some)
 vira um teste de milissegundos.
 
-Evolução de `workspace/exemplos/decisao_patrulha.py`.
+Evolução do exemplo `workspace/exemplos/decisao_patrulha.py` (tag `jazzy-final`).
 """
 from dataclasses import dataclass, replace
 from typing import Optional

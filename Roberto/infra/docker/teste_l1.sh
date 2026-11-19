@@ -6,7 +6,7 @@
 #   ./teste_l1.sh lista          mostra os cenários
 #   ./teste_l1.sh parar          desliga o container, se tiver ficado algum
 #
-# Cada execução deixa uma pasta em progresso/evidencias/l1/<data>-<cenario>/ com o log JSONL
+# Cada execução deixa uma pasta em workspace/logs/l1/<data>-<cenario>/ com o log JSONL
 # da patrulha, os logs do Nav2, da base falsa e da patrulha, o pico de RAM e o veredito (SIM-05).
 #
 # Este script só faz o que é do host: o container, a pasta de evidências, a memória, as
@@ -56,7 +56,7 @@ if [ "$LIVRE_MB" -lt $((TETO_MB + FOLGA_MB)) ]; then
   exit 3
 fi
 
-PASTA="$RAIZ/progresso/evidencias/l1/$(date +%Y-%m-%d_%H-%M-%S)-$CENARIO"
+PASTA="$RAIZ/workspace/logs/l1/$(date +%Y-%m-%d_%H-%M-%S)-$CENARIO"
 mkdir -p "$PASTA"
 echo "Cenário: $CENARIO | memória disponível: $LIVRE_MB MiB | teto: $TETO_MB MiB"
 echo "Evidências: $PASTA"
