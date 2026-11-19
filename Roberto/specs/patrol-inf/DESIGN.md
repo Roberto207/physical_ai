@@ -305,3 +305,21 @@ A medição M-GZ (pendente) corre por fora dessa fila: pode ser feita a qualquer
 ## Efeito prático
 
 Os degraus L0 e L1 testam a lógica e os caminhos de falha, por menos de 1 GiB e em minutos. O L3 (Gazebo `maze` enxuto) é o único teste local com a doca, a bateria e o AMCL de verdade. Ele é recomendado, mas depende da medição M-GZ, e não bloqueia a ida ao INF. O mesmo código passa pelos três ambientes. No laboratório, o trabalho se resume aos 10 passos do kit de campo.
+
+## Adendo (2026-11-18): níveis de teste depois da migração para Humble
+
+Origem: `specs/migracao-humble/` (DOC-03), ADR-001 (tudo em Humble) e ADR-002 (Gazebo no PC do laboratório como simulador principal). Este adendo não muda nenhum requisito PAT, VAL, OBS ou TST nem a tabela "Requisito → teste". Ele muda **onde** cada nível roda.
+
+| Nível | O que é | Onde roda | Como |
+|---|---|---|---|
+| L0 | pytest da lógica, sem ROS | Notebook, PC e CI (imagem `ros:humble-ros-base`) | `python3 -m pytest` no `patrulha_tb4` e no `lab_tb4` |
+| L1 | Simulador leve: `nav2_loopback_sim` vendorizado (`workspace/meu_ws/src/terceiros/`) e base falsa, com os 11 cenários de injeção de falhas | PC do laboratório (`physical-ai:sim`) | `infra/docker/teste_l1.sh <cenario>`, que sobe o `lab_tb4/launch/l1.launch.py` |
+| L3 | Gazebo (Ignition Fortress) sem janela, com a Create 3 simulada e o AMCL de verdade. **O simulador principal** desde o ADR-002 | PC do laboratório | `infra/docker/lab.sh sim subir gazebo ...` (`lab_tb4/launch/gazebo.launch.py`) |
+| L4 | Robô real | PC do laboratório + TurtleBot 4 | `infra/docker/lab.sh robo ...`, só depois da V5 da spec `migracao-humble` |
+
+O que mudou em relação ao texto acima:
+
+- O notebook deixou de simular. As notas sobre o limite de 7,4 GiB valem só para ele.
+- A medição **M-GZ** (seção 3, pensada para o notebook e para o Gazebo Harmonic do Jazzy) passa a ser a **M-GZH**: os mesmos critérios (fator de tempo real, pico de RAM, `/battery_state`, doca, lidar com obstáculo e um destino de 2 m), medidos no PC do laboratório com o Fortress. Ela continua só com pedido explícito do Roberto. Se reprovar, o ADR-002 é revisto e o L1 volta a ser o principal.
+- O `l1_dentro.sh` e o `treino_leve.sh` citados acima saíram. Os cenários são os mesmos, agora em `lab_tb4/config/cenarios_l1.yaml`. O único desvio é o `l1b` (`docs/tarefas/2026-11-18-f3-l1-leve.md`).
+- Os caminhos `/opt/ros/jazzy/...` das configurações viraram `pkg://turtlebot4_navigation/maps/...` (CFG-01 da `migracao-humble`).

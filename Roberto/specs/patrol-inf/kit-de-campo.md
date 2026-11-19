@@ -37,7 +37,7 @@ Uma parada pelo protocolo de segurança **invalida** a execução de aceite (INF
 |---|---|
 | Suíte L0 passando | `cd workspace/meu_ws/src/patrulha_tb4 && python3 -m pytest -q` sem falhas |
 | L1 passando no simulador leve | `infra/docker/teste_l1.sh ciclo` diz APROVADO |
-| PC do laboratório com a imagem `physical-ai:jazzy` | `infra/docker/construir_imagem.sh` terminou e `docker images physical-ai:jazzy` lista a imagem. Ela ainda **não** foi testada falando com um robô real pela rede |
+| PC do laboratório com as imagens Humble `physical-ai:base` e `physical-ai:robo` | `infra/docker/construir_imagem.sh base robo` terminou e `docker run --rm physical-ai:base printenv ROS_DISTRO` responde `humble` (V1 de `specs/migracao-humble/`). Elas ainda **não** foram testadas com o robô (V5) |
 | Perguntas ao coordenador respondidas | Modelo (Standard ou Lite), números do aceite, rede do laboratório |
 | Bateria do robô carregada e doca ligada na tomada | A doca precisa de energia para o robô enxergá-la ([Docking, Create 3](https://iroboteducation.github.io/create3_docs/api/docking/)) |
 
@@ -55,7 +55,7 @@ O que o manual diz, e que muda o nosso plano:
 
 Pergunte à equipe do INF qual dos dois modos o robô usa. **Não mude a configuração de rede do robô sem autorização.**
 
-**Atenção:** os nós Jazzy do PC derrubam este robô, que é Humble (falta de memória no serviço `turtlebot4`, medido em 2026-11-16). Não use o `lab.sh robo` até o modo `robo` do PC ir para Humble (`docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md`, seção 8).
+**Atenção:** nós Jazzy no PC derrubaram este robô, que é Humble (falta de memória no serviço `turtlebot4`, medido em 2026-11-16; `docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md`, seção 8). Desde 2026-11-18 as imagens do PC são Humble, e o `lab.sh` recusa imagem de outra distro (SEG-01). Mesmo assim, não use o `lab.sh robo` até a V5 da spec `specs/migracao-humble/` passar.
 
 **O robô do laboratório, conferido em 2026-11-16** (detalhes em `docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md`):
 
@@ -113,7 +113,7 @@ Página: [Generating a map](https://turtlebot.github.io/turtlebot4-user-manual/t
 
 Comece com o robô **encaixado na doca** (hipótese H3): assim a doca fica perto da origem do mapa, e a pose inicial fica fácil.
 
-**Atualizado em 2026-11-16:** os comandos abaixo foram conferidos na aba Jazzy da página e no código-fonte oficial (ramos `jazzy`). Cada um é um serviço do Docker Compose (`infra/compose/robo.yaml`), chamado pelo atalho `infra/docker/lab.sh`, com a rede do PC. A explicação está em `docs/tarefas/2026-11-16-modo-slam.md` e `docs/tarefas/2026-11-16-compose-e-alvos.md`.
+**Atualizado em 2026-11-16:** os comandos abaixo foram conferidos na aba Jazzy da página e no código-fonte oficial (ramos `jazzy`). **Revisto em 2026-11-18 para o Humble:** os mesmos launches e argumentos (`sync`, `map`, `params_file`, `namespace`) existem no ramo `humble` do `turtlebot4_navigation`; o RViz passa a ser o `view_robot.launch.py`, porque o `turtlebot4_viz` do Humble não tem o `view_navigation`. Cada um é um serviço do Docker Compose (`infra/compose/robo.yaml`), chamado pelo atalho `infra/docker/lab.sh`, com a rede do PC. A explicação está em `docs/tarefas/2026-11-16-modo-slam.md` e `docs/tarefas/2026-11-16-compose-e-alvos.md`.
 
 Antes, no mesmo PC, treine o roteiro no Gazebo, com os mesmos serviços: `lab.sh sim subir gazebo slam rviz`, `lab.sh sim undock`, `lab.sh sim teleop` e `lab.sh sim salvar`.
 
@@ -121,7 +121,7 @@ Antes, no mesmo PC, treine o roteiro no Gazebo, com os mesmos serviços: `lab.sh
 |---|---|---|
 | Rede | `infra/docker/lab.sh robo checar-rede` | Confere as rotas e roda `ros2 topic list` (precisa ter `/robot1/scan`, `/robot1/tf` e `/robot1/odom`) |
 | SLAM | `infra/docker/lab.sh robo subir slam` (confere a rede antes) | `ros2 launch turtlebot4_navigation slam.launch.py namespace:=/robot1` (síncrono, o recomendado no PC) |
-| RViz | `infra/docker/lab.sh robo subir rviz` | `ros2 launch turtlebot4_viz view_navigation.launch.py namespace:=/robot1` |
+| RViz | `infra/docker/lab.sh robo subir rviz` | `ros2 launch turtlebot4_viz view_robot.launch.py namespace:=/robot1` |
 | Undock | **À mão, pela etapa 3** | O script não faz dock nem undock no robô real |
 | Dirigir | `infra/docker/lab.sh robo teleop` (pede `SIM`) | `teleop_twist_keyboard` com `__ns:=/robot1`, `stamped:=false` (robô Humble), `speed:=0.15` e `turn:=0.5` |
 | Salvar | `infra/docker/lab.sh robo salvar lab` | `ros2 service call /slam_toolbox/save_map slam_toolbox/srv/SaveMap "{name: {data: '/mapas/lab'}}"` |
@@ -139,7 +139,7 @@ Página: [Navigation](https://turtlebot.github.io/turtlebot4-user-manual/tutoria
 ```bash
 ros2 launch turtlebot4_navigation localization.launch.py map:=lab.yaml
 ros2 launch turtlebot4_navigation nav2.launch.py params_file:=<caminho>/nav2_inf_devagar.yaml
-ros2 launch turtlebot4_viz view_navigation.launch.py
+ros2 launch turtlebot4_viz view_robot.launch.py
 ```
 
 Pelo Compose (2026-11-16), os mesmos três: `MAPA=/mapas/lab.yaml infra/docker/lab.sh robo subir localizacao nav2 rviz`. O `nav2` já usa o `nav2_inf_devagar.yaml`. Desligue o `slam` antes (`lab.sh robo compose stop slam`): SLAM e localização publicam a mesma transformação `map → odom`.
@@ -213,7 +213,7 @@ Com os números combinados com o coordenador (padrão proposto: 2 voltas e 1 cic
 ros2 bag record -o aceite_$(date +%F_%H-%M) /robot1/battery_state /robot1/dock_status /robot1/scan /robot1/odom /robot1/tf /robot1/tf_static /robot1/amcl_pose /robot1/cmd_vel /robot1/plan
 ```
 
-Página: [Recording and playing back data](https://docs.ros.org/en/jazzy/Tutorials/Beginner-CLI-Tools/Recording-And-Playing-Back-Data/Recording-And-Playing-Back-Data.html). A lista de tópicos é uma proposta: confira os nomes com `ros2 topic list` no dia.
+Página: [Recording and playing back data](https://docs.ros.org/en/humble/Tutorials/Beginner-CLI-Tools/Recording-And-Playing-Back-Data/Recording-And-Playing-Back-Data.html). A lista de tópicos é uma proposta: confira os nomes com `ros2 topic list` no dia.
 
 A execução é **invalidada** por qualquer comando manual, reposicionamento à mão ou parada de segurança.
 
@@ -235,7 +235,7 @@ A execução é **invalidada** por qualquer comando manual, reposicionamento à 
 
 | Item | Situação |
 |---|---|
-| Como o PC fala com o robô | **Funcionando desde 2026-11-16** (`REDE OK`, dados chegando). Os serviços do `infra/compose/robo.yaml` usam `network_mode: host`, `ipc: host`, o `infra/lab/rede_lab.env` (domínio 0, FastDDS, Discovery Server do robô, super cliente) e `namespace:=/robot1`. O PC tem rotas para `192.168.186.0/24` e `192.168.185.0/24` pelo robô (`docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md`). Os containers `treino_leve.sh` e `ros.sh` continuam na rede isolada |
+| Como o PC fala com o robô | **Funcionando desde 2026-11-16** (`REDE OK`, dados chegando). Os serviços do `infra/compose/robo.yaml` usam `network_mode: host`, `ipc: host`, o `infra/lab/rede_lab.env` (domínio 0, FastDDS, Discovery Server do robô, super cliente) e `namespace:=/robot1`. O PC tem rotas para `192.168.186.0/24` e `192.168.185.0/24` pelo robô (`docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md`). Os containers do `sim.yaml` (rede isolada, domínio 42) e do `teste_l1.sh` ficam fora da rede do robô |
 | Patrulha no PC ou no Raspberry Pi | Decisão aberta (DESIGN, seção 7). Este kit supõe o PC |
 | `nav2_inf_devagar.yaml` | A gerar a partir do `nav2.yaml` da imagem |
 | Tela do robô com ruído (foto `erro_tela.jpeg`, de 2026-11-12) | Não investigado. Não faz parte da patrulha, mas vale perguntar à equipe do INF antes de usar esse robô |

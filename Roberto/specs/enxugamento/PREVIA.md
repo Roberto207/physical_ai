@@ -51,7 +51,15 @@ Ideias a avaliar:
 
 - O merge `f1009a4` deixou marcas em `docs/registro-de-mudancas.md` (dois lados para a noite de 16/11) e em `specs/patrol-inf/kit-de-campo.md` (linhas 58 a 70). **Isto entra na F0 da migração**, porque o CI fica vermelho até ser resolvido. A escolha do texto é do Roberto.
 
-## 7. Critério de pronto (proposto)
+## 7. Já feito pela migração para Humble (2026-11-18)
+
+- Saíram `infra/docker/ros.sh`, `treino_leve.sh`, `run_sim_headless.sh`, `sim_headless.launch.py` e `l1_dentro.sh`, e a pasta `infra/tools/` (o conteúdo foi para o pacote `lab_tb4`).
+- Saiu o alvo `completa` da imagem e o modo `apelidos` do `construir_imagem.sh`.
+- O `como_rodar.md` foi reescrito: caminhos a partir de `Roberto/`, contagem de testes certa e comandos Humble.
+- As marcas de conflito do merge `f1009a4` foram resolvidas (F0).
+- Fica para esta spec: o `contexto/AGENTES.md`, a organização do contexto, `workspace/exemplos/`, o TST-06, o `registro-de-mudancas.md` contra os `docs/tarefas/` e as citações a `progresso/`.
+
+## 8. Critério de pronto (proposto)
 
 - Um agente novo acha em menos de 3 leituras: como rodar, a spec em vigor e as decisões.
 - Nenhuma regra lida pelos agentes contradiz o CLAUDE.md do Roberto.

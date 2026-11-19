@@ -2,6 +2,17 @@
 
 Tudo o que foi alterado no projeto, o que foi feito e com que objetivo. A entrada mais nova fica em cima. Cada linha diz também como a mudança foi verificada: "medido" é o que eu rodei e vi; "não verificado" é o que ainda depende de um teste.
 
+## 2026-11-18 (noite): migração para Humble, F4 (limpeza, CI, documentação)
+
+Documento, com o checklist do PC do laboratório: `docs/tarefas/2026-11-18-f4-limpeza.md`.
+
+| # | O que mudou | Arquivos | Objetivo | Como foi verificado |
+|---|---|---|---|---|
+| 80 | Removidos `ros.sh`, `treino_leve.sh`, `run_sim_headless.sh`, `sim_headless.launch.py` e a pasta vazia `infra/tools/` | `infra/docker/`, `infra/tools/` | Nenhum caminho Jazzy vivo (IMG-04, LCH-02) | Medido: G1 e G3 |
+| 81 | CI: L0 só em Humble, mais o L0 do `lab_tb4` | `.github/workflows/ci.yml` | CI-01 | Medido: actionlint. No GitHub: **não verificado** (sem push) |
+| 82 | `como_rodar.md` reescrito; kit de campo, pendências e o adendo dos níveis de teste | `como_rodar.md`, `specs/patrol-inf/kit-de-campo.md`, `contexto/pendencias.md`, `specs/patrol-inf/DESIGN.md` | DOC-02, DOC-03 | Leitura. Rastreio TST-02 continua com 31 |
+| 83 | "Já feito" na prévia do enxugamento | `specs/enxugamento/PREVIA.md` | Não refazer na próxima spec | |
+
 ## 2026-11-18 (noite): migração para Humble, F3 (L1 leve vendorizado)
 
 Documento: `docs/tarefas/2026-11-18-f3-l1-leve.md`.

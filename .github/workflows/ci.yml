@@ -62,18 +62,18 @@ jobs:
         run: actionlint -color
 
   # ------------------------------------------------------------------ L0
-  # Os testes L0 dentro da imagem oficial do ROS de cada distro, com o pytest e o PyYAML
-  # do apt. Assim o teste usa as MESMAS versões que o robô e o PC vão ter:
-  #   humble -> Ubuntu 22.04, Python 3.10 (o alvo: a equipe vai migrar para Humble)
-  #   jazzy  -> Ubuntu 24.04, Python 3.12 (o que o PC usa hoje; sai da matriz depois da migração)
+  # Os testes L0 dentro da imagem oficial do ROS, com o pytest e o PyYAML do apt. Assim o
+  # teste usa as MESMAS versões que o robô e o PC têm: humble = Ubuntu 22.04, Python 3.10.
+  # Só Humble desde a migração (ADR-001, CI-01). O Jazzy saiu da matriz junto com as imagens;
+  # para voltar a testar nele, acrescente "jazzy" à lista abaixo.
   l0:
     name: L0 (${{ matrix.distro }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
-      fail-fast: false   # se uma distro quebrar, a outra roda até o fim mesmo assim
+      fail-fast: false   # com mais de uma distro, uma que quebre não interrompe as outras
       matrix:
-        distro: [humble, jazzy]
+        distro: [humble]
     container:
       image: ros:${{ matrix.distro }}-ros-base
     steps:
@@ -92,6 +92,9 @@ jobs:
       - name: Rastreio requisito -> teste (TST-02)
         working-directory: Roberto/workspace/meu_ws/src/patrulha_tb4
         run: python3 test/checar_rastreio.py
+      - name: Testes do lab_tb4 (cenários do L1 e conferidor; sem ROS)
+        working-directory: Roberto/workspace/meu_ws/src/lab_tb4
+        run: python3 -m pytest -ra
       - name: Testes dos exemplos (decisão da patrulha, validador de ações da LLM)
         working-directory: Roberto/workspace/exemplos
         run: python3 -m pytest -ra

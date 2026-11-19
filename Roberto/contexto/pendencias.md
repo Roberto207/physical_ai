@@ -6,7 +6,7 @@ Perguntar ao coordenador (prazo das missões: cerca de 1 mês e meio, a partir d
 - [ ] Qual modelo de TurtleBot (TurtleBot 4 padrão ou Lite) e quantos há no INF?
 - [ ] Como reservar/acessar os robôs no INF? Há rede Wi-Fi dedicada?
 - [ ] Qual é a plataforma do gêmeo digital (versão do Gazebo? há um repositório?) e quem a mantém?
-- [ ] Qual versão do ROS e distro a equipe vai padronizar? (2026-11-16: o robô do lab roda Humble e o PC, Jazzy; a equipe disse que isso não tem problema)
+- [x] Qual versão do ROS e distro a equipe vai padronizar? **Humble em tudo** (ADR-001, 2026-11-18). Em 2026-11-16, Jazzy no PC e Humble no robô derrubou o robô
 - [ ] Qual provedor de LLM usar (a OpenAI exige chave paga)? O INF/AKCIT tem GPU ou créditos de API?
 - [ ] Existe um marco ou entrega intermediária nos 10 meses?
 - [ ] O notebook pode ser só cliente? O INF oferece servidor para simulação?
@@ -43,7 +43,7 @@ Spec `patrol-inf` (execução iniciada em 2026-11-12, ver `docs/registro-de-muda
 - [ ] Revisar as decisões tomadas onde a spec não dizia (tabela em `docs/registro-de-mudancas.md`), e decidir se entram no DEFINE e no DESIGN
 - [x] Como o PC fala com o robô real: configurado em 2026-11-16 e conferido no robô (Humble, Discovery Server id 1, domínio 0, namespace `/robot1`). Rotas criadas no PC e `lab.sh robo checar-rede` com `REDE OK` (dados chegando). **Falta:** SLAM, teleop e Nav2 com o robô. Detalhes: `docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md`
 - [ ] Robô no Wi-Fi `PixelLab-2.4GHz` (2026-11-16): confirmar que reconecta sozinho depois de reiniciar, pedir ao INF a reserva de DHCP do `192.168.7.7` e, se for preciso, descobrir por que o canal 157 (`PixelLab-5GHz`) some (`docs/acesso-ao-robo-por-cabo.md`)
-- [ ] **Imagem Humble para o modo `robo` do PC (próxima tarefa, decidida em 2026-11-16).** Os nós Jazzy do PC derrubam o robô Humble por falta de memória (`docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md`, seção 8). Até lá, **não usar o `lab.sh robo`**. Plano na mesma seção. Depois, testar com o robô `Dock`, `Undock` e `DockStatus` e o Nav2
+- [ ] **Migração para Humble (spec `specs/migracao-humble/`, aprovada em 2026-11-18).** Código das fases F0 a F4 pronto e conferido no notebook (`docs/tarefas/2026-11-18-f0-preparo.md` a `f4-limpeza.md`). **Falta no PC do lab:** V1 (`construir_imagem.sh base robo sim`), o teste de fumaça do Gazebo, a V3 e os 11 cenários L1, e a SEG-01 com a imagem Jazzy. **Depois, com permissão:** a V5 (robô). Até a V5, **não usar o `lab.sh robo`**
 - [ ] Modo SLAM (2026-11-16): `lab.sh sim` testado no PC do laboratório (mapa `teste_maze`, `UTILIZÁVEL`, 17 m x 15 m). Falta o `lab.sh robo`. Detalhes: `docs/tarefas/2026-11-16-modo-slam.md` e `docs/tarefas/2026-11-16-compose-e-alvos.md`
 - [x] Imagens no PC do lab (2026-11-16): `physical-ai:robo` 5,37 GB e `physical-ai:sim` 5,81 GB (`docker images`). A `physical-ai:base` não tinha sido construída: hoje é um apelido da `robo` (`docker tag`). Para ter a base de verdade: `construir_imagem.sh base`
 - [ ] Tela do TurtleBot 4 com ruído (foto `erro_tela.jpeg`, 2026-11-12): não investigado
