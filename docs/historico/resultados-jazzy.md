@@ -18,7 +18,7 @@ Notebook com Lux 2 (base Debian), 7,4 GiB de RAM (4,5 a 5 GiB livres com o naveg
 | Sensores no Gazebo (9/nov, 20 s) | Lidar `/scan`: 640 raios, 0,16 a 12 m, cerca de 5,9 Hz. Câmera OAK-D: 320 x 240 `rgb8`, cerca de 2,9 Hz. QoS `best_effort` (o `ros2 topic hz` simples não mostra) |
 | Simulador leve com Nav2, mapa `warehouse` | 0,53 GiB ao subir, 0,69 GiB com a patrulha. Em 5/nov a navegação falhou até `(-5, 1)` após 209 s; em 9/nov funcionou em todos os destinos. A causa da falha de 5/nov nunca foi achada (CPU, obstáculo e `StaticLayer` descartados) |
 
-Pontos que ficaram abertos nessas medições (seguem em `docs/contexto/pendencias.md`): o lidar do Gazebo devolveu os 640 raios em 0,16 m num mundo vazio, e a bateria do Gazebo não entregou mensagem em 8 a 10 s.
+Pontos que ficaram abertos nessas medições (seguem em aberto): o lidar do Gazebo devolveu os 640 raios em 0,16 m num mundo vazio, e a bateria do Gazebo não entregou mensagem em 8 a 10 s.
 
 ## 3. O `patrol_loop` oficial (pacote `turtlebot4_python_tutorials`)
 

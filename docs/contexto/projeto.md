@@ -30,7 +30,7 @@ Dois níveis de objetivo na equipe:
 
 ## 3. Missões designadas à nossa equipe (primeira task)
 
-Prazo: cerca de 1 mês e meio a partir de 2026-11-05, conforme o Roberto. Data exata a confirmar (ver `pendencias.md`).
+Prazo: cerca de 1 mês e meio a partir de 2026-11-05, conforme o Roberto. Data exata a confirmar com o coordenador.
 
 ### 3.1 Patrol control: patrulha do TurtleBot
 

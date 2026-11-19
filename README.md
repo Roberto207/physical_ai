@@ -16,13 +16,13 @@ Detalhes, rede e endereços: `docs/contexto/maquinas.md`.
 
 1. **Rodar algo:** `docs/guias/como-rodar.md`.
 2. **Regras para agentes de IA (leia antes de agir):** `docs/contexto/AGENTES.md`.
-3. **O que está em aberto:** `docs/contexto/pendencias.md`.
+3. **O que está em aberto:** ainda não há um arquivo de pendências. Os itens abertos estão em `docs/contexto/maquinas.md` e em `docs/tarefas/`.
 
 ## Mapa das pastas
 
 | Pasta | Pergunta que responde | Entrada |
 |---|---|---|
-| `docs/contexto/` | O que é o projeto, quem trabalha nele, em que máquinas, com que regras | `docs/contexto/projeto.md`, `docs/contexto/equipe.md`, `docs/contexto/maquinas.md`, `docs/contexto/stack.md` |
+| `docs/contexto/` | O que é o projeto, quem trabalha nele, em que máquinas, com que regras | `docs/contexto/projeto.md`, `docs/contexto/maquinas.md`, `docs/contexto/stack.md` |
 | `docs/guias/` | Como fazer uma coisa agora (comandos) | `docs/guias/como-rodar.md`, `docs/guias/acesso-ao-robo.md` |
 | `docs/decisoes/` | Por que é assim | `docs/decisoes/README.md` (índice dos ADRs e das decisões antigas) |
 | `docs/tarefas/` | O que foi feito e quando, uma linha por tarefa | `docs/tarefas/README.md` |
