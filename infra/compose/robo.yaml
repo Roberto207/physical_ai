@@ -84,6 +84,7 @@ services:
     command: >-
       bash -c "test -f ${MAPA:-/mapas/lab.yaml} || { echo 'Mapa ${MAPA:-/mapas/lab.yaml} não existe. Defina MAPA=/mapas/<nome>.yaml'; exit 1; } &&
       exec ros2 launch turtlebot4_navigation localization.launch.py map:=${MAPA:-/mapas/lab.yaml}
+      params:=/workspace/meu_ws/src/patrulha_tb4/config/localization_inf.yaml
       namespace:=${ROBO_NS-/robot1}"
 
   # Nav2 com o nosso perfil de velocidade reduzida (0,15 m/s, INF-02). Manual:
@@ -95,7 +96,7 @@ services:
     mem_limit: 2g
     memswap_limit: 2g
     command: >-
-      ros2 launch turtlebot4_navigation nav2.launch.py
+      ros2 launch /workspace/meu_ws/src/patrulha_tb4/launch/nav2_inf.launch.py
       params_file:=${NAV2_PARAMS:-/workspace/meu_ws/src/patrulha_tb4/config/nav2_inf_devagar.yaml}
       namespace:=${ROBO_NS-/robot1}
 
@@ -154,7 +155,7 @@ services:
       - |
         CONFIG=${CONFIG:-/workspace/meu_ws/src/patrulha_tb4/config/inf_lab.yaml}
         # Item 1 do protocolo do INF: sem validar_pontos APROVADA, nenhum movimento autônomo.
-        validar_pontos "$$CONFIG" || { echo 'Patrulha NÃO iniciada.'; exit 2; }
+        ros2 run patrulha_tb4 validar_pontos "$$CONFIG" || { echo 'Patrulha NÃO iniciada.'; exit 2; }
         # O nó publica sozinho a pose_inicial da configuração (é onde a doca fica no mapa).
         echo 'ATENÇÃO: o robô REAL vai andar sozinho. Pessoa ao lado, robô NA doca,'
         echo 'localizacao e nav2 rodando.'

@@ -155,5 +155,5 @@ services:
       - -c
       - |
         CONFIG=${CONFIG:-/workspace/meu_ws/src/patrulha_tb4/config/gazebo_maze.yaml}
-        validar_pontos "$$CONFIG" || { echo 'Patrulha NÃO iniciada.'; exit 2; }
+        ros2 run patrulha_tb4 validar_pontos "$$CONFIG" || { echo 'Patrulha NÃO iniciada.'; exit 2; }
         exec ros2 launch patrulha_tb4 patrulha.launch.py config:="$$CONFIG" pasta_log:=/logs

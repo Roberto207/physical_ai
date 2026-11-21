@@ -35,7 +35,7 @@ def _montar(contexto):
         usa_sim_time = (ambiente or _ambiente_da_config(config)) in ('leve', 'gazebo')
 
     # Os tópicos do nó são relativos (battery_state, dock_status): com o namespace eles viram
-    # /robot1/battery_state etc. O nó passa o mesmo namespace ao TurtleBot4Navigator.
+    # /robot1/battery_state etc. O __ns global do launch alcança o TurtleBot4Navigator.
     no = Node(
         package='patrulha_tb4', executable='patrulha', output='screen',
         namespace=LaunchConfiguration('namespace').perform(contexto),

@@ -122,6 +122,7 @@ class Patrulha:
         self.nav = None
         self._ativa = None            # ação em andamento, do ponto de vista do nó
         self._futuro_base = None      # futuro do resultado do dock ou do undock
+        self._futuro_envio = None     # resposta de aceitação do dock ou do undock
         self._meta_base = None        # goal handle do dock ou do undock
         self._rejeitada = None        # resultado pronto, quando o servidor recusa o pedido
         self._nav2_pronto = threading.Event()
@@ -176,12 +177,10 @@ class Patrulha:
                 f'use_sim_time={self.monitor.usa_sim_time} ambiente={config.ambiente}')
 
         self.cfg = config
-        # O navegador é outro nó e precisa do mesmo namespace do monitor para achar
-        # /robot1/navigate_to_pose, /robot1/dock e o AMCL. Pelo launch, o __ns já vale para
-        # todos os nós do processo; passar explícito cobre quem rodar o nó sem o launch.
-        # get_namespace() devolve "/" quando não há namespace.
-        ns = self.monitor.get_namespace()
-        self.nav = TurtleBot4Navigator(namespace='' if ns == '/' else ns)
+        # O navegador é outro nó e recebe o mesmo __ns do launch (ex.: /robot1).
+        # No Humble, TurtleBot4Navigator.__init__ não aceita o argumento namespace;
+        # o remapeamento global do ROS aplica o namespace também a este nó.
+        self.nav = TurtleBot4Navigator()
         threading.Thread(target=self._esperar_nav2, daemon=True).start()
         return None
 
@@ -292,15 +291,12 @@ class Patrulha:
     def _enviar_base(self, nome, cliente, pedido):
         """Dock e undock sem travar o laço: envia e passa a consultar o resultado."""
         self._ativa = nome
-        self._futuro_base = self._meta_base = None
-        envio = cliente.send_goal_async(pedido)
-        rclpy.spin_until_future_complete(self.nav, envio, timeout_sec=self.cfg.tempos.cancelar_s)
-        meta = envio.result() if envio.done() else None
-        if meta is None or not meta.accepted:
-            self._rejeitada = decisao.Resultado(nome, decisao.FALHOU, 'rejeitado')
-            return
-        self._meta_base = meta
-        self._futuro_base = meta.get_result_async()
+        self._futuro_base = self._meta_base = self._futuro_envio = None
+        try:
+            self._futuro_envio = cliente.send_goal_async(pedido)
+        except Exception as erro:
+            self._rejeitada = decisao.Resultado(nome, decisao.FALHOU,
+                                                 f'erro_envio:{erro}')
 
     def _colher_resultado(self):
         """Devolve o resultado da ação ativa, se ela terminou. Senão, None."""
@@ -315,6 +311,23 @@ class Patrulha:
                 return None
             codigo = self.nav.status
         else:
+            if self._futuro_envio is not None:
+                rclpy.spin_until_future_complete(self.nav, self._futuro_envio,
+                                                 timeout_sec=0.1)
+                if not self._futuro_envio.done():
+                    return None
+                try:
+                    meta = self._futuro_envio.result()
+                except Exception as erro:
+                    self._futuro_envio = self._ativa = None
+                    return decisao.Resultado(nome, decisao.FALHOU,
+                                            f'erro_resposta:{erro}')
+                self._futuro_envio = None
+                if meta is None or not meta.accepted:
+                    self._ativa = None
+                    return decisao.Resultado(nome, decisao.FALHOU, 'rejeitado')
+                self._meta_base = meta
+                self._futuro_base = meta.get_result_async()
             rclpy.spin_until_future_complete(self.nav, self._futuro_base, timeout_sec=0.1)
             if not self._futuro_base.done() or self._futuro_base.result() is None:
                 return None
@@ -340,7 +353,25 @@ class Patrulha:
             meta, resultado = self.nav.goal_handle, self.nav.result_future
         else:
             meta, resultado = self._meta_base, self._futuro_base
-            self._futuro_base = self._meta_base = None
+            envio = self._futuro_envio
+            self._futuro_base = self._meta_base = self._futuro_envio = None
+            if meta is None and envio is not None:
+                # Aguarda brevemente a confirmação para cancelar um pedido que acabou
+                # de ser aceito. Se ela chegar depois, tenta cancelar no callback.
+                def cancelar_se_aceito(futuro):
+                    try:
+                        confirmado = futuro.result()
+                        if confirmado is not None and confirmado.accepted:
+                            confirmado.cancel_goal_async()
+                    except Exception:
+                        pass
+                if not envio.done():
+                    rclpy.spin_until_future_complete(
+                        self.nav, envio, timeout_sec=ESPERA_CANCELAMENTO_S)
+                if envio.done():
+                    cancelar_se_aceito(envio)
+                else:
+                    envio.add_done_callback(cancelar_se_aceito)
         if meta is None:
             return
         limite = time.monotonic() + ESPERA_CANCELAMENTO_S

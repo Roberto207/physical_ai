@@ -1,10 +1,9 @@
 # Nav2 em velocidade reduzida para os primeiros testes no laboratório (INF-02).
 #
 # Cópia de turtlebot4_navigation/config/nav2.yaml, pacote ros-humble-turtlebot4-navigation
-# 1.0.5 (ramo humble de github.com/turtlebot/turtlebot4, lido em 2026-11-18). Única diferença
-# (CFG-04): no velocity_smoother, o primeiro valor de max_velocity e de min_velocity (eixo x)
-# passa de 0,26 para 0,15 m/s. O velocity_smoother é o último filtro antes das rodas, então
-# ele limita o que o controlador pedir.
+# 1.0.5 (ramo humble de github.com/turtlebot/turtlebot4, lido em 2026-11-18).
+# Diferenças: velocidade x limitada a 0,15 m/s no velocity_smoother e tempo de
+# descoberta de ações/serviços do BT ampliado para a rede do laboratório.
 #
 # O use_sim_time: True do arquivo oficial não vale no robô: o navigation_launch.py do Nav2
 # reescreve esse parâmetro com o argumento use_sim_time do launch (padrão false).
@@ -17,8 +16,9 @@ bt_navigator:
     global_frame: map
     robot_base_frame: base_link
     odom_topic: odom
-    bt_loop_duration: 10
-    default_server_timeout: 20
+    bt_loop_duration: 100  # ms; 10 Hz evita sobrecarregar a árvore no PC do laboratório
+    default_server_timeout: 1000  # ms; 20 ms gerou timeouts repetidos durante a navegação
+    wait_for_service_timeout: 30000  # ms; descoberta de ações entre nós demora no lab
     # 'default_nav_through_poses_bt_xml' and 'default_nav_to_pose_bt_xml' are use defaults:
     # nav2_bt_navigator/navigate_to_pose_w_replanning_and_recovery.xml
     # nav2_bt_navigator/navigate_through_poses_w_replanning_and_recovery.xml

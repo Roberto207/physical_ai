@@ -185,7 +185,7 @@ case "$ACAO" in
     # O timeout evita esperar para sempre se a patrulha não estiver rodando (o serviço não existe).
     ferramenta "timeout 30 ros2 service call ${ns}/patrulha/voltar_doca std_srvs/srv/Trigger" \
       || { echo "Sem resposta em 30 s: a patrulha está rodando em ./lab.sh $MODO patrulha?"; exit 1; }
-    echo "Pedido enviado. A patrulha encerra sozinha, encaixada, com o código 0 (veja o terminal dela)."
+    echo "Pedido enviado. Confirme o resultado no terminal da patrulha e em /dock_status."
     ;;
   salvar)
     [ -n "$(dc ps -q slam 2>/dev/null)" ] || { echo "O serviço slam não está rodando: ./lab.sh $MODO subir slam"; exit 1; }

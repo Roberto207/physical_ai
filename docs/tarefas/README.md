@@ -6,6 +6,9 @@ A entrada mais nova fica em cima. Ao fechar uma tarefa, crie `AAAA-MM-DD-<nome>.
 
 | Data | Tarefa | Documento |
 |---|---|---|
+| 2026-11-21 | Novo mapa com controle PS4 | `2026-11-21-novo-mapa-controle-ps4.md` |
+| 2026-11-21 | Preparação da patrulha com mapa salvo | `2026-11-21-retomada-patrulha-mapa-salvo.md` |
+| 2026-11-21 | Acesso inicial ao segundo TurtleBot 4 por cabo | `2026-11-21-acesso-segundo-turtlebot-cabo.md` |
 | 2026-11-19 | Guia `como_rodar_patrol_loop` | `2026-11-19-guia-como-rodar-patrol-loop.md` |
 | 2026-11-19 | Pedido de retorno à doca sob demanda (PAT-23, spec `specs/patrol-inf/`) | `2026-11-19-voltar-doca.md` |
 | 2026-11-19 | Enxugamento e organização do projeto (spec `specs/enxugamento/`) | `2026-11-19-enxugamento.md` |
