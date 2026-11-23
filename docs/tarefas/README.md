@@ -6,6 +6,7 @@ A entrada mais nova fica em cima. Ao fechar uma tarefa, crie `AAAA-MM-DD-<nome>.
 
 | Data | Tarefa | Documento |
 |---|---|---|
+| 2026-11-23 | Patrulha oficial adaptada e ensaio no mapa `mapa_lab_novo` | `2026-11-23-patrulha-oficial-mapa-lab-novo.md` |
 | 2026-11-22 | Análise do problema nomeado (rede Wi-Fi vs cabo) | `2026-11-22-analise-problema-nomeado.md` |
 | 2026-11-21 | Novo mapa com controle PS4 | `2026-11-21-novo-mapa-controle-ps4.md` |
 | 2026-11-21 | Preparação da patrulha com mapa salvo | `2026-11-21-retomada-patrulha-mapa-salvo.md` |
