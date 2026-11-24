@@ -19,7 +19,7 @@ from tf2_msgs.msg import TFMessage
 from turtlebot4_navigation.turtlebot4_navigator import TurtleBot4Navigator
 
 
-# Coordenadas de docs/rascunho/possiveis_points.md, em metros no frame map.
+# Coordenadas medidas com Publish Point no mapa_lab_novo, em metros no frame map.
 # A orientação inicial é marcada manualmente no RViz com 2D Pose Estimate.
 DOCA = (-0.2025940716266632, 0.10048891603946686)
 PONTOS = (

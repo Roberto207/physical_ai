@@ -23,3 +23,49 @@ Na recuperação, `ros2 topic echo --once /robot1/dock_status` sem tipo explíci
 Diagnóstico do retorno antes da próxima volta: `dock_status` posterior confirmou `is_docked: true`. O Nav2 começou a navegar de aproximadamente `(-2.09, 1.01)` até `(-0.59, -0.81)` e, 7 s depois, o DWB reportou `No valid trajectories out of 419` e `BaseObstacle/Trajectory Hits Obstacle`. Spin e backup de recuperação também registraram `Collision Ahead`. A linha direta entre os pontos atravessa somente células livres no PGM. Assim, o erro registrado é bloqueio no costmap local logo após o ponto 4, não prova coordenada errada da doca; conferir no RViz o laser, local costmap e obstáculos físicos no trecho antes de repetir. O programa já tenta dock após aproximação bem-sucedida, mas não o faz se a navegação falhar.
 
 Integração com o trabalho paralelo: após `git fetch`, a `main` local avançou sem conflito de `54cd236` para `29cf7e6`, commit de documentação do colega. A branch remota `v2-patrol-oficial` (`2e32853`) contém outro experimento em `v2/`, com Docker/parametrização própria e yaw manual, ainda não rodado no robô segundo seu README. Esta adaptação em `workspace/patrulha_oficial/` é a que completou os quatro pontos no TurtleBot físico; a v2 continua separada para evitar executar dois stacks de localização/Nav2 ao mesmo tempo. O commit remoto de `main` não alterou os arquivos da patrulha usada nesta sessão.
+
+Atualização solicitada em 23/11/2026: Publish Point forneceu novo ponto 1 `(-0.4172118008136749, -0.32544219493865967)` e novo ponto 4 `(-0.9465320706367493, 2.065439224243164)`. Substituem os valores anteriores: ponto 1 `(-0.5858250856399536, -0.8073815107345581)` e ponto 4 `(-1.9671252965927124, 1.0304899215698242)`. Pontos 2 e 3 e doca permanecem inalterados. O ponto 1 continua sendo usado como aproximação da doca; conferir no RViz/costmap se esse novo local e o trajeto de retorno estão livres antes de executar. Ainda não validado fisicamente com as coordenadas novas.
+
+## Problemas do Nav2 no ensaio com os pontos novos (23/11/2026, noite)
+
+Três tentativas de `rodar.sh 1` com os pontos 1 e 4 novos. Nenhuma completou o ponto 1. A causa raiz da primeira falha não foi determinada; a das outras duas tem uma hipótese ainda não confirmada.
+
+**1. Falha no ponto 1 (`TaskResult.FAILED` após cerca de 78 s).** O robô saiu da doca e ficou parado. No log do Nav2: `backup` com `Exceeded time allowance`, `bt_navigator` estourando os 10 Hz, timeouts de serviço e de ação dentro do próprio Nav2 (`clear_entirely_local_costmap`, `spin`, `wait`) e scans descartados (`earlier than all the data in the transform cache`). Medição sem movimento: atraso mediano do scan 0,22 s (máximo 0,41 s), odom 0,14 s e tf 0,11 s, sem perda em massa. Essa latência sozinha não explica 78 s parado. O RViz usava entre 177% e 300% de CPU, hipótese não confirmada. O `cmd_vel` não pôde ser inspecionado porque a CLI não enxerga tópicos pelo Discovery Server.
+
+**2. Nav2 subido sem a pose inicial.** O Nav2 sobe sem o frame `map` e aborta (`Failed to bring up all requested nodes. Aborting bringup`) se for iniciado antes do 2D Pose Estimate. Ordem que funcionou: localização, RViz, 2D Pose Estimate, só então o Nav2. O README ainda lista o Nav2 junto do RViz, antes da pose.
+
+**3. Contêiner reiniciado com `docker restart`.** Depois dele, o costmap global ficou sem mapa (`Can't update staticcostmap layer, no map received`; tamanho padrão 4,95 m × 4,95 m; `Robot is out of bounds of the costmap`). O `map_server` estava ativo e o mapa chegava a um assinante na própria localização, mas não ao Nav2 reiniciado. Recriar o contêiner pelo `lab.sh` (`robo compose rm -sf nav2` seguido de `robo subir nav2`) fez os dois costmaps receberem `271 X 179`. Não reiniciar o Nav2 com `docker restart`. O comando `lab.sh robo parar <serviço>` **derruba todos os serviços**, não só o indicado.
+
+**4. Queda por heartbeat logo após o `docker pause` do RViz.** O contêiner do RViz foi pausado para aliviar a CPU. Em seguida:
+- o `lifecycle_manager` da localização registrou `CRITICAL FAILURE: SERVER amcl IS DOWN after not receiving a heartbeat for 4000 ms` e desligou a localização, perdendo a pose e o `map→odom`;
+- com o RViz ainda pausado, um novo Nav2 imprimiu `Managed nodes are active` e, menos de 0,2 s depois, `CRITICAL FAILURE: SERVER waypoint_follower IS DOWN after not receiving a heartbeat`, desativando todos os nós. `planner_server` e `behavior_server` ficaram `inactive`.
+
+Com o Nav2 inativo, o `bt_navigator` recusou a meta do ponto 1 (`Goal ... was rejected!`) logo após o undock, e o robô ficou fora da doca. Em uma tentativa anterior com o robô fora da doca, o script se recusou corretamente a começar (`Robô não confirmado na doca`).
+
+**Hipótese ainda não confirmada:** os contêineres usam `ipc: host` (memória compartilhada do Fast DDS). Um participante congelado por `docker pause` pode bloquear a memória compartilhada e perder os heartbeats do `bond` dos outros. Os dois horários batem com a pausa, e o Nav2 que ativou direito (20:28) era anterior a ela. Falta testar sem pausar o RViz.
+
+**Lição sobre verificação:** `Managed nodes are active` aparece mesmo quando os nós caem logo depois. Antes de liberar o `rodar.sh`, conferir que os nós continuam ativos pelo menos 60 s depois, consultando `/robot1/<nó>/get_state`.
+
+**Estado ao registrar:** robô fora da doca; o `rodar.sh` exige o robô na doca. Pendente: derrubar tudo, subir sem pausar o RViz, marcar a pose, subir o Nav2 e validar a estabilidade. Alternativa: tornar a checagem do contêiner `rviz` opcional no `rodar.sh`, para poder parar o RViz de verdade.
+
+## Possível erro a verificar depois: nova falha no ponto 1 (23/11/2026, noite)
+
+Subida na ordem do README (localização, Nav2 e RViz, sem `docker pause`), 2D Pose Estimate antes do `SIM`. `rodar.sh 1`: undock concluído, meta ao ponto 1 enviada e `TaskResult.FAILED` após cerca de 53 s. O robô saiu da doca e a patrulha parou.
+
+Log do Nav2 no momento da falha:
+- `Node timed out while executing service call to global_costmap/clear_entirely_global_costmap` e o mesmo para o `local_costmap`;
+- `Timed out while waiting for action server to acknowledge goal request` para `spin` e `wait`;
+- `Collision Ahead - Exiting Spin`;
+- `backup` com `Exceeded time allowance before reaching the DriveOnHeading goal`;
+- `Goal failed`.
+
+É o mesmo padrão da primeira falha da noite (timeouts de serviço e ação dentro do Nav2, recuperações sem sucesso). Isso sugere que a causa não é o `docker pause` do RViz, que não estava pausado desta vez, e continua sem explicação. Não verifiquei se os nós do Nav2 permaneciam ativos durante a tentativa.
+
+Observação: nesta execução o script usou o ponto 1 **antigo** (`-0.586, -0.807`), e o arquivo `patrol_loop.py` está com os pontos 1 e 4 antigos. A reversão não foi feita por esta sessão; confirmar com quem alterou. Isso também significa que a falha ocorreu no ponto antigo, que no ensaio anterior (quatro pontos concluídos) tinha funcionado.
+
+A verificar na próxima sessão:
+1. Confirmar quais coordenadas estão valendo e por que o arquivo voltou.
+2. Antes do `rodar.sh`, conferir `get_state` de todos os nós do Nav2 e do AMCL, e repetir após 60 s.
+3. Durante a tentativa, acompanhar `cmd_vel` e o heartbeat dos nós (`CRITICAL FAILURE ... heartbeat`).
+4. Comparar com o ensaio que completou os quatro pontos: o que estava diferente na subida (ordem dos serviços, RViz, pose, mapa recebido pelos dois costmaps).
+5. Testar o efeito de ter o RViz fechado de verdade (hoje o `rodar.sh` exige o contêiner).

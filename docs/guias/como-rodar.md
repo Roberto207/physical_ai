@@ -170,7 +170,7 @@ infra/docker/lab.sh robo checar-rede      # só lê: rotas, e /robot1/scan, /rob
 infra/docker/lab.sh robo subir slam rviz  # confere a rede e sobe (não move o robô)
 infra/docker/lab.sh robo teleop           # move o robô REAL: pede que você digite SIM
 infra/docker/lab.sh robo salvar lab
-infra/docker/lab.sh robo parar
+
 ```
 
 - O que está rodando: `infra/docker/lab.sh robo estado`.
