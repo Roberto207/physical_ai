@@ -2,7 +2,7 @@
 
 Este arquivo reúne as regras que o Roberto já definiu para o Claude Code na máquina dele e que agentes de IA em outra máquina também precisam seguir. Leia inteiro antes de agir. Se uma regra aqui conflitar com um pedido, pare e pergunte ao Roberto.
 
-Origem: memória do Claude Code do Roberto, copiada em 2026-11-16 e revisada em 2026-11-18 (enxugamento, `specs/enxugamento/SPEC.md`). Se a memória mudar, este arquivo pode ficar desatualizado.
+Origem: memória do Claude Code do Roberto, copiada em 2026-11-16 e revisada em 2026-11-18 (enxugamento, `docs/historico/spec-enxugamento.md`). Se a memória mudar, este arquivo pode ficar desatualizado.
 
 ## 1. Guardrails do TurtleBot 4 físico (obrigatórios)
 
@@ -19,7 +19,6 @@ Como aplicar:
 - Antes de qualquer comando que toque o robô físico, cite a página da documentação oficial que o embasa.
 - Se não houver documentação, ou se a ação for crítica, pare e peça autorização. São críticos: movimento, velocidades altas, docking e undocking, atualização de firmware, mudança de rede ou DDS, apagar dados.
 - Valide no simulador antes de ir ao robô (ver seção 3).
-- Até a V5 da spec `specs/migracao-humble/` passar, não use o `lab.sh robo`.
 
 ## 2. Projeto e prazo
 
@@ -76,7 +75,8 @@ Comece pelo `README.md`. Caminhos relativos à raiz do repositório.
 
 | O que | Arquivo |
 |---|---|
-| Como rodar | `docs/guias/como-rodar.md` |
+| Como rodar (índice dos guias) | `docs/guias/como-rodar.md` |
+| O que está em aberto | `docs/contexto/pendencias.md` |
 | Como acessar o robô | `docs/guias/acesso-ao-robo.md` |
 | Escopo, briefing e missões | `docs/contexto/projeto.md` |
 | Máquinas, rede e papel de cada uma | `docs/contexto/maquinas.md` |
@@ -84,4 +84,4 @@ Comece pelo `README.md`. Caminhos relativos à raiz do repositório.
 | Decisões (ADRs e antigas) | `docs/decisoes/README.md` |
 | O que foi feito, por tarefa | `docs/tarefas/README.md` |
 | Histórico congelado | `docs/historico/` |
-| Specs em vigor | `specs/patrol-inf/`, `specs/migracao-humble/`, `specs/enxugamento/` |
+| Specs | `specs/README.md` |

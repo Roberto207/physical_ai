@@ -14,22 +14,39 @@ Detalhes, rede e endereços: `docs/contexto/maquinas.md`.
 
 ## Comece por aqui
 
-1. **Rodar algo:** `docs/guias/como-rodar.md`.
-2. **Regras para agentes de IA (leia antes de agir):** `docs/contexto/AGENTES.md`.
-3. **O que está em aberto:** ainda não há um arquivo de pendências. Os itens abertos estão em `docs/contexto/maquinas.md` e em `docs/tarefas/`.
+| Quero | Arquivo |
+|---|---|
+| Rodar a patrulha que termina na doca | `docs/guias/patrulha-volta-a-doca.md` |
+| Rodar a patrulha em loop contínuo | `docs/guias/patrulha-loop-continuo.md` |
+| Lembrar um comando | `docs/guias/comandos-basicos.md` |
+| Todo o resto (testes, imagens, simulador, mapa) | `docs/guias/como-rodar.md` |
+| Trabalhar na integração com LLM | `workspace/llm/README.md` |
+| Saber o que está em aberto | `docs/contexto/pendencias.md` |
+| Regras para agentes de IA (leia antes de agir) | `docs/contexto/AGENTES.md` |
 
 ## Mapa das pastas
 
-| Pasta | Pergunta que responde | Entrada |
-|---|---|---|
-| `docs/contexto/` | O que é o projeto, quem trabalha nele, em que máquinas, com que regras | `docs/contexto/projeto.md`, `docs/contexto/maquinas.md`, `docs/contexto/stack.md` |
-| `docs/guias/` | Como fazer uma coisa agora (comandos) | `docs/guias/como-rodar.md`, `docs/guias/acesso-ao-robo.md` |
-| `docs/decisoes/` | Por que é assim | `docs/decisoes/README.md` (índice dos ADRs e das decisões antigas) |
-| `docs/tarefas/` | O que foi feito e quando, uma linha por tarefa | `docs/tarefas/README.md` |
-| `docs/historico/` | Registros congelados da época do Jazzy | `docs/historico/resultados-jazzy.md`, `docs/historico/registro-de-mudancas.md` |
-| `specs/` | O que o sistema precisa fazer e como foi desenhado | `specs/patrol-inf/`, `specs/migracao-humble/`, `specs/enxugamento/` |
-| `infra/` | Compose, imagens Docker, scripts do PC do lab e rede | `infra/docker/`, `infra/compose/`, `infra/lab/` |
-| `workspace/` | Código: pacotes ROS (`meu_ws/`), mapas, o validador de ações da LLM (`exemplos/`) e logs (fora do git) | `workspace/meu_ws/src/patrulha_tb4`, `workspace/meu_ws/src/lab_tb4` |
+```text
+physical_ai/
+├── docs/
+│   ├── contexto/     projeto, máquinas e rede, stack, regras, pendências
+│   ├── guias/        como fazer agora (comandos)
+│   ├── decisoes/     por que é assim (ADRs)
+│   ├── tarefas/      o que foi feito, uma tarefa por arquivo
+│   └── historico/    registros antigos, não atualizados
+├── specs/            requisitos e desenho (ver specs/README.md)
+├── infra/
+│   ├── compose/      serviços do robô (robo.yaml) e do simulador (sim.yaml)
+│   ├── docker/       imagens, lab.sh e teste_l1.sh
+│   ├── lab/          rede do PC com o robô (rede_lab.env)
+│   └── ferramentas/  checador de caminhos dos documentos
+└── workspace/
+    ├── patrulha_oficial/   patrulha em uso no robô
+    ├── llm/                integração com LLM
+    ├── mapas/              mapa em uso e pontos
+    ├── meu_ws/src/         pacotes ROS: patrulha_tb4, lab_tb4, terceiros
+    └── logs/               saídas das execuções (fora do git)
+```
 
 ## Níveis de teste
 

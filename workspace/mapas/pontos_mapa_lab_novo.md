@@ -1,3 +1,8 @@
+# Pontos no `mapa_lab_novo`
+
+Medidos no referencial `map`, em metros. Os graus (`yaw`) anotados **não são usados** pelos programas de `workspace/patrulha_oficial/`, que calculam a orientação pela direção do ponto seguinte. Os valores usados no código ficam em `workspace/patrulha_oficial/patrol_loop.py` (`PONTOS`): ao mudar um, mude nos dois.
+
+```text
 ponto inicial
 x: -0.2025940716266632
 y: 0.10048891603946686
@@ -22,3 +27,4 @@ ponto 4 - meio direita, no mapa
 x: -1.9671252965927124
 y: 1.0304899215698242
 yaw_graus: 51.28233242603174
+```

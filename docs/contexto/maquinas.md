@@ -1,12 +1,12 @@
 # Máquinas e papéis
 
-Regra do projeto (ADR-002): **o PC do laboratório simula, o robô físico testa, o notebook do Roberto só roda o L0** (Python puro, sem ROS, sem simulador).
+Regra do projeto (ADR-002): **o PC do laboratório simula e comanda o robô, o robô físico testa, o notebook do Roberto só roda o L0** (Python puro, sem ROS, sem simulador).
 
 | Máquina | Papel | O que roda |
 |---|---|---|
 | Notebook do Roberto | Edição, documentação e testes L0 | `pytest` dos pacotes, checadores, `ruff`, `docker compose config`. Nada pesado |
-| PC do laboratório (Gazebo) | Simulação principal | Gazebo Fortress sem janela, Nav2, SLAM e o L1 de injeção de falhas, pelas imagens `physical-ai:<alvo>` e o `lab.sh` |
-| TurtleBot 4 do INF | Teste no hardware real | ROS 2 Humble no Raspberry Pi; o PC se conecta pela rede. **Não usar o `lab.sh robo` até a V5 da spec `specs/migracao-humble/`** |
+| PC do laboratório | Simulação principal e comando do robô real | Gazebo Fortress sem janela, Nav2, SLAM e o L1 pelas imagens `physical-ai:<alvo>`; localização, Nav2, RViz e a patrulha do robô pelo `lab.sh robo` |
+| TurtleBot 4 do INF | Teste no hardware real | ROS 2 Humble no Raspberry Pi; o PC se conecta pela rede. Movimento só com permissão (`docs/contexto/AGENTES.md`, seção 1) |
 
 ## 1. Notebook do Roberto (verificado em 2026-11-05)
 
@@ -30,9 +30,10 @@ Consequências:
 
 ## 2. PC do laboratório
 
-- Roda as imagens Humble `physical-ai:base`, `physical-ai:robo` e `physical-ai:sim`, construídas por `infra/docker/construir_imagem.sh`.
-- Imagens de 2026-11-16 (Jazzy): `physical-ai:robo` 5,37 GB e `physical-ai:sim` 5,81 GB. A migração para Humble está commitada (F0 a F4), e falta rodar a V1, o teste de fumaça do Gazebo, a V3 e os 11 cenários L1 nesse PC.
-- O `lab.sh` recusa imagem de outra distro (SEG-01).
+- Simula e também comanda o robô real, com o projeto em `~/physical_ai`.
+- Imagens `physical-ai:base`, `physical-ai:robo` e `physical-ai:sim`, as três com ROS 2 Humble (conferido em 25/11), construídas por `infra/docker/construir_imagem.sh`.
+- O `python3` do sistema não tem `pytest` (25/11): os testes rodam no notebook, no CI ou dentro das imagens.
+- O `lab.sh` recusa imagem de outra distro no modo robô (SEG-01).
 
 ## 3. Robô TurtleBot 4 e rede (conferido no robô em 2026-11-16)
 
@@ -40,7 +41,7 @@ Consequências:
 |---|---|
 | Distro | ROS 2 Humble, Ubuntu 22.04. O PC precisa falar Humble com ele |
 | Modo de descoberta | **Discovery Server**: o servidor roda no próprio robô (`fast-discovery-server -i 1 -p 11811`) |
-| No PC | `ROS_DISCOVERY_SERVER=;<IP do robô>:11811;` (o `;` antes do IP põe o servidor na posição 1, que é o id) e `ROS_SUPER_CLIENT=True`, em `infra/lab/rede_lab.env` |
+| No PC | `ROS_DISCOVERY_SERVER=;<IP do robô>:11811;` (o `;` antes do IP põe o servidor na posição 1, que é o id) e `FASTDDS_BUILTIN_TRANSPORTS=UDPv4`, em `infra/lab/rede_lab.env`. O `ROS_SUPER_CLIENT=True` fica só no serviço `ferramentas` de `infra/compose/robo.yaml` |
 | `ROS_DOMAIN_ID` | 0 nos dois lados |
 | Namespace | `/robot1` em todos os nós: `/robot1/scan`, `/robot1/battery_state`, `/robot1/dock_status` etc. O compose usa `ROBO_NS` (padrão `/robot1`) |
 | `cmd_vel` | `geometry_msgs/msg/Twist`, sem carimbo de tempo |
@@ -50,4 +51,9 @@ Consequências:
 
 Detalhes e a medição que originou esses fatos: `docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md` e `specs/patrol-inf/kit-de-campo.md` (etapa 1).
 
-Em aberto: se o robô é Lite ou padrão (o log mostra `Device type: OAK-D-PRO`, a câmera do modelo padrão) e a reserva de DHCP do 192.168.7.7.
+Itens em aberto: `docs/contexto/pendencias.md`.
+
+### Segundo robô (21/11)
+
+Número de série `1000000044bad95f`. Pelo cabo: `eth0` 192.168.185.3 e `usb0` 192.168.186.3; `wlan0` desligada na leitura. Registro: `docs/tarefas/2026-11-21-acesso-segundo-turtlebot-cabo.md`. O número de série do primeiro robô não foi anotado.
+

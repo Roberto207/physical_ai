@@ -69,3 +69,7 @@ A verificar na próxima sessão:
 3. Durante a tentativa, acompanhar `cmd_vel` e o heartbeat dos nós (`CRITICAL FAILURE ... heartbeat`).
 4. Comparar com o ensaio que completou os quatro pontos: o que estava diferente na subida (ordem dos serviços, RViz, pose, mapa recebido pelos dois costmaps).
 5. Testar o efeito de ter o RViz fechado de verdade (hoje o `rodar.sh` exige o contêiner).
+
+## Correção de 25/11: a hipótese de memória compartilhada está descartada
+
+A explicação registrada acima para as quedas após o `docker pause` (memória compartilhada do Fast DDS) está errada: `infra/lab/rede_lab.env` define `FASTDDS_BUILTIN_TRANSPORTS=UDPv4` desde 21/11, portanto os contêineres do modo robo trocam dados por UDP. Resta só a coincidência de horários; a causa das quedas por heartbeat continua desconhecida.

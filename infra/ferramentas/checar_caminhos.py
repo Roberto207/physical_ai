@@ -2,7 +2,7 @@
 """Confere que os caminhos citados nos documentos vivos existem (P3 da spec enxugamento).
 
 Lê os `.md` do projeto, menos `docs/historico/` e `docs/tarefas/` (históricos não são
-atualizados), as specs `enxugamento` e `migracao-humble` (descrevem arquivos que saem ou
+atualizados), a spec `migracao-humble` (descreve arquivos que saem ou
 mudam de lugar) e `estudo/` (local, fora do git), e extrai os trechos entre crases cujo primeiro
 segmento é uma pasta de topo do projeto (`docs/`, `infra/`, `specs/`, `workspace/`). Sai com
 1 e lista cada citação cujo arquivo ou pasta não existe, dizendo em qual documento ela está.
@@ -20,7 +20,7 @@ RAIZ = Path(__file__).resolve().parents[2]  # a raiz do repositório
 PASTAS = ('docs', 'infra', 'specs', 'workspace')
 HISTORICO = ('docs/historico', 'docs/tarefas')
 # Specs que descrevem a própria mudança de arquivos: citam o que sai e o que muda de lugar.
-SPECS_DE_MUDANCA = ('specs/enxugamento', 'specs/migracao-humble')
+SPECS_DE_MUDANCA = ('specs/migracao-humble',)
 # Caminhos legítimos que não estão no git: saídas geradas em cada máquina, e arquivos que
 # a spec cita como o que ainda será produzido (ex.: o mapa do laboratório, feito no INF).
 FORA_DO_GIT = (

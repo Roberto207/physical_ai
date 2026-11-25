@@ -102,7 +102,7 @@ checar_rotas() {
   con=$(nmcli -g GENERAL.CONNECTION device show "$dev" 2>/dev/null || echo '<nome do Wi-Fi>')
   echo "REDE REPROVADA: o PC não tem rota pelo robô ($ip) para:$faltam."
   echo "O DDS do robô anuncia esses endereços, e sem a rota o PC não completa a descoberta."
-  echo "Rode uma vez (fica salvo na conexão $con; explicação em docs/acesso-ao-robo-por-cabo.md):"
+  echo "Rode uma vez (fica salvo na conexão $con; explicação em docs/guias/acesso-ao-robo.md):"
   echo "  sudo nmcli connection modify \"$con\" +ipv4.routes \"192.168.186.0/24 $ip 500, 192.168.185.0/24 $ip 500\""
   echo "  sudo nmcli connection up \"$con\""
   return 2

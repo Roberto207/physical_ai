@@ -1,5 +1,7 @@
 # Kit de campo: a patrulha no TurtleBot 4 do INF
 
+> **Documento de 12/11, mantido como referência da spec.** Cobre a `patrulha_tb4` e tem trechos desatualizados (rede, perfil do Nav2, imagens). Para operar o robô hoje, use `docs/guias/como-rodar.md`.
+
 **Status:** primeira versão, escrita em 2026-11-12. **Nada daqui foi rodado no robô.** Os comandos vêm da documentação oficial (links em cada etapa), que foi consultada por busca em 2026-11-12. Releia a página indicada antes de rodar cada comando: o manual muda entre versões.
 **Base:** `DESIGN.md`, seção 4, e `DEFINE.md`, seção "Protocolo no INF".
 
@@ -37,7 +39,7 @@ Uma parada pelo protocolo de segurança **invalida** a execução de aceite (INF
 |---|---|
 | Suíte L0 passando | `cd workspace/meu_ws/src/patrulha_tb4 && python3 -m pytest -q` sem falhas |
 | L1 passando no simulador leve | `infra/docker/teste_l1.sh ciclo` diz APROVADO |
-| PC do laboratório com as imagens Humble `physical-ai:base` e `physical-ai:robo` | `infra/docker/construir_imagem.sh base robo` terminou e `docker run --rm physical-ai:base printenv ROS_DISTRO` responde `humble` (V1 de `specs/migracao-humble/`). Elas ainda **não** foram testadas com o robô (V5) |
+| PC do laboratório com as imagens Humble `physical-ai:base` e `physical-ai:robo` | `infra/docker/construir_imagem.sh base robo` terminou e `docker run --rm physical-ai:base printenv ROS_DISTRO` responde `humble` (V1 de `specs/migracao-humble/`). |
 | Perguntas ao coordenador respondidas | Modelo (Standard ou Lite), números do aceite, rede do laboratório |
 | Bateria do robô carregada e doca ligada na tomada | A doca precisa de energia para o robô enxergá-la ([Docking, Create 3](https://iroboteducation.github.io/create3_docs/api/docking/)) |
 
@@ -55,7 +57,7 @@ O que o manual diz, e que muda o nosso plano:
 
 Pergunte à equipe do INF qual dos dois modos o robô usa. **Não mude a configuração de rede do robô sem autorização.**
 
-**Atenção:** nós Jazzy no PC derrubaram este robô, que é Humble (falta de memória no serviço `turtlebot4`, medido em 2026-11-16; `docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md`, seção 8). Desde 2026-11-18 as imagens do PC são Humble, e o `lab.sh` recusa imagem de outra distro (SEG-01). Mesmo assim, não use o `lab.sh robo` até a V5 da spec `specs/migracao-humble/` passar.
+**Atenção:** nós Jazzy no PC derrubaram este robô, que é Humble (falta de memória no serviço `turtlebot4`, medido em 2026-11-16; `docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md`, seção 8). Desde 2026-11-18 as imagens do PC são Humble, e o `lab.sh` recusa imagem de outra distro (SEG-01).
 
 **O robô do laboratório, conferido em 2026-11-16** (detalhes em `docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md`):
 

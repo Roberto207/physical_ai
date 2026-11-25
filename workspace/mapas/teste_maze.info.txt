@@ -1,6 +1,0 @@
-mapa: teste_maze
-data: 2026-11-16 18:27:08 -0300
-modo: sim
-comecou_na_doca: sim
-slam: turtlebot4_navigation slam.launch.py (sync=true)
-git: c33a259 (com mudanças não commitadas)

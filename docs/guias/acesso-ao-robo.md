@@ -52,7 +52,7 @@ O `ssh robo` continua pedindo a senha do robô. Não usamos chave SSH de propós
 
 - `ping` sem resposta: o cabo precisa estar ligado nos dois lados. Confira com `ip -br addr` se a `enp86s0` está `UP` e tem `192.168.185.10`.
 - O robô pode ter outro IP no cabo. Descubra pelo próprio robô (`ip -br addr`) e troque o IP no `HostName` e a sub-rede no passo 1.
-- Depois do SSH, o ROS ainda precisa que o `ROS_DOMAIN_ID` e o discovery batam (`infra/lab/rede_lab.env`). Teste com `./lab.sh robo checar-rede`.
+- Depois do SSH, o ROS ainda precisa que o `ROS_DOMAIN_ID` e o discovery batam (`infra/lab/rede_lab.env`). Teste com `infra/docker/lab.sh robo checar-rede`.
 
 ## Conectar ao robô sem cabo (Wi-Fi)
 
@@ -91,7 +91,7 @@ O robô conectava nos 5 GHz logo depois de ligar e caía cerca de 20 s depois (`
 
 ## ROS pelo Wi-Fi: rotas no PC
 
-**Situação (2026-11-16):** feito e testado. Com as rotas na conexão `PixelLab-2.4GHz`, o `./lab.sh robo checar-rede` deu `REDE OK`, e os tópicos `/robot1/scan`, `/robot1/odom` e `/robot1/battery_state` chegam ao PC.
+**Situação (2026-11-16):** feito e testado. Com as rotas na conexão `PixelLab-2.4GHz`, o `infra/docker/lab.sh robo checar-rede` deu `REDE OK`, e os tópicos `/robot1/scan`, `/robot1/odom` e `/robot1/battery_state` chegam ao PC.
 
 O robô usa Discovery Server, e o DDS dele anuncia todos os endereços do robô: `192.168.7.7` (Wi-Fi), `192.168.185.3` (cabo) e `192.168.186.3` (USB com a Create 3, que fica em `192.168.186.2`). O PC responde em todos. Pelo Wi-Fi, as respostas para `192.168.185.x` e `192.168.186.x` vão para o roteador e se perdem. O PC nunca completa a descoberta e não vê nenhum tópico. Medido com `tcpdump`: em 20 s, o PC mandou 545 pacotes para cada um desses dois endereços e só 33 para o Wi-Fi do robô. O manual do TurtleBot 4 prevê a rota da `192.168.186.0/24` pelo IP do robô ([Discovery Server](https://turtlebot.github.io/turtlebot4-user-manual/setup/discovery_server.html)).
 
@@ -107,4 +107,4 @@ sudo nmcli connection up "PixelLab-2.4GHz"
 - **IP do robô:** se ele mudar, refaça as rotas com o IP novo e atualize o `ROS_DISCOVERY_SERVER` do `infra/lab/rede_lab.env`.
 - **Desfazer:** troque `+ipv4.routes` por `-ipv4.routes` no mesmo comando.
 
-Depois, o teste é `./lab.sh robo checar-rede`, que confere as rotas antes de testar o DDS e, se faltarem, mostra este mesmo comando.
+Depois, o teste é `infra/docker/lab.sh robo checar-rede`, que confere as rotas antes de testar o DDS e, se faltarem, mostra este mesmo comando.

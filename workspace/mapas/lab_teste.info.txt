@@ -1,7 +1,0 @@
-mapa: lab_teste
-data: 2026-11-19 14:42:39 -0300
-modo: robo
-comecou_na_doca: nao_informado
-slam: turtlebot4_navigation slam.launch.py (sync=true)
-salvo_com: nav2_map_server map_saver_cli, remap map:=/robot1/map, map_subscribe_transient_local:=true (o save_map do slam_toolbox deu result=255)
-git: 97dcfc1

@@ -105,8 +105,7 @@ jobs:
   # ------------------------------------------------------------------ L0
   # Os testes L0 dentro da imagem oficial do ROS, com o pytest e o PyYAML do apt. Assim o
   # teste usa as MESMAS versões que o robô e o PC têm: humble = Ubuntu 22.04, Python 3.10.
-  # Só Humble desde a migração (ADR-001, CI-01). O Jazzy saiu da matriz junto com as imagens;
-  # para voltar a testar nele, acrescente "jazzy" à lista abaixo.
+  # Só Humble desde a migração (ADR-001, CI-01).
   l0:
     name: L0 (${{ matrix.distro }})
     runs-on: ubuntu-latest
@@ -136,6 +135,6 @@ jobs:
       - name: Testes do lab_tb4 (cenários do L1 e conferidor; sem ROS)
         working-directory: workspace/meu_ws/src/lab_tb4
         run: python3 -m pytest -ra
-      - name: Testes dos exemplos (decisão da patrulha, validador de ações da LLM)
-        working-directory: workspace/exemplos
+      - name: Testes da camada da LLM (validador de ações)
+        working-directory: workspace/llm
         run: python3 -m pytest -ra

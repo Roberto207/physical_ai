@@ -1,14 +1,7 @@
-# Modelo da configuração da patrulha para o laboratório do INF (robô real).
-#
-# Este arquivo NÃO roda como está: faltam o mapa e os pontos, que só existem depois do
-# SLAM no laboratório (kit de campo, etapas 4 e 6). Enquanto a lista `pontos` estiver
-# vazia, o validar_pontos e a patrulha recusam o arquivo (código 2). É de propósito.
-#
-# Como preencher: copie para um nome novo (por exemplo, inf_lab_2026-11.yaml), siga o
-# kit de campo em specs/patrol-inf/kit-de-campo.md e, antes de qualquer movimento, rode:
-#
-#     validar_pontos caminho/do/arquivo.yaml
-#
+# Configuração da patrulha_tb4 (programa anterior) para o mapa_lab_novo, preenchida em 2026-11-21.
+# Os programas de workspace/patrulha_oficial/ NÃO leem este arquivo. Modelo vazio e explicação
+# dos campos: workspace/meu_ws/src/patrulha_tb4/config/inf_lab.yaml.
+# Antes de qualquer movimento, valide (docs/guias/como-rodar.md, seção 6).
 # Todas as poses estão no referencial do mapa (frame `map`), em metros e graus.
 patrulha:
   ambiente: real

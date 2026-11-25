@@ -9,6 +9,14 @@ Registro do que foi decidido e por quê. Atualizar quando algo mudar.
 | [ADR-001](ADR-001-ros2-humble.md) | Todas as imagens em ROS 2 Humble. O Jazzy fica na tag git `jazzy-final` e nas imagens `physical-ai:jazzy-<alvo>` | 2026-11-18 |
 | [ADR-002](ADR-002-gazebo-principal-no-pc-do-lab.md) | O Gazebo (Ignition Fortress) sem janela no PC do lab é o simulador principal. O `nav2_loopback_sim` é vendorizado e continua como L1 de injeção de falhas | 2026-11-18 |
 
+## Decisões de 2026-11-25
+
+| Decisão | Motivo |
+|---|---|
+| A patrulha no robô usa os programas de `workspace/patrulha_oficial/` e o `mapa_lab_novo` | São os que vêm sendo usados. Os mapas antigos foram apagados |
+| Os pontos são os de `workspace/mapas/pontos_mapa_lab_novo.md`, sem os graus | Graus não confirmados |
+| Retirada a regra que proibia o `lab.sh robo` até a verificação V5 | Decisão do Roberto. As demais regras de segurança continuam (`docs/contexto/AGENTES.md`, seção 1) |
+
 ## Decisões antigas (2026-11-05 a 2026-11-10)
 
 Anteriores aos ADRs. Os caminhos e os números são da época.

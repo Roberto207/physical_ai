@@ -15,11 +15,9 @@
 # - O entrypoint da imagem carrega o ROS da distro dela: nenhum comando aqui escreve a distro.
 # Explicação: docs/tarefas/2026-11-16-compose-e-alvos.md e specs/migracao-humble/
 #
-# ATENÇÃO (2026-11-16): NÃO USE ESTE ARQUIVO COM O ROBÔ DO LAB ATÉ A IMAGEM HUMBLE SER
-# VERIFICADA NELE (V5 da spec specs/migracao-humble). Nós Jazzy derrubaram o robô Humble, que
-# morre por falta de memória ao ler a mensagem interna ParticipantEntitiesInfo, que mudou de
-# formato entre as versões. As imagens deste arquivo agora são Humble, e o lab.sh recusa imagem
-# de outra distro, mas o teste com o robô ainda não foi feito.
+# O robô é Humble: nós Jazzy na rede dele o derrubaram em 2026-11-16 (falta de memória ao ler
+# a mensagem interna ParticipantEntitiesInfo, de formato diferente entre as versões). Por isso
+# as imagens são Humble e o lab.sh recusa imagem de outra distro.
 #
 # O robô do lab (conferido em 2026-11-16, docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md):
 # - Roda ROS 2 Humble. O /robot1/cmd_vel dele é geometry_msgs/Twist (sem carimbo), que é o padrão
@@ -82,8 +80,8 @@ services:
     mem_limit: 1g
     memswap_limit: 1g
     command: >-
-      bash -c "test -f ${MAPA:-/mapas/lab.yaml} || { echo 'Mapa ${MAPA:-/mapas/lab.yaml} não existe. Defina MAPA=/mapas/<nome>.yaml'; exit 1; } &&
-      exec ros2 launch turtlebot4_navigation localization.launch.py map:=${MAPA:-/mapas/lab.yaml}
+      bash -c "test -f ${MAPA:-/mapas/mapa_lab_novo.yaml} || { echo 'Mapa ${MAPA:-/mapas/mapa_lab_novo.yaml} não existe. Defina MAPA=/mapas/<nome>.yaml'; exit 1; } &&
+      exec ros2 launch turtlebot4_navigation localization.launch.py map:=${MAPA:-/mapas/mapa_lab_novo.yaml}
       params:=/workspace/meu_ws/src/patrulha_tb4/config/localization_inf.yaml
       namespace:=${ROBO_NS-/robot1}"
 
@@ -135,7 +133,7 @@ services:
           $${NS:+-r __ns:=$$NS} \
           -p stamped:=false -p speed:=${VEL:-0.15} -p turn:=${GIRO:-0.5}
 
-  # A nossa patrulha. MOVE O ROBÔ REAL SOZINHO. Precisa de localizacao e nav2 rodando.
+  # patrulha_tb4 (programa anterior; o atual está em workspace/patrulha_oficial/). MOVE O ROBÔ SOZINHO. Precisa de localizacao e nav2 rodando.
   # CONFIG é o caminho DENTRO do container. O padrão é o modelo vazio, que o validar_pontos
   # recusa de propósito: sem uma configuração preenchida, a patrulha não sai.
   # COMPILAR_WS: o entrypoint compila o patrulha_tb4 em /tmp antes (cerca de 1 s).

@@ -7,6 +7,7 @@ import time
 
 import rclpy
 from rclpy.qos import qos_profile_sensor_data
+from rclpy.utilities import remove_ros_args
 from sensor_msgs.msg import BatteryState
 from turtlebot4_navigation.turtlebot4_navigator import TurtleBot4Navigator
 
@@ -24,16 +25,18 @@ from patrol_loop import (
 
 def main():
     argumentos = argparse.ArgumentParser(
-        description='Patrulha de ida e volta pelos pontos 1, 2, 3 e 4')
+        description='Patrulha de ida e volta pelos pontos 1, 2, 3 e 4',
+        allow_abbrev=False)
     argumentos.add_argument(
         '--verificar-localizacao', action='store_true',
         help='confere map→odom e Nav2 sem mover o robô')
     argumentos.add_argument(
         '--voltar-doca', action='store_true',
         help='navega até a aproximação e encaixa na doca, sem iniciar a patrulha')
-    opcoes, args_ros = argumentos.parse_known_args()
+    # Opção digitada errado é erro: ignorá-la faria o robô andar sem o operador querer.
+    opcoes = argumentos.parse_args(remove_ros_args(sys.argv)[1:])
 
-    rclpy.init(args=args_ros)
+    rclpy.init()
     navegador = TurtleBot4Navigator()
     bateria = [None]
     navegador.create_subscription(
@@ -96,7 +99,8 @@ def main():
             navegador.cancelTask()
         except Exception:
             pass
-        navegador.info('Interrompido. Confirme a posição física; Ctrl+C não garante retorno à doca.')
+        navegador.info('Interrompido. Confirme a posição física; '
+                       'Ctrl+C não garante retorno à doca.')
         return 130
     finally:
         navegador.destroy_node()

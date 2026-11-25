@@ -1,40 +1,48 @@
-# Patrulha pelo exemplo oficial Humble, no TurtleBot 4 Standard físico
+# Patrulha pelo exemplo oficial Humble, no TurtleBot 4 Standard
 
-Origem do exemplo: [`turtlebot/turtlebot4_tutorials`, ramo `humble`, `patrol_loop.py`](https://github.com/turtlebot/turtlebot4_tutorials/blob/humble/turtlebot4_python_tutorials/turtlebot4_python_tutorials/patrol_loop.py), licença Apache-2.0. Os programas adaptados para `mapa_lab_novo` e `/robot1` estão em `upstream/`: `patrol_loop.py` percorre os quatro pontos e volta à doca; `loop.py` repete os pontos 1 → 3 → 4 → 3 → 1; `patrol_loop2.py` faz 1 → 2 → 3 → 4 → 3 → 2 → 1 e retorna à doca.
+Programas adaptados do [`patrol_loop.py` oficial](https://github.com/turtlebot/turtlebot4_tutorials/blob/humble/turtlebot4_python_tutorials/turtlebot4_python_tutorials/patrol_loop.py) (ramo `humble`, licença Apache-2.0) para o `mapa_lab_novo` e o namespace `/robot1`. Usam o `TurtleBot4Navigator` ([manual](https://turtlebot.github.io/turtlebot4-user-manual/tutorials/turtlebot4_navigator.html)).
 
-O [manual oficial](https://turtlebot.github.io/turtlebot4-user-manual/tutorials/turtlebot4_navigator.html) diz que o exemplo original é para simulação e requer destinos e mapa próprios no robô físico. Nosso script usa `TurtleBot4Navigator` e coordenadas `x, y` medidas com Publish Point no `mapa_lab_novo`. O script calcula a orientação de cada destino pela direção do ponto seguinte.
+## Arquivos
 
-## Preparar no PC
+| Arquivo | Rota | Termina | Pede `SIM` |
+|---|---|---|---|
+| `patrol_loop2.py` | 1 → 2 → 3 → 4 → 3 → 2 → 1 | Na doca | Não |
+| `loop.py` | 1, depois 3 → 4 → 3 → 1 sem fim | `Ctrl+C`, bateria baixa (volta à doca) ou falha | Não |
+| `patrol_loop.py` | 1 → 2 → 3 → 4, repetido N vezes | Na doca (`0` = sem fim) | Só pelo `rodar.sh` |
+| `rodar.sh` | Confere mapa, rede e contêineres e chama o `patrol_loop.py` | | Sim |
 
-Na raiz `~/physical_ai`:
+- O `patrol_loop.py` é também a **base** dos outros dois: o `patrol_loop2.py` importa dele os pontos e as funções, e o `loop.py` importa os pontos e os limites. Não apagar.
+- O exemplo oficial, sem alterações, está no histórico: `git show 2578ee0:workspace/patrulha_oficial/upstream/patrol_loop.py`.
+- Opção digitada errado encerra o programa com erro, sem mover o robô.
 
-```bash
-infra/docker/lab.sh robo checar-rede
-MAPA=/mapas/mapa_lab_novo.yaml infra/docker/lab.sh robo subir localizacao
-MAPA=/mapas/mapa_lab_novo.yaml infra/docker/lab.sh robo subir nav2 rviz
-infra/docker/lab.sh robo estado
-```
+## Como rodar
 
-**Depois de subir a localização**, no RViz, com o robô encaixado na doca, usar **2D Pose Estimate** na posição e direção reais do robô. Conferir se o laser coincide com as paredes. O script não publica uma pose inicial e exige uma transformação `map→odom` recente antes de mover. Confirmar no log do Nav2 `Managed nodes are active`. Se o alinhamento estiver errado, não executar movimento.
+Sequência completa, da subida dos serviços ao encerramento:
 
-Pontos 1 e 4 medidos com Publish Point em 23/11/2026. Os valores anteriores estão registrados em `docs/tarefas/2026-11-23-patrulha-oficial-mapa-lab-novo.md` para facilitar reversão.
+- `docs/guias/patrulha-volta-a-doca.md`
+- `docs/guias/patrulha-loop-continuo.md`
 
-## Uma volta supervisionada
+## Pontos em uso no código
 
-```bash
-workspace/patrulha_oficial/rodar.sh 1
-```
+Metros, referencial `map`, no `workspace/mapas/mapa_lab_novo.yaml`. Fonte: `workspace/mapas/pontos_mapa_lab_novo.md` (os graus anotados lá não são usados; a orientação vem da direção do ponto seguinte).
 
-O script verifica mapa, rede, contêineres e pede `SIM`. Com bateria acima de 20% e robô na doca, faz undock, visita os quatro pontos configurados na ordem e tenta voltar à doca após a volta. **Ao falhar qualquer destino, para e não envia o próximo.** A posição `ponto 1` também é a aproximação da doca. Antes de rodar, uma pessoa deve permanecer ao lado do robô com área livre e possibilidade de pará-lo.
+| Ponto | x | y |
+|---|---|---|
+| Doca | -0.203 | 0.100 |
+| 1 (também é a aproximação da doca) | -0.586 | -0.807 |
+| 2 | -3.550 | -3.063 |
+| 3 | -5.608 | -0.823 |
+| 4 | -1.967 | 1.030 |
 
-Cada destino tem limite de 120 s; ao excedê-lo, o script cancela a meta e para. O limite não cobre uma resposta inicial do servidor de ação que nunca chegue nem as rotinas oficiais de dock/undock, que podem esperar indefinidamente em caso de falha de comunicação. Se o robô não avançar, use `Ctrl+C`, confira sua posição física e os logs do Nav2 antes de tentar de novo.
+Para mudar um ponto, editar `PONTOS` somente em `patrol_loop.py`.
 
-`workspace/patrulha_oficial/rodar.sh 0` repete as voltas até bateria baixa ou `Ctrl+C`. Se a bateria baixar, tenta aproximar e encaixar, depois encerra. `Ctrl+C` cancela a tarefa ativa, mas **não garante retorno à doca**; conferir fisicamente e por `/robot1/dock_status`.
+## Comportamento comum
 
-Para executar o loop contínuo, use `infra/docker/lab.sh robo compose run --rm -T ferramentas python3 /workspace/patrulha_oficial/upstream/loop.py --ros-args -r __ns:=/robot1`.
+- Exigem o robô na doca no início, `map→odom` recente (2D Pose Estimate no RViz; os programas não publicam a pose) e bateria a partir de 20%.
+- Um destino que falha, é recusado ou passa de 120 s encerra o programa, com o robô onde está.
+- O limite de 120 s não cobre um servidor de ação que não responda, nem as rotinas de dock e undock.
+- `Ctrl+C` cancela a meta, sem voltar à doca. Para voltar: `patrol_loop2.py --voltar-doca`.
 
-Para fazer uma ida e volta pelos quatro pontos e terminar encaixado na doca, use `infra/docker/lab.sh robo compose run --rm -T ferramentas python3 /workspace/patrulha_oficial/upstream/patrol_loop2.py --ros-args -r __ns:=/robot1`.
+## Estado dos ensaios
 
-Se a patrulha estiver parada fora da doca, primeiro confirme que o processo dela foi encerrado. Depois solicite o retorno com `infra/docker/lab.sh robo compose run --rm -T ferramentas python3 /workspace/patrulha_oficial/upstream/patrol_loop2.py --voltar-doca --ros-args -r __ns:=/robot1`.
-
-Logs úteis: `infra/docker/lab.sh robo logs nav2` e `infra/docker/lab.sh robo logs localizacao`. O arquivo antigo `workspace/mapas/patrulha_mapa_lab_novo.yaml` pertence ao outro programa e não é lido por este script.
+O `patrol_loop.py` completou os quatro pontos uma vez no robô, com falha na volta à doca. Em 23/11 houve falhas no ponto 1, sem causa determinada. Não há registro de ensaio físico do `patrol_loop2.py` nem do `loop.py`. Histórico em `docs/tarefas/2026-11-23-patrulha-oficial-mapa-lab-novo.md`.
