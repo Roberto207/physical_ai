@@ -6,6 +6,8 @@ A entrada mais nova fica em cima. Ao fechar uma tarefa, crie `AAAA-MM-DD-<nome>.
 
 | Data | Tarefa | Documento |
 |---|---|---|
+| 2026-11-25 | Spec da skill `preflight-robo` (`specs/preflight-robo/`) | `2026-11-25-spec-preflight-robo.md` |
+| 2026-11-25 | Skills do Claude Code para o PC do laboratório | `2026-11-25-skills-pc-do-lab.md` |
 | 2026-11-25 | Integração com LLM, fase 1: interpretador local e medição | `2026-11-25-llm-fase-1.md` |
 | 2026-11-25 | Reorganização do repositório antes da integração com LLM | `2026-11-25-reorganizacao-do-repositorio.md` |
 | 2026-11-25 | Guias, unificação de documentos, patrulha oficial e mapas | `2026-11-25-guias-patrulha-e-comandos.md` |
