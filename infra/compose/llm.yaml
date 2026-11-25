@@ -1,0 +1,32 @@
+# Nó de linguagem natural (llm_tb4) em ENSAIO: com o freio ligado e ISOLADO DO ROBÔ.
+#
+#   docker compose -f infra/compose/llm.yaml up -d          # compila e inicia o nó
+#   docker compose -f infra/compose/llm.yaml logs -f llm    # decisões
+#   docker compose -f infra/compose/llm.yaml down
+#
+# Isolamento: sem o rede_lab.env (sem Discovery Server do robô), domínio 43 e ROS só na própria
+# máquina. A rede é a do PC apenas para alcançar o Ollama, que escuta em 127.0.0.1.
+# Explicação: specs/llm-integracao/PLANO.md e workspace/meu_ws/src/llm_tb4/README.md
+name: tb4-llm
+
+services:
+  llm:
+    image: physical-ai:base
+    pull_policy: never
+    init: true
+    network_mode: host
+    mem_limit: 512m
+    memswap_limit: 512m
+    environment:
+      ROS_DOMAIN_ID: "43"
+      ROS_LOCALHOST_ONLY: "1"
+      RMW_IMPLEMENTATION: rmw_fastrtps_cpp
+      COMPILAR_WS: patrulha_tb4,llm_tb4
+    volumes:
+      - ../../workspace:/workspace:ro
+      - ../../workspace/mapas:/mapas:ro
+    # Sem robô não há bateria: o valor simulado deixa a validação responder. Compilado em /tmp.
+    command: >-
+      ros2 launch llm_tb4 natural_language_nav_launch.py
+      namespace:=${ROBO_NS-/robot1} parking_brake:=true
+      bateria_simulada:=${BATERIA_SIMULADA:-0.9}

@@ -135,6 +135,6 @@ jobs:
       - name: Testes do lab_tb4 (cenários do L1 e conferidor; sem ROS)
         working-directory: workspace/meu_ws/src/lab_tb4
         run: python3 -m pytest -ra
-      - name: Testes da camada da LLM (validador de ações)
-        working-directory: workspace/llm
+      - name: Testes do llm_tb4 (interpretador, validador, coordenadas; sem ROS)
+        working-directory: workspace/meu_ws/src/llm_tb4
         run: python3 -m pytest -ra

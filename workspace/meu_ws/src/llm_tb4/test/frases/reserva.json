@@ -6,7 +6,7 @@
   {"frase": "retorne à base", "esperado": "voltar_para_base"},
   {"frase": "hora de recarregar", "esperado": "voltar_para_base"},
   {"frase": "para tudo", "esperado": "parar"},
-  {"frase": "não se mexa", "esperado": "recusar"},
+  {"frase": "não se mexa", "esperado": "parar"},
   {"frase": "vá até a cozinha da minha casa", "esperado": "recusar"},
   {"frase": "o que tem no ponto 2?", "esperado": "recusar"},
   {"frase": "gire 360 graus", "esperado": "recusar"},

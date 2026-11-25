@@ -58,8 +58,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # ---------------------------------------------------------------- llm
 FROM base AS llm
-# Esqueleto da missão do LLM: só os tutoriais oficiais (ramo humble). As bibliotecas do provedor
-# de LLM entram aqui quando o provedor for decidido (pendência aberta).
+# Esqueleto antigo da missão do LLM: só os tutoriais oficiais (ramo humble), como referência. Não é
+# usado: o pacote llm_tb4 roda na imagem base e fala com o Ollama por HTTP (infra/compose/llm.yaml).
 RUN apt-get update && apt-get install -y --no-install-recommends git \
     && rm -rf /var/lib/apt/lists/* \
     && bash -c "source /opt/ros/$ROS_DISTRO/setup.bash \

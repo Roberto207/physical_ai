@@ -1,6 +1,6 @@
 import pytest
 
-from validar_acao import validar
+from llm_tb4.validar_acao import validar
 
 LOCAIS = {'lab': [1.0, 2.0], 'corredor': [-3.0, 0.5]}
 
