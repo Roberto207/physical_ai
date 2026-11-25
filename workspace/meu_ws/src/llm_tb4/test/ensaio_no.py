@@ -1,4 +1,5 @@
-"""Ensaio do nó num contêiner sem rede, com um Ollama falso e lento. Não toca o robô.
+"""Ensaio do nó COM O FREIO LIGADO, num contêiner sem rede, com um Ollama falso e lento.
+Não toca o robô. A execução é ensaiada em ensaio_execucao.py.
 
 Rodar na raiz do repositório:
     docker run --rm --network none -e COMPILAR_WS=patrulha_tb4,llm_tb4 -e ROS_DOMAIN_ID=43 \
@@ -153,10 +154,10 @@ def main():
 
     atraso[0] = 0.2
     registro.clear()
-    processo = subir('parking_brake:=false')
-    girar(15, lambda: achou('recusado'))
-    conferir('freio desligado: o nó se recusa a iniciar',
-             achou('parking_brake:=false recusado') and not achou('DECISAO'))
+    processo = subir('parking_brake:=false', 'bateria_simulada:=0.9')
+    girar(15, lambda: achou('recusada'))
+    conferir('freio desligado com bateria simulada: o nó se recusa a iniciar',
+             achou('bateria_simulada recusada') and not achou('FREIO DESLIGADO'))
     encerrar(processo)
 
     registro.clear()

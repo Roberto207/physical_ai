@@ -2,7 +2,7 @@
 
 Missão 2 do projeto (`docs/contexto/projeto.md`). Pacote ROS 2 baseado no `turtlebot4_openai_tutorials` oficial, com um modelo local. Plano, desvios e medições: `specs/llm-integracao/PLANO.md`.
 
-**Estado:** o nó interpreta e registra a decisão. **Não há código de movimento.**
+**Estado:** o nó interpreta e executa com o `TurtleBot4Navigator`. O freio (`parking_brake`) vem ligado. A execução foi ensaiada só com um robô falso: **falta simulador e robô**.
 
 ## Modelo
 
@@ -40,11 +40,13 @@ Depois de mudar o código, `down` e `up -d` de novo.
 | Nome | Tipo | Uso |
 |---|---|---|
 | `user_input` | `std_msgs/String`, entrada | O pedido |
-| `ready_for_input` | `std_msgs/Bool`, saída | Falso enquanto o nó está ocupado. Ocupado, ele ignora tudo menos pedidos de parar |
+| `ready_for_input` | `std_msgs/Bool`, saída | Verdadeiro quando uma mensagem nova será atendida. Falso só enquanto, parado, interpreta um pedido |
+| `dock_status`, `tf`, estados das ações | entrada, com o freio solto | Condições antes de mover |
 | `battery_state` | `sensor_msgs/BatteryState`, entrada | Carga usada na validação |
 | `model_name` | parâmetro | Modelo do Ollama |
-| `parking_brake` | parâmetro | Só `true`; com `false` o nó não inicia |
-| `ollama_url`, `mapa`, `bateria_simulada` | parâmetros | Endereço do Ollama, mapa das coordenadas e carga simulada (-1 usa a real) |
+| `parking_brake` | parâmetro | `true` (padrão): nada é enviado. `false`: **move o robô** |
+| `ollama_url`, `mapa`, `arquivo_pontos` | parâmetros | Endereço do Ollama, mapa e arquivo de onde ler os pontos |
+| `bateria_simulada` | parâmetro | Carga para ensaio (-1 usa a real); recusada com o freio solto |
 
 ## O que pode ser pedido
 
@@ -65,7 +67,11 @@ Depois de mudar o código, `down` e `up -d` de novo.
 
 | Arquivo | O que faz |
 |---|---|
-| `llm_tb4/no_linguagem_natural.py` | O nó |
+| `llm_tb4/no_linguagem_natural.py` | O nó: entrada, Ollama, sinais de encerramento |
+| `llm_tb4/missao.py` | Quando mover, cancelar ou ignorar. Sem ROS |
+| `llm_tb4/execucao.py` | Clientes de ação, sensores e cancelamento |
+| `llm_tb4/pontos.py` | Pontos da patrulha, direção de chegada e proteção da doca |
+| `llm_tb4/falar.py` | Terminal para enviar pedidos (`ros2 run llm_tb4 falar`) |
 | `llm_tb4/interpretador.py` | Frase → ação validada: pedido de parar e `dock`/`undock` decididos por código; negação e dois destinos recusados; o resto vai ao modelo |
 | `llm_tb4/validar_acao.py` | Aceita só as ações da tabela |
 | `llm_tb4/coordenadas.py`, `llm_tb4/mapa.py` | Lê coordenadas e confere no mapa |
@@ -87,10 +93,12 @@ Na raiz do repositório:
 # testes sem modelo (o python3 do PC não tem pytest)
 docker run --rm --network none -v "$PWD:/repo:ro" -w /repo/workspace/meu_ws/src/llm_tb4 \
   physical-ai:base python3 -m pytest -q -p no:cacheprovider
-# ensaio do nó, com um Ollama falso e sem rede: comando no topo de test/ensaio_no.py
+# ensaios sem rede, com Ollama e robô falsos: comandos no topo de test/ensaio_no.py e test/ensaio_execucao.py
 ```
 
 ## Limites
 
 - O modelo erra: perguntas e afirmações podem virar ação. Pedidos de parar em formas novas podem não ser reconhecidos.
-- Nenhum movimento deve ser ligado sem os requisitos da fase seguinte do plano.
+- Sem confirmação por ação: com o freio solto, uma interpretação errada move o robô.
+- Se o processo morrer à força, o Nav2 segue até o destino.
+- No robô real use `lab.sh robo llm`, não o `ros2 launch`: o launch morre num `docker stop` antes de o nó cancelar a meta.

@@ -24,6 +24,7 @@ setup(
     entry_points={
         'console_scripts': [
             'natural_language_nav = llm_tb4.no_linguagem_natural:main',
+            'falar = llm_tb4.falar:main',
         ],
     },
 )
