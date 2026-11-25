@@ -6,6 +6,7 @@ A entrada mais nova fica em cima. Ao fechar uma tarefa, crie `AAAA-MM-DD-<nome>.
 
 | Data | Tarefa | Documento |
 |---|---|---|
+| 2026-11-25 | Integração com LLM, fase 1: interpretador local e medição | `2026-11-25-llm-fase-1.md` |
 | 2026-11-25 | Reorganização do repositório antes da integração com LLM | `2026-11-25-reorganizacao-do-repositorio.md` |
 | 2026-11-25 | Guias, unificação de documentos, patrulha oficial e mapas | `2026-11-25-guias-patrulha-e-comandos.md` |
 | 2026-11-23 | Patrulha oficial adaptada e ensaio no mapa `mapa_lab_novo` | `2026-11-23-patrulha-oficial-mapa-lab-novo.md` |

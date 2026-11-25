@@ -34,3 +34,7 @@ Sem rede e sem robô: YAML e os dois Compose válidos; `bash -n`; `checar_caminh
 ## Efeito prático
 
 O ponto de partida é o `README.md`; o trabalho com LLM começa em `workspace/llm/`.
+
+## Complemento: referências oficiais e escolha da LLM
+
+Registrados em `docs/contexto/stack.md` os links de Resources do manual e do `turtlebot4_tutorials` (páginas lidas em 25/11), e a escolha do Ollama com `qwen2.5:1.5b` em `workspace/llm/README.md`, no projeto, nas decisões e nas pendências. Nada foi instalado.

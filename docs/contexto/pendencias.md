@@ -13,9 +13,13 @@ Sem resposta registrada no repositório.
 
 ## LLM (próxima etapa)
 
-- [ ] Provedor de LLM; há créditos de API ou GPU no INF/AKCIT?
+- [ ] Aprovar as fases 2 a 4 de `specs/llm-integracao/PLANO.md`
+- [ ] Reduzir os erros que moveriam o robô (4 de 16 capciosas e 2 de 21 de locais em 25/11)
+- [ ] Decidir se as fases 3 e 4 vão direto ao robô físico (a regra de validar no simulador está em `docs/contexto/AGENTES.md`)
+- [ ] Escolher como o simulador alcança o interpretador (rede isolada)
+- [ ] Testar o simulador leve com o `mapa_lab_novo`
+- [ ] Medir o tempo de resposta com os contêineres do robô no ar
 - [ ] Confirmar com a equipe o desenho de ações discretas validadas (`workspace/llm/README.md`)
-- [ ] Definir os nomes dos locais do `mapa_lab_novo` que a LLM pode usar
 
 ## Patrulha no robô
 

@@ -44,7 +44,7 @@ Prazo: cerca de 1 mês e meio a partir de 2026-11-05, conforme o Roberto. Data e
 
 - Existe o pacote oficial `turtlebot4_openai_tutorials`, com o módulo `natural_language_nav`. Ele usa a API antiga da OpenAI e executa com `exec()` o que o modelo escreve, então serve de referência, não de base.
 - A nossa abordagem: a LLM escolhe entre ações discretas validadas (`workspace/llm/validar_acao.py`) e nada é executado com `exec`.
-- Provedor de LLM em aberto: a sugestão é começar com API de plano gratuito.
+- LLM escolhida (25/11): **Ollama** com `qwen2.5:1.5b`, gratuito e local.
 
 ### 3.3 Links de foco (passados no grupo)
 

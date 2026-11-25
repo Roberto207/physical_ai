@@ -1,0 +1,23 @@
+[
+  {"frase": "vai pra impressora", "esperado": "ir_para:ponto_1"},
+  {"frase": "vá para perto da doca", "esperado": "ir_para:ponto_1"},
+  {"frase": "vai até a geladeira", "esperado": "ir_para:ponto_2"},
+  {"frase": "leve o robô à geladeirinha", "esperado": "ir_para:ponto_2"},
+  {"frase": "vai pro microondas", "esperado": "ir_para:ponto_2"},
+  {"frase": "vá até perto do micro-ondas", "esperado": "ir_para:ponto_2"},
+  {"frase": "vai pra porta", "esperado": "ir_para:ponto_3"},
+  {"frase": "se aproxime da porta", "esperado": "ir_para:ponto_3"},
+  {"frase": "vai pra janela", "esperado": "ir_para:ponto_4"},
+  {"frase": "vá até perto da janela", "esperado": "ir_para:ponto_4"},
+  {"frase": "vai para a mesa central", "esperado": "ir_para:ponto_4"},
+  {"frase": "vá até a mesa do meio", "esperado": "ir_para:ponto_4"},
+  {"frase": "estou com fome, vai pro lugar onde esquento comida", "esperado": "ir_para:ponto_2"},
+  {"frase": "vá imprimir lá", "esperado": "ir_para:ponto_1"},
+  {"frase": "vai pro banheiro", "esperado": "recusar"},
+  {"frase": "vá até o quadro branco", "esperado": "recusar"},
+  {"frase": "vai até a televisão", "esperado": "recusar"},
+  {"frase": "vá até a cadeira", "esperado": "recusar"},
+  {"frase": "não vá para a janela", "esperado": "recusar"},
+  {"frase": "a porta está aberta?", "esperado": "recusar"},
+  {"frase": "vá da janela para a porta", "esperado": "recusar"}
+]

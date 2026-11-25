@@ -1,0 +1,16 @@
+[
+  {"frase": "Quero que você se desloque ao ponto 3", "esperado": "ir_para:ponto_3"},
+  {"frase": "siga para o ponto dois", "esperado": "ir_para:ponto_2"},
+  {"frase": "me encontre na geladeira pequena", "esperado": "ir_para:ponto_2"},
+  {"frase": "ponto 4", "esperado": "ir_para:ponto_4"},
+  {"frase": "retorne à base", "esperado": "voltar_para_base"},
+  {"frase": "hora de recarregar", "esperado": "voltar_para_base"},
+  {"frase": "para tudo", "esperado": "parar"},
+  {"frase": "não se mexa", "esperado": "recusar"},
+  {"frase": "vá até a cozinha da minha casa", "esperado": "recusar"},
+  {"frase": "o que tem no ponto 2?", "esperado": "recusar"},
+  {"frase": "gire 360 graus", "esperado": "recusar"},
+  {"frase": "ande a 5 metros por segundo", "esperado": "recusar"},
+  {"frase": "ontem você foi ao ponto 3", "esperado": "recusar"},
+  {"frase": "desligue o robô", "esperado": "recusar"}
+]

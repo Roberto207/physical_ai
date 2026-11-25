@@ -53,7 +53,7 @@ Detalhes e a medição que originou esses fatos: `docs/tarefas/2026-11-16-robo-r
 
 Itens em aberto: `docs/contexto/pendencias.md`.
 
-### Segundo robô (21/11)
+### Segundo robô (21/11) - HÁ DE SE VERIFICAR ESSA INFORMAÇÃO, CUIDADO!!
 
 Número de série `1000000044bad95f`. Pelo cabo: `eth0` 192.168.185.3 e `usb0` 192.168.186.3; `wlan0` desligada na leitura. Registro: `docs/tarefas/2026-11-21-acesso-segundo-turtlebot-cabo.md`. O número de série do primeiro robô não foi anotado.
 

@@ -13,6 +13,8 @@ Registro do que foi decidido e por quê. Atualizar quando algo mudar.
 
 | Decisão | Motivo |
 |---|---|
+| LLM: Ollama com `qwen2.5:1.5b` | Gratuito e local |
+| O manual do TurtleBot 4 (Resources) e o `turtlebot4_tutorials` são a primeira consulta ao planejar | O tutorial oficial foi a base da patrulha que funcionou |
 | A patrulha no robô usa os programas de `workspace/patrulha_oficial/` e o `mapa_lab_novo` | São os que vêm sendo usados. Os mapas antigos foram apagados |
 | Os pontos são os de `workspace/mapas/pontos_mapa_lab_novo.md`, sem os graus | Graus não confirmados |
 | Retirada a regra que proibia o `lab.sh robo` até a verificação V5 | Decisão do Roberto. As demais regras de segurança continuam (`docs/contexto/AGENTES.md`, seção 1) |

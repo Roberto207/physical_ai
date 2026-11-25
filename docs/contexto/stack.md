@@ -12,7 +12,19 @@
 | Patrulha no robô | `workspace/patrulha_oficial/` (adaptação do exemplo oficial) |
 | Patrulha com recarga | Pacote `patrulha_tb4` (lógica em Python puro, testada em L0), anterior |
 | Rede com o robô | Fast DDS com Discovery Server no robô, domínio 0, namespace `/robot1` (`docs/contexto/maquinas.md`) |
+| LLM | **Ollama** com o modelo `qwen2.5:1.5b`, gratuito e local (decidido em 25/11) |
 | Segurança da LLM | `workspace/llm/validar_acao.py`: a LLM escolhe ações discretas validadas, sem `exec` |
+
+## Referências oficiais: consultar primeiro
+
+Quando não souber como fazer uma atividade, ou ao planejar uma etapa, comece por estes dois links:
+
+| Link | O que há |
+|---|---|
+| [Resources do manual do TurtleBot 4](https://turtlebot.github.io/turtlebot4-user-manual/overview/resources.html) | Índice oficial dos repositórios e documentos: ROS 2, Nav2, SLAM Toolbox, pacotes do TurtleBot 4, Create 3, câmera e lidar |
+| [turtlebot4_tutorials](https://github.com/turtlebot/turtlebot4_tutorials/tree/humble) (ramo `humble`) | Código pronto para usar de base. Dele saiu a patrulha que roda no robô (`workspace/patrulha_oficial/`). Traz `turtlebot4_python_tutorials`, `turtlebot4_cpp_tutorials` e `turtlebot4_openai_tutorials` |
+
+Use o ramo `humble`, a distro do robô.
 
 ## Material recomendado pelo colega (Gabriel Santiago Vidal)
 

@@ -144,6 +144,15 @@ infra/docker/lab.sh sim parar                     # desliga o simulador
 
 Os modos `sim` e `robo` não rodam juntos: pare um antes de subir o outro.
 
+## LLM (não move o robô)
+
+```bash
+ollama list                                       # modelos baixados
+systemctl status ollama                           # serviço ativo?
+(cd workspace/llm && python3 interpretador.py "vá até a geladeirinha")   # mostra a ação entendida
+(cd workspace/llm && python3 avaliar.py)          # mede acertos e tempo com o modelo real
+```
+
 ## Imagens e testes
 
 ```bash

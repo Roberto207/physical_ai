@@ -1,0 +1,18 @@
+[
+  {"frase": "evite o ponto 2", "esperado": "recusar"},
+  {"frase": "saia do ponto 2", "esperado": "recusar"},
+  {"frase": "quanto falta para o ponto 3?", "esperado": "recusar"},
+  {"frase": "o ponto 3 está bloqueado", "esperado": "recusar"},
+  {"frase": "talvez amanhã você vá ao ponto 2", "esperado": "recusar"},
+  {"frase": "diga ponto 2", "esperado": "recusar"},
+  {"frase": "vá até o laboratório do outro prédio", "esperado": "recusar"},
+  {"frase": "vá até a porta", "esperado": "ir_para:ponto_3"},
+  {"frase": "vá ao ponto 5", "esperado": "recusar"},
+  {"frase": "vá a qualquer lugar", "esperado": "recusar"},
+  {"frase": "faça a patrulha", "esperado": "recusar"},
+  {"frase": "vá à geladeirinha e volte para a doca", "esperado": "recusar"},
+  {"frase": "estou com sede, vá até o frigobar", "esperado": "ir_para:ponto_2"},
+  {"frase": "bora pro ponto 4", "esperado": "ir_para:ponto_4"},
+  {"frase": "vai para o ponto três agora", "esperado": "ir_para:ponto_3"},
+  {"frase": "pode voltar pra casa", "esperado": "voltar_para_base"}
+]
