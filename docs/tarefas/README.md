@@ -6,6 +6,7 @@ A entrada mais nova fica em cima. Ao fechar uma tarefa, crie `AAAA-MM-DD-<nome>.
 
 | Data | Tarefa | Documento |
 |---|---|---|
+| 2026-11-25 | Correção do CI (teste que precisa do ROS) | `2026-11-25-correcao-do-ci.md` |
 | 2026-11-25 | LLM: código de execução, ensaiado com robô falso | `2026-11-25-llm-execucao.md` |
 | 2026-11-25 | LLM: pacote `llm_tb4`, nó sem movimento e coordenadas livres | `2026-11-25-llm-pacote-e-no.md` |
 | 2026-11-25 | Skills em `.claude/` e skill `preflight-robo` | `2026-11-25-skills-e-preflight.md` |

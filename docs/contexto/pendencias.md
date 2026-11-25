@@ -53,8 +53,7 @@ Plano em `specs/llm-integracao/PLANO.md`; código em `workspace/meu_ws/src/llm_t
 
 ## Repositório e simulação
 
-- [ ] O CI está vermelho desde pelo menos 22/11, na etapa de testes da `patrulha_tb4` (saída 2). Provável causa: `test_envio_base_assincrono.py` não é coletado sem o ROS no `PYTHONPATH` (reproduzido em 25/11; log do CI não lido). As etapas seguintes, entre elas os testes do `llm_tb4`, não rodam
-- [ ] `test_o_modulo_de_validacao_nao_importa_ros` falha na suíte completa dentro da imagem do ROS e passa sozinho
+- [ ] `test_o_modulo_de_validacao_nao_importa_ros` falha na suíte completa dentro da imagem do ROS e passa sozinho. Provável causa, não confirmada: `test_envio_base_assincrono.py` roda antes e carrega o `rclpy`
 - [ ] Teste de fumaça do Gazebo e os cenários L1 em Humble: sem registro de execução
 - [ ] Medição M-GZ: só com pedido do Roberto (`specs/patrol-inf/DESIGN.md`, seção 3)
 - [ ] Ramos remotos `feat_gotodock` e `v2-patrol-oficial`: decidir se integram ou saem

@@ -1,10 +1,18 @@
-"""O pedido de undock não pode ser marcado como rejeitado por demorar 2 s."""
+"""O pedido de undock não pode ser marcado como rejeitado por demorar 2 s.
+
+Importa o nó da patrulha, que precisa do ROS e do turtlebot4_navigation. Onde eles não
+estão carregados (CI e notebook), o arquivo é pulado; roda numa imagem do projeto.
+"""
 from types import SimpleNamespace
 
-from action_msgs.msg import GoalStatus
+import pytest
 
-from patrulha_tb4 import decisao
-from patrulha_tb4.no_patrulha import Patrulha
+pytest.importorskip('turtlebot4_navigation', reason='precisa do ROS e do TurtleBot 4 Navigator')
+
+from action_msgs.msg import GoalStatus  # noqa: E402
+
+from patrulha_tb4 import decisao  # noqa: E402
+from patrulha_tb4.no_patrulha import Patrulha  # noqa: E402
 
 
 class Futuro:
