@@ -24,5 +24,5 @@ read -r -p 'Digite SIM para iniciar: ' CONFIRMACAO
 [ "$CONFIRMACAO" = SIM ] || { echo 'Cancelado.'; exit 1; }
 
 infra/docker/lab.sh robo compose run --rm -T ferramentas \
-    python3 /workspace/patrulha_oficial/patrol_loop.py --voltas "$VOLTAS" \
+    python3 /workspace/patrulha_oficial/upstream/patrol_loop.py --voltas "$VOLTAS" \
     --ros-args -r __ns:=/robot1

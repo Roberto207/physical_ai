@@ -1,6 +1,6 @@
 # Patrulha pelo exemplo oficial Humble, no TurtleBot 4 Standard físico
 
-Origem: [`turtlebot/turtlebot4_tutorials`, ramo `humble`, `patrol_loop.py`](https://github.com/turtlebot/turtlebot4_tutorials/blob/humble/turtlebot4_python_tutorials/turtlebot4_python_tutorials/patrol_loop.py). Cópia intacta em `upstream/patrol_loop.py` (Apache-2.0). `patrol_loop.py` é a adaptação para `mapa_lab_novo` e `/robot1`.
+Origem do exemplo: [`turtlebot/turtlebot4_tutorials`, ramo `humble`, `patrol_loop.py`](https://github.com/turtlebot/turtlebot4_tutorials/blob/humble/turtlebot4_python_tutorials/turtlebot4_python_tutorials/patrol_loop.py), licença Apache-2.0. Os programas adaptados para `mapa_lab_novo` e `/robot1` estão em `upstream/`: `patrol_loop.py` percorre os quatro pontos e volta à doca; `loop.py` repete os pontos 1 → 3 → 4 → 3 → 1; `patrol_loop2.py` faz 1 → 2 → 3 → 4 → 3 → 2 → 1 e retorna à doca.
 
 O [manual oficial](https://turtlebot.github.io/turtlebot4-user-manual/tutorials/turtlebot4_navigator.html) diz que o exemplo original é para simulação e requer destinos e mapa próprios no robô físico. Nosso script usa `TurtleBot4Navigator` e coordenadas `x, y` medidas com Publish Point no `mapa_lab_novo`. O script calcula a orientação de cada destino pela direção do ponto seguinte.
 
@@ -30,5 +30,11 @@ O script verifica mapa, rede, contêineres e pede `SIM`. Com bateria acima de 20
 Cada destino tem limite de 120 s; ao excedê-lo, o script cancela a meta e para. O limite não cobre uma resposta inicial do servidor de ação que nunca chegue nem as rotinas oficiais de dock/undock, que podem esperar indefinidamente em caso de falha de comunicação. Se o robô não avançar, use `Ctrl+C`, confira sua posição física e os logs do Nav2 antes de tentar de novo.
 
 `workspace/patrulha_oficial/rodar.sh 0` repete as voltas até bateria baixa ou `Ctrl+C`. Se a bateria baixar, tenta aproximar e encaixar, depois encerra. `Ctrl+C` cancela a tarefa ativa, mas **não garante retorno à doca**; conferir fisicamente e por `/robot1/dock_status`.
+
+Para executar o loop contínuo, use `infra/docker/lab.sh robo compose run --rm -T ferramentas python3 /workspace/patrulha_oficial/upstream/loop.py --ros-args -r __ns:=/robot1`.
+
+Para fazer uma ida e volta pelos quatro pontos e terminar encaixado na doca, use `infra/docker/lab.sh robo compose run --rm -T ferramentas python3 /workspace/patrulha_oficial/upstream/patrol_loop2.py --ros-args -r __ns:=/robot1`.
+
+Se a patrulha estiver parada fora da doca, primeiro confirme que o processo dela foi encerrado. Depois solicite o retorno com `infra/docker/lab.sh robo compose run --rm -T ferramentas python3 /workspace/patrulha_oficial/upstream/patrol_loop2.py --voltar-doca --ros-args -r __ns:=/robot1`.
 
 Logs úteis: `infra/docker/lab.sh robo logs nav2` e `infra/docker/lab.sh robo logs localizacao`. O arquivo antigo `workspace/mapas/patrulha_mapa_lab_novo.yaml` pertence ao outro programa e não é lido por este script.

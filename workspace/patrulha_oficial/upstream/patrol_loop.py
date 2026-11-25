@@ -1,149 +1,204 @@
 #!/usr/bin/env python3
+"""Adaptação do patrol_loop.py oficial do TurtleBot 4, ramo Humble, para mapa_lab_novo.
 
-# Copyright 2023 Clearpath Robotics, Inc.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-# @author Hilary Luo (hluo@clearpathrobotics.com)
+Fonte: https://github.com/turtlebot/turtlebot4_tutorials/blob/humble/
+        turtlebot4_python_tutorials/turtlebot4_python_tutorials/patrol_loop.py
+Copyright 2023 Clearpath Robotics, Inc.; licença Apache-2.0.
+"""
 
-from math import floor
-from threading import Lock, Thread
-from time import sleep
+import argparse
+import math
+import sys
+import time
 
 import rclpy
-
-from rclpy.executors import SingleThreadedExecutor
-from rclpy.node import Node
+from nav2_simple_commander.robot_navigator import TaskResult
 from rclpy.qos import qos_profile_sensor_data
-
 from sensor_msgs.msg import BatteryState
-from turtlebot4_navigation.turtlebot4_navigator import TurtleBot4Directions, TurtleBot4Navigator
-
-BATTERY_HIGH = 0.95
-BATTERY_LOW = 0.2  # when the robot will go charge
-BATTERY_CRITICAL = 0.1  # when the robot will shutdown
+from tf2_msgs.msg import TFMessage
+from turtlebot4_navigation.turtlebot4_navigator import TurtleBot4Navigator
 
 
-class BatteryMonitor(Node):
-
-    def __init__(self, lock):
-        super().__init__('battery_monitor')
-
-        self.lock = lock
-
-        # Subscribe to the /battery_state topic
-        self.battery_state_subscriber = self.create_subscription(
-            BatteryState,
-            'battery_state',
-            self.battery_state_callback,
-            qos_profile_sensor_data)
-
-    # Callbacks
-    def battery_state_callback(self, batt_msg: BatteryState):
-        with self.lock:
-            self.battery_percent = batt_msg.percentage
-
-    def thread_function(self):
-        executor = SingleThreadedExecutor()
-        executor.add_node(self)
-        executor.spin()
+# Coordenadas medidas com Publish Point no mapa_lab_novo, em metros no frame map.
+# A orientação inicial é marcada manualmente no RViz com 2D Pose Estimate.
+DOCA = (-0.2025940716266632, 0.10048891603946686)
+PONTOS = (
+    (-0.5858250856399536, -0.8073815107345581),
+    (-3.549771785736084, -3.0633668899536133),
+    (-5.608144283294678, -0.8229406476020813),
+    (-1.9671252965927124, 1.0304899215698242),
+)
+APROXIMACAO_DOCA = PONTOS[0]
+BATERIA_BAIXA = 0.20
+BATERIA_CRITICA = 0.10
+TEMPO_DESTINO_S = 120
 
 
-def main(args=None):
-    rclpy.init(args=args)
+def pose(navegador, coordenadas, proximo):
+    x, y = coordenadas
+    # Nav2 exige orientação, calculada pela direção do ponto seguinte.
+    direcao = math.degrees(math.atan2(proximo[1] - y, proximo[0] - x))
+    return navegador.getPoseStamped([x, y], direcao)
 
-    lock = Lock()
-    battery_monitor = BatteryMonitor(lock)
 
-    navigator = TurtleBot4Navigator()
-    battery_percent = None
-    position_index = 0
+def esperar_doca(navegador, valor, limite_s=20):
+    prazo = time.monotonic() + limite_s
+    while time.monotonic() < prazo:
+        rclpy.spin_once(navegador, timeout_sec=0.2)
+        if getattr(navegador, 'is_docked', None) is valor:
+            return True
+    return False
 
-    thread = Thread(target=battery_monitor.thread_function, daemon=True)
-    thread.start()
 
-    # Start on dock
-    if not navigator.getDockedStatus():
-        navigator.info('Docking before intialising pose')
-        navigator.dock()
+def esperar_localizacao(navegador):
+    """Exigir map→odom recente; a pose é marcada pelo operador no RViz."""
+    recebido = [False]
 
-    # Set initial pose
-    initial_pose = navigator.getPoseStamped([0.0, 0.0], TurtleBot4Directions.NORTH)
-    navigator.setInitialPose(initial_pose)
+    def ao_receber_tf(mensagem):
+        for transformacao in mensagem.transforms:
+            if (transformacao.header.frame_id, transformacao.child_frame_id) != ('map', 'odom'):
+                continue
+            carimbo = transformacao.header.stamp
+            idade = time.time() - carimbo.sec - carimbo.nanosec / 1e9
+            if -2 < idade < 2:
+                recebido[0] = True
 
-    # Wait for Nav2
-    navigator.waitUntilNav2Active()
+    assinatura = navegador.create_subscription(
+        TFMessage, 'tf', ao_receber_tf, qos_profile_sensor_data)
+    try:
+        for _ in range(30):
+            rclpy.spin_once(navegador, timeout_sec=1)
+            if recebido[0]:
+                navegador.info('Transformação map→odom recente; localização disponível')
+                return True
+        navegador.error('Sem map→odom recente: use 2D Pose Estimate no RViz e confira o laser')
+        return False
+    finally:
+        navegador.destroy_subscription(assinatura)
 
-    # Undock
-    navigator.undock()
 
-    # Prepare goal poses
-    goal_pose = []
-    goal_pose.append(navigator.getPoseStamped([-5.0, 1.0], TurtleBot4Directions.EAST))
-    goal_pose.append(navigator.getPoseStamped([-5.0, -23.0], TurtleBot4Directions.NORTH))
-    goal_pose.append(navigator.getPoseStamped([9.0, -23.0], TurtleBot4Directions.NORTH_WEST))
-    goal_pose.append(navigator.getPoseStamped([10.0, 2.0], TurtleBot4Directions.WEST))
+def esperar_servidores(navegador, limite_s=30):
+    """Exigir ações disponíveis com prazo, sem a espera indefinida do exemplo."""
+    navegador.info('Conferindo ações de navegação, dock e undock...')
+    prazo = time.monotonic() + limite_s
+    while time.monotonic() < prazo:
+        if (navegador.nav_to_pose_client.server_is_ready()
+                and navegador.dock_action_client.server_is_ready()
+                and navegador.undock_action_client.server_is_ready()):
+            navegador.info('Servidores de ação disponíveis')
+            return True
+        rclpy.spin_once(navegador, timeout_sec=0.5)
+    navegador.error('Servidores de ação indisponíveis após 30 s; nenhum movimento enviado')
+    return False
 
-    while True:
-        with lock:
-            battery_percent = battery_monitor.battery_percent
 
-        if (battery_percent is not None):
-            navigator.info(f'Battery is at {(battery_percent*100):.2f}% charge')
+def navegar(navegador, coordenadas, proximo, nome):
+    destino = pose(navegador, coordenadas, proximo)
+    navegador.info(f'Indo a {nome}: x={coordenadas[0]:.3f}, y={coordenadas[1]:.3f}')
+    if navegador.goToPose(destino) is False:
+        navegador.error(f'{nome}: meta recusada')
+        return False
+    prazo = time.monotonic() + TEMPO_DESTINO_S
+    while not navegador.isTaskComplete():
+        if time.monotonic() >= prazo:
+            navegador.error(f'{nome}: excedeu {TEMPO_DESTINO_S} s; cancelando a meta')
+            navegador.cancelTask()
+            return False
+        time.sleep(0.1)
+    resultado = navegador.getResult()
+    if resultado != TaskResult.SUCCEEDED:
+        navegador.error(f'{nome}: navegação falhou ({resultado}); interrompendo a patrulha')
+        return False
+    navegador.info(f'{nome}: destino alcançado')
+    return True
 
-            # Check battery charge level
-            if (battery_percent < BATTERY_CRITICAL):
-                navigator.error('Battery critically low. Charge or power down')
-                break
-            elif (battery_percent < BATTERY_LOW):
-                # Go near the dock
-                navigator.info('Docking for charge')
-                navigator.startToPose(navigator.getPoseStamped([-1.0, 1.0],
-                                      TurtleBot4Directions.EAST))
-                navigator.dock()
 
-                if not navigator.getDockedStatus():
-                    navigator.error('Robot failed to dock')
-                    break
+def voltar_doca(navegador):
+    if not navegar(navegador, APROXIMACAO_DOCA, DOCA, 'aproximação da doca'):
+        return False
+    navegador.dock()
+    if not esperar_doca(navegador, True):
+        navegador.error('Dock não confirmado; conferir o robô fisicamente')
+        return False
+    navegador.info('Dock confirmado')
+    return True
 
-                # Wait until charged
-                navigator.info('Charging...')
-                battery_percent_prev = 0
-                while (battery_percent < BATTERY_HIGH):
-                    sleep(15)
-                    battery_percent_prev = floor(battery_percent*100)/100
-                    with lock:
-                        battery_percent = battery_monitor.battery_percent
 
-                    # Print charge level every time it increases a percent
-                    if battery_percent > (battery_percent_prev + 0.01):
-                        navigator.info(f'Battery is at {(battery_percent*100):.2f}% charge')
+def main():
+    argumentos = argparse.ArgumentParser(description='Patrulha TB4 Humble no mapa_lab_novo')
+    argumentos.add_argument('--voltas', type=int, default=1,
+                            help='1 para primeira prova; 0 para repetir até Ctrl+C')
+    argumentos.add_argument('--verificar-localizacao', action='store_true',
+                            help='confere map→odom e Nav2 sem mover o robô')
+    opcoes, args_ros = argumentos.parse_known_args()
+    if opcoes.voltas < 0:
+        argumentos.error('--voltas deve ser 0 ou maior')
+    rclpy.init(args=args_ros)
+    navegador = TurtleBot4Navigator()
+    bateria = [None]
+    navegador.create_subscription(BatteryState, 'battery_state',
+                                  lambda msg: bateria.__setitem__(0, msg.percentage),
+                                  qos_profile_sensor_data)
+    try:
+        if not esperar_doca(navegador, True):
+            navegador.error('Robô não confirmado na doca: patrulha não iniciada')
+            return 2
 
-                # Undock
-                navigator.undock()
-                position_index = 0
+        if not esperar_localizacao(navegador):
+            return 7
+        # A pose veio do RViz antes deste nó existir. O waitUntilNav2Active
+        # oficial espera serviços de ciclo de vida sem prazo e pode travar no
+        # Discovery Server. Conferimos a TF e as ações necessárias com prazo.
+        if not esperar_servidores(navegador):
+            return 8
+        if opcoes.verificar_localizacao:
+            navegador.info('Localização e Nav2 verificados; nenhum movimento enviado')
+            return 0
 
-            else:
-                # Navigate to next position
-                navigator.startToPose(goal_pose[position_index])
+        prazo = time.monotonic() + 15
+        while bateria[0] is None and time.monotonic() < prazo:
+            rclpy.spin_once(navegador, timeout_sec=0.2)
+        if bateria[0] is None or bateria[0] < BATERIA_BAIXA:
+            navegador.error('Bateria ausente ou abaixo de 20%: patrulha não iniciada')
+            return 3
 
-                position_index = position_index + 1
-                if position_index >= len(goal_pose):
-                    position_index = 0
+        navegador.undock()
+        if not esperar_doca(navegador, False):
+            navegador.error('Undock não confirmado: patrulha interrompida')
+            return 4
 
-    battery_monitor.destroy_node()
-    rclpy.shutdown()
+        volta = 0
+        while opcoes.voltas == 0 or volta < opcoes.voltas:
+            for indice, coordenadas in enumerate(PONTOS, start=1):
+                if bateria[0] is None or bateria[0] < BATERIA_CRITICA:
+                    navegador.error('Bateria crítica ou leitura ausente; retornando à doca')
+                    return 0 if voltar_doca(navegador) else 5
+                if bateria[0] < BATERIA_BAIXA:
+                    navegador.info('Bateria baixa; retornando à doca')
+                    return 0 if voltar_doca(navegador) else 5
+                if indice < len(PONTOS):
+                    proximo = PONTOS[indice]
+                elif opcoes.voltas == 0:
+                    proximo = PONTOS[0]
+                else:
+                    proximo = DOCA
+                if not navegar(navegador, coordenadas, proximo, f'ponto {indice}'):
+                    return 6
+            volta += 1
+            navegador.info(f'Volta {volta} concluída')
+
+        return 0 if voltar_doca(navegador) else 5
+    except KeyboardInterrupt:
+        try:
+            navegador.cancelTask()
+        except Exception:
+            pass  # Pode ter sido interrompido antes de enviar uma meta.
+        navegador.info('Interrompido. Confirme a posição e a doca fisicamente.')
+        return 130
+    finally:
+        navegador.destroy_node()
+        rclpy.shutdown()
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())
