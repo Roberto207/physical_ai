@@ -146,11 +146,19 @@ Os modos `sim` e `robo` não rodam juntos: pare um antes de subir o outro.
 
 ## LLM (não move o robô)
 
+Sequência completa: `docs/guias/llm-linguagem-natural.md`.
+
 ```bash
 ollama list                                       # modelos baixados
 systemctl status ollama                           # serviço ativo?
-(cd workspace/llm && python3 interpretador.py "vá até a geladeirinha")   # mostra a ação entendida
-(cd workspace/llm && python3 avaliar.py)          # mede acertos e tempo com o modelo real
+docker compose -f infra/compose/llm.yaml up -d    # inicia o nó, isolado do robô
+docker compose -f infra/compose/llm.yaml logs -f llm      # decisões do nó
+# envia um pedido ao nó
+docker compose -f infra/compose/llm.yaml exec llm bash -c \
+  'source /opt/ros/humble/setup.bash; ros2 topic pub --once -w 1 /robot1/user_input std_msgs/msg/String "data: vai pra janela"'
+docker compose -f infra/compose/llm.yaml down     # encerra o nó
+(cd workspace/meu_ws/src/llm_tb4 && python3 -m llm_tb4.interpretador "vai pra geladeira")   # sem ROS
+(cd workspace/meu_ws/src/llm_tb4 && python3 -m llm_tb4.avaliar)   # mede acertos e tempo com o modelo real
 ```
 
 ## Imagens e testes

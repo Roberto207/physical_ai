@@ -20,7 +20,8 @@ Detalhes, rede e endereços: `docs/contexto/maquinas.md`.
 | Rodar a patrulha em loop contínuo | `docs/guias/patrulha-loop-continuo.md` |
 | Lembrar um comando | `docs/guias/comandos-basicos.md` |
 | Todo o resto (testes, imagens, simulador, mapa) | `docs/guias/como-rodar.md` |
-| Trabalhar na integração com LLM | `workspace/llm/README.md` |
+| Rodar a linguagem natural (LLM) | `docs/guias/llm-linguagem-natural.md` |
+| Trabalhar no código da LLM | `workspace/meu_ws/src/llm_tb4/README.md` |
 | Saber o que está em aberto | `docs/contexto/pendencias.md` |
 | Regras para agentes de IA (leia antes de agir) | `docs/contexto/AGENTES.md` |
 
@@ -34,6 +35,7 @@ physical_ai/
 │   ├── decisoes/     por que é assim (ADRs)
 │   ├── tarefas/      o que foi feito, uma tarefa por arquivo
 │   └── historico/    registros antigos, não atualizados
+├── .claude/          skills e subagentes do Claude Code (ver .claude/README.md)
 ├── specs/            requisitos e desenho (ver specs/README.md)
 ├── infra/
 │   ├── compose/      serviços do robô (robo.yaml) e do simulador (sim.yaml)
@@ -42,9 +44,8 @@ physical_ai/
 │   └── ferramentas/  checador de caminhos dos documentos
 └── workspace/
     ├── patrulha_oficial/   patrulha em uso no robô
-    ├── llm/                integração com LLM
     ├── mapas/              mapa em uso e pontos
-    ├── meu_ws/src/         pacotes ROS: patrulha_tb4, lab_tb4, terceiros
+    ├── meu_ws/src/         pacotes ROS: llm_tb4, patrulha_tb4, lab_tb4, terceiros
     └── logs/               saídas das execuções (fora do git)
 ```
 

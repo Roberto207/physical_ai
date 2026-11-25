@@ -6,14 +6,14 @@
 |---|---|
 | Robô | TurtleBot 4 (Clearpath Robotics). Modelo (padrão ou Lite) a confirmar: o log do robô diz `Device type: OAK-D-PRO`, a câmera do modelo padrão |
 | ROS | **ROS 2 Humble**, Ubuntu 22.04, em container Docker (`physical-ai:<alvo>`: `base`, `robo`, `sim`). O Jazzy ficou na tag git `jazzy-final` |
-| Navegação | Nav2 com o TurtleBot 4 Navigator (`turtlebot4_python_tutorials`) |
+| Navegação | Nav2 com o TurtleBot 4 Navigator (`TurtleBot4Navigator`, do pacote `turtlebot4_navigation`) |
 | Simulador principal | Gazebo (Ignition) **Fortress**, sem janela, no PC do laboratório. Pacote `lab_tb4` em `workspace/meu_ws/src/lab_tb4` |
 | Simulador L1 | `nav2_loopback_sim` **vendorizado** em `workspace/meu_ws/src/terceiros/nav2_loopback_sim`, com base, bateria e AMCL falsos, para injeção de falhas |
 | Patrulha no robô | `workspace/patrulha_oficial/` (adaptação do exemplo oficial) |
 | Patrulha com recarga | Pacote `patrulha_tb4` (lógica em Python puro, testada em L0), anterior |
 | Rede com o robô | Fast DDS com Discovery Server no robô, domínio 0, namespace `/robot1` (`docs/contexto/maquinas.md`) |
 | LLM | **Ollama** com o modelo `qwen2.5:1.5b`, gratuito e local (decidido em 25/11) |
-| Segurança da LLM | `workspace/llm/validar_acao.py`: a LLM escolhe ações discretas validadas, sem `exec` |
+| Segurança da LLM | `workspace/meu_ws/src/llm_tb4/llm_tb4/validar_acao.py`: a LLM escolhe ações discretas validadas, sem `exec` |
 
 ## Referências oficiais: consultar primeiro
 

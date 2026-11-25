@@ -11,15 +11,20 @@ Sem resposta registrada no repositório.
 - [ ] Modelo do TurtleBot 4 (o log diz `OAK-D-PRO`, a câmera do modelo padrão)
 - [ ] Qual é a plataforma do gêmeo digital e quem a mantém?
 
-## LLM (próxima etapa)
+## LLM
 
-- [ ] Aprovar as fases 2 a 4 de `specs/llm-integracao/PLANO.md`
-- [ ] Reduzir os erros que moveriam o robô (4 de 16 capciosas e 2 de 21 de locais em 25/11)
-- [ ] Decidir se as fases 3 e 4 vão direto ao robô físico (a regra de validar no simulador está em `docs/contexto/AGENTES.md`)
-- [ ] Escolher como o simulador alcança o interpretador (rede isolada)
-- [ ] Testar o simulador leve com o `mapa_lab_novo`
+Plano em `specs/llm-integracao/PLANO.md`; código em `workspace/meu_ws/src/llm_tb4/`.
+
+- [ ] Confirmar antes da execução: validação no lugar de `exec()`, e sem dock e pose `[0, 0]` automáticos na partida (é o que o código faz hoje)
+- [ ] Definir o que fazer quando chega uma mensagem durante o dock ou a saída da doca
+- [ ] Perguntas, condições e afirmações ainda podem virar ação (51 de 265 do avaliador, em 25/11)
+- [ ] Pedidos de parar em formas novas não reconhecidos (10 de 20)
+- [ ] Código de execução com o `TurtleBot4Navigator` (fase 4), com cancelamento por nova mensagem; o simulador é do operador
+- [ ] Escolher como o simulador alcança o interpretador e testar o simulador leve com o `mapa_lab_novo`
 - [ ] Medir o tempo de resposta com os contêineres do robô no ar
-- [ ] Confirmar com a equipe o desenho de ações discretas validadas (`workspace/llm/README.md`)
+- [ ] Coordenada com vírgula decimal entre parênteses separada por ", " não é lida (recusa)
+- [ ] `TEMPO_LIMITE_S` vale por operação de rede, não no total; o pedido ao Ollama obedece a `http_proxy`, se definido
+- [ ] `patrol_loop.py` e `loop.py` não tratam bateria `NaN` (a comparação com o limite é falsa)
 
 ## Patrulha no robô
 
@@ -30,6 +35,12 @@ Sem resposta registrada no repositório.
 - [ ] Nav2 descarta parte dos scans por atraso; comparar Wi-Fi e cabo (`docs/tarefas/2026-11-22-analise-problema-nomeado.md`)
 - [ ] `rodar.sh` exige o contêiner do RViz, que consome muita CPU; decidir se continua obrigatório
 - [ ] `mapa_lab_novo` tem cerca de 59,8% de área não mapeada
+
+## Skill `preflight-robo`
+
+- [ ] Sessão nova do `claude`: as skills aparecem ao digitar `/` (P1)
+- [ ] Validar no robô: fases A e C, P2 com o robô desligado, P4 a P6 e as dúvidas da seção 8 da spec
+- [ ] O C3 reprova qualquer `no map received`; em 23/11 esse aviso apareceu também enquanto o mapa ainda chegava. Ver na prática se reprova subida boa
 
 ## Robô e rede
 

@@ -36,14 +36,14 @@ Prazo: cerca de 1 mês e meio a partir de 2026-11-05, conforme o Roberto. Data e
 
 - Existe um exemplo oficial chamado `patrol_loop` no pacote `turtlebot4_python_tutorials`. O robô dirige em loop e monitora a bateria. Quando a carga fica baixa, volta à base para carregar.
 - É construído sobre o **TurtleBot 4 Navigator**: um nó Python que estende o Nav2 Simple Commander e acrescenta docking e undocking.
-- O pacote é compilado do GitHub (branch `humble` de `turtlebot4_tutorials`) dentro das imagens do projeto, em `infra/docker/Dockerfile`. Segundo o manual, os exemplos foram pensados para rodar em simulação.
+- O `TurtleBot4Navigator` vem do pacote `turtlebot4_navigation`, instalado nas imagens. Os tutoriais do GitHub (ramo `humble`) só são compilados no alvo `llm` do `infra/docker/Dockerfile`, que não é usado. Segundo o manual, os exemplos foram pensados para rodar em simulação.
 - Em uso no robô: os programas adaptados do exemplo oficial, em `workspace/patrulha_oficial/` (volta à doca ou loop contínuo).
 - Antes deles, a equipe escreveu o pacote `patrulha_tb4`, com recarga automática, descrito em `specs/patrol-inf/`.
 
 ### 3.2 Integração de uma LLM ao TurtleBot
 
 - Existe o pacote oficial `turtlebot4_openai_tutorials`, com o módulo `natural_language_nav`. Ele usa a API antiga da OpenAI e executa com `exec()` o que o modelo escreve, então serve de referência, não de base.
-- A nossa abordagem: a LLM escolhe entre ações discretas validadas (`workspace/llm/validar_acao.py`) e nada é executado com `exec`.
+- A nossa abordagem: a LLM escolhe entre ações discretas validadas (`workspace/meu_ws/src/llm_tb4/llm_tb4/validar_acao.py`) e nada é executado com `exec`.
 - LLM escolhida (25/11): **Ollama** com `qwen2.5:1.5b`, gratuito e local.
 
 ### 3.3 Links de foco (passados no grupo)

@@ -13,6 +13,10 @@ Registro do que foi decidido e por quê. Atualizar quando algo mudar.
 
 | Decisão | Motivo |
 |---|---|
+| LLM sem aprovação humana por ação | Decisão do operador; segue o tutorial |
+| LLM: mensagem durante o trajeto cancela a meta e vira a ordem principal | Decisão do operador |
+| A LLM segue o tutorial: coordenadas livres, `dock`, `undock` e ignorar pedidos quando ocupado, exceto "parar" | Decisão do operador |
+| Skills e subagentes do Claude Code em `.claude/` no repositório | O usuário do PC do laboratório é compartilhado; assim valem só neste projeto e vão pelo git |
 | LLM: Ollama com `qwen2.5:1.5b` | Gratuito e local |
 | O manual do TurtleBot 4 (Resources) e o `turtlebot4_tutorials` são a primeira consulta ao planejar | O tutorial oficial foi a base da patrulha que funcionou |
 | A patrulha no robô usa os programas de `workspace/patrulha_oficial/` e o `mapa_lab_novo` | São os que vêm sendo usados. Os mapas antigos foram apagados |
