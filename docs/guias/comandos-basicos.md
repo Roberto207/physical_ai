@@ -144,7 +144,15 @@ infra/docker/lab.sh sim parar                     # desliga o simulador
 
 Os modos `sim` e `robo` não rodam juntos: pare um antes de subir o outro.
 
-## LLM (não move o robô)
+## LLM no robô
+
+```bash
+infra/docker/lab.sh robo llm                      # nó com o freio ligado (não move)
+PARKING_BRAKE=false infra/docker/lab.sh robo llm  # [move] pede SIM
+infra/docker/lab.sh robo falar                    # enviar pedidos; Enter vazio: pare
+```
+
+## LLM isolada (não move o robô)
 
 Sequência completa: `docs/guias/llm-linguagem-natural.md`.
 

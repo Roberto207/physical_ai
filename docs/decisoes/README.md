@@ -13,6 +13,8 @@ Registro do que foi decidido e por quê. Atualizar quando algo mudar.
 
 | Decisão | Motivo |
 |---|---|
+| LLM: no dock e na saída da doca a manobra termina e depois obedece; só "parar" cancela | Decisão do operador |
+| LLM: usar os clientes de ação do `TurtleBot4Navigator`, sem os atalhos que bloqueiam | Para o "pare" sempre ser atendido |
 | LLM sem aprovação humana por ação | Decisão do operador; segue o tutorial |
 | LLM: mensagem durante o trajeto cancela a meta e vira a ordem principal | Decisão do operador |
 | A LLM segue o tutorial: coordenadas livres, `dock`, `undock` e ignorar pedidos quando ocupado, exceto "parar" | Decisão do operador |

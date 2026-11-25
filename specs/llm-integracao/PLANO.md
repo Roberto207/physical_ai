@@ -1,6 +1,6 @@
 # Plano: integração com LLM no TurtleBot 4
 
-**Data:** 2026-11-25. **Estado:** interpretador e nó sem movimento feitos; execução proposta, a aprovar.
+**Data:** 2026-11-25. **Estado:** execução escrita e ensaiada com robô falso; falta simulador e robô.
 
 ## Objetivo
 
@@ -23,10 +23,10 @@ Receber um pedido em português ("vá até a geladeirinha"), traduzi-lo para uma
 | Launch `natural_language_nav_launch.py` e executável `natural_language_nav` | Feito |
 | Prompt instalado no pacote | Feito |
 | Tópicos `user_input` e `ready_for_input` | Feito |
-| Parâmetros `model_name` e `parking_brake` (ligado por padrão) | Feito; com o freio desligado o nó não inicia, porque não há movimento |
+| Parâmetros `model_name` e `parking_brake` (ligado por padrão) | Feito; com o freio ligado nada é enviado ao robô |
 | Ocupado, o nó ignora novos pedidos | Vale enquanto interpreta, exceto "parar". Durante o trajeto muda (ver desvios) |
 | Coordenadas livres com direção, `dock` e `undock` | Feito na interpretação (decisão do operador) |
-| `TurtleBot4Navigator` (`dock`, `undock`, `startToPose`) | Na fase de execução |
+| `TurtleBot4Navigator` para navegar, encaixar e sair da doca | Feito, pelos clientes de ação (ver desvios) |
 
 ## Desvios
 
@@ -36,7 +36,11 @@ Receber um pedido em português ("vá até a geladeirinha"), traduzi-lo para uma
 | "Parar" atendido mesmo com o nó ocupado | Poder interromper | Aceito pelo operador |
 | JSON por esquema e validador no lugar de `exec()` | O modelo erra e o código rodaria direto | Em uso; confirmar antes da execução |
 | Sem dock e pose `[0, 0]` automáticos na partida | Usamos 2D Pose Estimate; a doca não está em `[0, 0]` | A confirmar antes da execução |
-| Mensagem durante o trajeto cancela a meta e vira a ordem principal | Poder interromper e corrigir | Aceito pelo operador (25/11); falta implementar |
+| Mensagem durante o trajeto cancela a meta e vira a ordem principal | Poder interromper e corrigir | Aceito pelo operador; feito |
+| Durante dock e saída, a manobra termina e a última mensagem é obedecida; só "parar" cancela | Não deixar o robô meio encaixado | Aceito pelo operador; feito |
+| Do navegador usam-se `getPoseStamped` e os clientes de ação; não `startToPose`, `goToPose`, `cancelTask`, `dock`, `undock` | Os atalhos esperam sem prazo e, numa recusa, guardam o resultado anterior | Aceito pelo operador; feito |
+| No robô, o nó roda direto, sem `ros2 launch` | O launch morria no `docker stop` antes de o nó cancelar | Em uso (achado no ensaio) |
+| Dock e saída da doca por software no robô real | A execução pedida inclui `dock` e `undock`; antes, o `lab.sh` mandava fazer à mão (SEG-06) | Aceito com o plano de execução |
 | Locais por nome (`destinos.json`), voltar à doca e parar | Nosso mapa e segurança | Em uso |
 | Coordenada conferida no mapa; bateria mínima de 20% para sair | Não mandar o robô para onde o mapa não permite | Em uso |
 | Coordenadas e `dock`/`undock` lidos por código | O modelo inventou números e trocou `undock` por `dock` nos ensaios | Em uso |
@@ -48,29 +52,32 @@ Receber um pedido em português ("vá até a geladeirinha"), traduzi-lo para uma
 |---|---|---|---|
 | 1 | Interpretador, testes e medição | Testes sem modelo passam; erros medidos | **Feita** |
 | 2 | Plano alinhado ao tutorial | Desvios listados | **Feita** |
-| 3 | Pacote e nó sem código de movimento, isolado do robô | `test/ensaio_no.py` sem falhas | **Feita** |
-| 4 | Execução no simulador, com confirmação do operador | Ir, parar e voltar à doca observados | Proposta; o simulador é do operador |
-| 5 | Robô real, supervisionado | Autorização e fase 4 aprovada | Proposta |
+| 3 | Pacote e nó sem movimento, isolado | `test/ensaio_no.py` sem falhas | **Feita** |
+| 4 | Código de execução, com robô falso | `test/ensaio_execucao.py` sem falhas | **Feita** |
+| 5 | Execução no simulador | Ir, parar e voltar à doca observados | Pendente; o simulador é do operador |
+| 6 | Robô real, supervisionado | Autorização; primeiro com o freio ligado | Pendente |
 
-## Requisitos da execução (fases 4 e 5)
+## Como a execução se comporta
 
-Decisões do operador em 25/11:
+| Pedido | Passos |
+|---|---|
+| Ir a local ou coordenada | Sair da doca, se encaixado; navegar. Local nomeado olha o ponto seguinte; coordenada sem direção usa 0° |
+| Voltar à doca | Navegar ao ponto 1 virado para a doca; encaixar |
+| Encaixar | Só fora da doca e com a doca visível |
+| Sair da doca | Só se encaixado |
+| Parar | Cancela a meta nossa e qualquer outra de navegação; apaga ordem pendente |
 
-- **Sem aprovação por ação.** O que passar pela validação é executado, como no tutorial com o freio desligado.
-- **Toda mensagem recebida durante o trajeto cancela a meta atual e passa a ser a ordem principal.**
+| Estado | Mensagem nova |
+|---|---|
+| Parado, interpretando | Ignorada, menos "parar" |
+| Navegando | Cancela na chegada; a nova vira a ordem; se não for válida, o robô fica parado |
+| Dock ou saída | A manobra termina; a última mensagem é obedecida. "Parar" cancela |
+| Cancelando | Guarda a última; nada é enviado antes de o servidor confirmar o fim |
+| Travado (sem confirmação) | Movimento recusado; "parar" repete o cancelamento |
 
-Como o item acima será implementado (interpretação nossa, a confirmar no teste):
+**Antes de cada passo:** doca conhecida, bateria recente (≥ 20% para sair), `map→odom` recente, servidor de ação pronto e nenhuma meta de outro programa. No trajeto, perda de localização ou do estado da doca cancela; bateria baixa só avisa. **Prazos:** aceite 10 s, navegação 120 s, dock e saída 60 s, confirmação da doca 20 s, cancelamento 5 s, interpretação válida por 10 s. Coordenada a menos de 0,5 m da doca é recusada.
 
-- O cancelamento acontece **na chegada** da mensagem, antes de consultar o modelo.
-- Se a nova mensagem não virar uma ação válida, o robô fica parado.
-
-Demais requisitos:
-
-- Acompanhar a meta sem bloquear a recepção. A função `navegar` de `workspace/patrulha_oficial/patrol_loop.py` bloqueia até o fim; dock e saída da doca não são canceláveis do mesmo modo, e o comportamento nesses casos precisa ser definido e testado.
-- Reaproveitar de `patrol_loop.py` os pontos, a espera por `map→odom` e a volta à doca. Sair da doca antes de navegar. Definir a direção quando o pedido não disser.
-- Um controlador por vez: nunca junto de um programa de patrulha.
-- Bateria real do `battery_state`.
-- O texto não substitui a parada física: pessoa ao lado em todo teste no robô.
+**Limites:** se o processo morrer à força, o Nav2 segue até o destino; fechar o terminal `falar` não para o robô; `lab.sh robo parar` não é parada de emergência; o texto não substitui a parada física.
 
 ## Decisão em aberto: onde o modelo é consultado no simulador
 

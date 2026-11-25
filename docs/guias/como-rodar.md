@@ -12,7 +12,7 @@ Os caminhos partem da raiz do repositório (`~/physical_ai` no PC do lab, `~/dev
 | **Patrulha no robô em loop contínuo** | `docs/guias/patrulha-loop-continuo.md` |
 | Lembrar um comando (rede, logs, sensores, subir, descer) | `docs/guias/comandos-basicos.md` |
 | Entrar no robô, rede e rotas | `docs/guias/acesso-ao-robo.md` |
-| **Linguagem natural (LLM): iniciar o nó e enviar pedidos** | `docs/guias/llm-linguagem-natural.md` |
+| **Linguagem natural (LLM): ensaiar e rodar no robô** | `docs/guias/llm-linguagem-natural.md` |
 | O que está em aberto | `docs/contexto/pendencias.md` |
 | Testes, imagens, simulador, mapa e a patrulha `patrulha_tb4` | este arquivo |
 
@@ -21,7 +21,7 @@ Os caminhos partem da raiz do repositório (`~/physical_ai` no PC do lab, `~/dev
 - **Programas em uso no robô:** os de `workspace/patrulha_oficial/`, adaptados do exemplo oficial do TurtleBot 4, no mapa `workspace/mapas/mapa_lab_novo.yaml`.
 - **Ensaiado:** o `patrol_loop.py` (via `rodar.sh 1`) já completou os quatro pontos uma vez; naquela execução a volta à doca falhou. Em 23/11 houve novas falhas no ponto 1, sem causa determinada (`docs/tarefas/2026-11-23-patrulha-oficial-mapa-lab-novo.md`).
 - **Sem registro de ensaio físico:** `patrol_loop2.py` e `loop.py`.
-- **LLM:** o nó `llm_tb4` interpreta pedidos, isolado do robô e sem código de movimento.
+- **LLM:** o nó `llm_tb4` interpreta e executa pedidos; o freio vem ligado. Execução ensaiada só com robô falso.
 - **Patrulha anterior (`patrulha_tb4`):** não é a usada hoje no robô. O pacote continua necessário (seção 6).
 
 ## 1. Testes da lógica (sem ROS e sem Docker)

@@ -16,11 +16,13 @@ Sem resposta registrada no repositório.
 Plano em `specs/llm-integracao/PLANO.md`; código em `workspace/meu_ws/src/llm_tb4/`.
 
 - [ ] Confirmar antes da execução: validação no lugar de `exec()`, e sem dock e pose `[0, 0]` automáticos na partida (é o que o código faz hoje)
-- [ ] Definir o que fazer quando chega uma mensagem durante o dock ou a saída da doca
 - [ ] Perguntas, condições e afirmações ainda podem virar ação (51 de 265 do avaliador, em 25/11)
 - [ ] Pedidos de parar em formas novas não reconhecidos (10 de 20)
-- [ ] Código de execução com o `TurtleBot4Navigator` (fase 4), com cancelamento por nova mensagem; o simulador é do operador
-- [ ] Escolher como o simulador alcança o interpretador e testar o simulador leve com o `mapa_lab_novo`
+- [ ] Execução no simulador (do operador); os contêineres do simulador não alcançam o Ollama
+- [ ] Primeiro teste no robô: freio ligado, depois o ponto 1 e o "pare" no trajeto
+- [ ] Verificar no robô: ações e estados pelo Discovery Server, cancelamento do dock na Create 3 e o terminal `falar`
+- [ ] Rodar o `ros2 launch` num `docker stop` não cancela a meta; no robô usar só `lab.sh robo llm`
+- [ ] Testar o simulador leve com o `mapa_lab_novo`
 - [ ] Medir o tempo de resposta com os contêineres do robô no ar
 - [ ] Coordenada com vírgula decimal entre parênteses separada por ", " não é lida (recusa)
 - [ ] `TEMPO_LIMITE_S` vale por operação de rede, não no total; o pedido ao Ollama obedece a `http_proxy`, se definido
