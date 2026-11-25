@@ -29,4 +29,16 @@ As checagens foram tiradas de `workspace/patrulha_oficial/`, de `infra/docker/la
 
 ## Observado e não corrigido
 
-A mensagem de `REDE REPROVADA` do `infra/docker/lab.sh` aponta para um documento que não existe mais. O correto é `docs/guias/acesso-ao-robo.md`.
+A mensagem de `REDE REPROVADA` do `infra/docker/lab.sh` apontava para um documento que não existia. O commit `88450bd` corrigiu.
+
+## Ajustes depois do merge
+
+O push encontrou dois commits novos no remoto (`88450bd` e `b320c20`), que reorganizaram pastas. Mudanças na spec:
+
+| Trecho | Ajuste |
+|---|---|
+| A8 | O `patrol_loop.py` saiu de `upstream/` para `workspace/patrulha_oficial/` |
+| Passo 1 | Os avisos da V5 já tinham saído; resta uma menção em `specs/patrol-inf/DESIGN.md` |
+| Seção 8 | Saiu a dúvida sobre memória compartilhada: o documento de 23/11 passou a descartar a hipótese, porque os contêineres usam UDPv4 |
+
+A spec também entrou na tabela de `specs/README.md`.

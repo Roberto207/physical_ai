@@ -49,7 +49,7 @@ Quando a correção for no robô ou exigir `sudo`, a skill mostra o comando e a 
 | A5 | ROS na rede | `infra/docker/lab.sh robo checar-rede` | `REDE OK`, sem aviso de bateria ou doca |
 | A6 | Doca | `ros2 topic echo NS/dock_status irobot_create_msgs/msg/DockStatus --qos-profile sensor_data --once` | `is_docked: true` |
 | A7 | Bateria | O mesmo para `NS/battery_state sensor_msgs/msg/BatteryState`, campo `percentage` | ≥ 0,20 (`BATERIA_BAIXA` do `patrol_loop.py`) |
-| A8 | Coordenadas | Ler `DOCA` e `PONTOS` de `workspace/patrulha_oficial/upstream/patrol_loop.py` | Operador confirma os valores. Em 23/11 o arquivo voltou aos pontos antigos sem explicação |
+| A8 | Coordenadas | Ler `DOCA` e `PONTOS` de `workspace/patrulha_oficial/patrol_loop.py` | Operador confirma os valores. Em 23/11 o arquivo voltou aos pontos antigos sem explicação |
 
 ### Fase B: subir, com OK
 
@@ -82,7 +82,7 @@ Tabela item, resultado, evidência; veredito; caminho do relatório. Com `APROVA
 
 ## 6. Passos de implementação
 
-- [ ] Registrar a V5 como declarada pelo Roberto e atualizar os avisos que mandam não usar o `lab.sh robo`: `docs/contexto/AGENTES.md`, `docs/guias/como-rodar.md`, `docs/guias/como_rodar_patrol_loop.md`, `specs/patrol-inf/kit-de-campo.md`, `infra/compose/robo.yaml`
+- [ ] Registrar a V5 como declarada pelo Roberto. Os avisos de "não use o `lab.sh robo`" saíram no commit `88450bd`; resta a menção à V5 na tabela de níveis de `specs/patrol-inf/DESIGN.md`
 - [ ] Robô desligado: testar cada comando das Fases A e C e anotar a saída real
 - [ ] Robô ligado e na doca: conferir os comandos na documentação oficial ([Navigation](https://turtlebot.github.io/turtlebot4-user-manual/tutorials/navigation.html), [Discovery Server](https://turtlebot.github.io/turtlebot4-user-manual/setup/discovery_server.html), [Docking](https://iroboteducation.github.io/create3_docs/api/docking/)) e rodar um a um
 - [ ] Escrever `scripts/checar.sh` e `SKILL.md`
@@ -112,7 +112,6 @@ grep -nE 'teleop|undock|send_goal|topic pub|voltar-doca|rodar\.sh|ssh |sudo|dock
 - Se o `get_state` responde pelo Discovery Server a partir do `ferramentas` (em 21/11 levou cerca de 7 s).
 - Se subir o Nav2 publica algo em `NS/cmd_vel` sem meta enviada (a CLI não enxergou o tópico em 23/11).
 - Se construir o `TurtleBot4Navigator` em C4 publica algo no robô.
-- Se `ipc: host` com um contêiner temporário afeta os heartbeats do Nav2 (a hipótese de 23/11 sobre memória compartilhada não foi confirmada).
 
 ## 9. Fora do escopo
 
