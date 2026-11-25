@@ -16,7 +16,7 @@ Rode na conversa principal: nenhum subagente alcança o robô.
 |---|---|
 | Livre | Ler arquivos, o `scripts/checar.sh`, `ping`, `lab.sh robo checar-rede`, `lab.sh robo estado`, leitura de tópicos e logs |
 | Com OK, **um comando por vez** | `lab.sh robo compose stop slam`; `lab.sh robo subir localizacao`, `rviz`, `nav2`; recriar o Nav2; `lab.sh robo parar` (avise que derruba todos os serviços) |
-| Proibido | Controle manual, sair ou entrar na doca, patrulha da `patrulha_tb4`, voltar à doca, executar o `rodar.sh`, rodar `patrol_loop.py` sem `--verificar-localizacao`, `loop.py`, `patrol_loop2.py`, enviar meta ou publicar em tópico, entrar no robô, mudar rede ou configuração do robô, `sudo`, reiniciar ou pausar contêiner pelo `docker` |
+| Proibido | Controle manual, sair ou entrar na doca, patrulha da `patrulha_tb4`, voltar à doca, executar o `rodar.sh`, `lab.sh robo llm` ou `falar`, rodar `patrol_loop.py` sem `--verificar-localizacao`, `loop.py`, `patrol_loop2.py`, enviar meta ou publicar em tópico, entrar no robô, mudar rede ou configuração do robô, `sudo`, reiniciar ou pausar contêiner pelo `docker` |
 
 Se a correção for no robô ou pedir `sudo`, mostre o comando e a página oficial
 ([Navigation](https://turtlebot.github.io/turtlebot4-user-manual/tutorials/navigation.html),

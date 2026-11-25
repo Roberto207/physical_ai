@@ -9,6 +9,8 @@
 #   ./lab.sh <modo> teleop                   dirige pelo teclado (no robo, pede SIM)
 #   ./lab.sh <modo> patrulha                 a nossa patrulha (validar_pontos antes; no robo, pede SIM)
 #   ./lab.sh <modo> voltar-doca              pede à patrulha rodando que volte à doca e encerre (no robo, pede SIM)
+#   ./lab.sh robo llm                        linguagem natural; PARKING_BRAKE=false MOVE o robô (pede SIM)
+#   ./lab.sh robo falar                      terminal para enviar pedidos ao nó llm (Enter vazio: pare)
 #   ./lab.sh <modo> salvar [nome]            grava o mapa em workspace/mapas/ e confere
 #   ./lab.sh <modo> estado | logs [serviço]  o que está rodando / últimas linhas do log
 #   ./lab.sh <modo> parar                    desliga tudo do modo e devolve workspace/ ao usuário
@@ -16,7 +18,7 @@
 #   ./lab.sh conferir <mapa.yaml>            confere um mapa salvo (sem ROS, sem Docker)
 #
 # Serviços: gazebo e leve (só sim), slam, localizacao, nav2, rviz, teleop, patrulha, undock (só
-# sim), ferramentas. Variáveis: MAPA, CONFIG, SYNC, VEL, GIRO, NAV2_PARAMS, MEM_GAZEBO, MUNDO,
+# sim), llm e falar (só robo), ferramentas. Variáveis: MAPA, CONFIG, SYNC, VEL, GIRO, NAV2_PARAMS, MEM_GAZEBO, MUNDO,
 # ROBO_NS (namespace do robô real; padrão /robot1, ROBO_NS= vazio para nenhum).
 # No modo robo, toda ação confere antes se as imagens são Humble, a distro do robô (SEG-01).
 # Explicação: docs/tarefas/2026-11-16-compose-e-alvos.md,
@@ -27,7 +29,7 @@ cd "$(dirname "$ESTE")/../.."   # raiz do projeto (raiz do repositório)
 # Pastas montadas nos containers: criadas aqui para não nascerem como root.
 mkdir -p workspace/mapas workspace/logs
 
-uso() { sed -n 2,23p "$ESTE"; }
+uso() { sed -n 2,25p "$ESTE"; }
 
 if [ "${1:-}" = conferir ]; then
   [ -n "${2:-}" ] || { echo "Uso: ./lab.sh conferir <mapa.yaml>"; exit 1; }
@@ -138,6 +140,31 @@ liberar_tela() {
   xhost +SI:localuser:root >/dev/null   # o container roda como root
 }
 
+# Um controlador por vez no robô: a linguagem natural e os programas que andam sozinhos não
+# rodam juntos. Olha os contêineres pelo rótulo do Compose, o que inclui os de "compose run".
+conteineres_robo() {
+  docker ps --no-trunc --filter label=com.docker.compose.project=tb4-robo \
+    --format '{{.Label "com.docker.compose.service"}}|{{.Command}}'
+}
+exigir_um_controlador() {
+  local rodando_agora
+  rodando_agora=$(conteineres_robo) || { echo "Não consegui consultar o Docker."; exit 1; }
+  case "$1" in
+    llm)
+      if grep -q '^llm|' <<<"$rodando_agora"; then
+        echo "O nó llm já está rodando. Encerre-o antes (Ctrl+C no terminal dele)."; exit 1
+      fi
+      if [ "${PARKING_BRAKE:-true}" != true ] &&
+         grep -qE '^(teleop|patrulha)\||patrol_loop|loop\.py' <<<"$rodando_agora"; then
+        echo "Há uma patrulha ou o controle manual rodando. Encerre antes de soltar o freio."; exit 1
+      fi ;;
+    teleop|patrulha)
+      if grep -q '^llm|' <<<"$rodando_agora"; then
+        echo "O nó llm está rodando e também comanda o robô. Encerre-o antes."; exit 1
+      fi ;;
+  esac
+}
+
 # SEG-01 vale para toda ação do modo robo. A exceção é o "parar", que com imagem errada só
 # derruba o que estiver rodando (docker compose down) e não sobe o container de chown.
 GUARDA_OK=1
@@ -153,7 +180,7 @@ case "$ACAO" in
     [ $# -gt 0 ] || { echo "Diga quais serviços. Ex.: ./lab.sh $MODO subir slam rviz"; exit 1; }
     for s in "$@"; do
       case "$s" in
-        teleop|patrulha|undock) echo "$s é interativo: use ./lab.sh $MODO $s"; exit 1 ;;
+        teleop|patrulha|undock|llm|falar) echo "$s é interativo: use ./lab.sh $MODO $s"; exit 1 ;;
         rviz) liberar_tela ;;
       esac
     done
@@ -167,10 +194,32 @@ case "$ACAO" in
     [ "$MODO" = robo ] || { echo "checar-rede é só do modo robo."; exit 1; }
     checar_rede
     ;;
-  teleop|patrulha|undock)
+  teleop|patrulha|undock|llm|falar)
     [ "$ACAO" = undock ] && [ "$MODO" = robo ] && { echo "No robô real, o undock é à mão (kit de campo, etapa 3)."; exit 1; }
+    case "$ACAO" in llm|falar) [ "$MODO" = robo ] || { echo "$ACAO é só do modo robo."; exit 1; } ;; esac
     exigir_sozinho
-    dc run --rm "$ACAO"
+    [ "$MODO" = robo ] && exigir_um_controlador "$ACAO"
+    if [ "$ACAO" != llm ]; then
+      dc run --rm "$ACAO"
+    else
+      # Fechar o terminal não encerra um "compose run": o cliente ignora o sinal, o contêiner
+      # segue vivo e o robô, andando. Um vigia à parte (este script fica preso esperando o
+      # cliente) para o nó se o terminal fechar ou o script morrer; o nó então cancela a meta.
+      nome=tb4-robo-llm
+      encerrar_llm() {
+        if [ -n "$(docker ps -q --filter "name=^$nome\$")" ]; then
+          docker stop -t 15 "$nome" >/dev/null 2>&1 || true
+        fi
+      }
+      (
+        trap 'encerrar_llm; exit 0' HUP TERM
+        while kill -0 $$ 2>/dev/null; do sleep 1; done
+        encerrar_llm
+      ) </dev/null >/dev/null 2>&1 &
+      vigia=$!
+      trap 'encerrar_llm; kill "$vigia" 2>/dev/null || true' EXIT
+      dc run --rm --name "$nome" llm
+    fi
     ;;
   voltar-doca)
     # PAT-23: só chama o serviço do nó da patrulha (um comando de CLI de uma resposta). Quem
@@ -235,6 +284,15 @@ EOF
     dc logs --tail 40 "$@"
     ;;
   parar)
+    # O nó llm sai primeiro, com o Nav2 ainda no ar, para conseguir cancelar a meta ativa.
+    if [ "$MODO" = robo ]; then
+      ids=$(docker ps -q --filter label=com.docker.compose.project=tb4-robo \
+            --filter label=com.docker.compose.service=llm)
+      if [ -n "$ids" ]; then
+        # shellcheck disable=SC2086
+        docker stop -t 15 $ids >/dev/null && echo "Nó llm encerrado."
+      fi
+    fi
     # Devolve ao usuário o que os containers (root) gravaram nas pastas montadas.
     if [ "$GUARDA_OK" = 1 ]; then
       ferramenta "chown -R $(id -u):$(id -g) /workspace/mapas /workspace/logs" >/dev/null 2>&1 || true

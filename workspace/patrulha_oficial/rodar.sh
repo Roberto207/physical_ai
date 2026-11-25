@@ -16,6 +16,13 @@ for servico in localizacao nav2 rviz; do
     }
 done
 
+# Um controlador por vez: o nó de linguagem natural também comanda o robô.
+[ -z "$(docker ps -q --filter label=com.docker.compose.project=tb4-robo \
+        --filter label=com.docker.compose.service=llm)" ] || {
+    echo 'O nó llm está rodando e também comanda o robô. Encerre-o antes.'
+    exit 2
+}
+
 echo 'ATENÇÃO: o TurtleBot REAL fará undock e navegará sozinho.'
 echo 'AGORA, antes de SIM: use 2D Pose Estimate no RViz na pose real da doca.'
 echo 'Confira laser alinhado, área livre e pessoa ao lado.'

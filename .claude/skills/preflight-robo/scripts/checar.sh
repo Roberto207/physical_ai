@@ -45,9 +45,9 @@ fase_a() {
   if sim=$(timeout 60 "$LAB" sim estado 2>/dev/null) &&
      out=$(docker ps --no-trunc --format '{{.Label "com.docker.compose.service"}}|{{.Names}}|{{.Command}}'); then
     sim=$(tail -n +2 <<<"$sim")
-    extras=$(grep -E '^(slam|teleop|patrulha)\||patrol_loop|loop\.py' <<<"$out")
+    extras=$(grep -E '^(slam|teleop|patrulha|llm)\||patrol_loop|loop\.py' <<<"$out")
     if [ -z "$sim$extras" ]; then resultado A2 PASSOU 'nada concorrendo' "$out"
-    else resultado A2 REPROVOU 'há serviço do simulador, mapeamento, controle manual ou patrulha rodando' "$sim
+    else resultado A2 REPROVOU 'há serviço do simulador, mapeamento, controle manual, patrulha ou llm rodando' "$sim
 $extras"; fi
   else resultado A2 'NÃO VERIFICADO' 'o Docker não respondeu'; fi
 

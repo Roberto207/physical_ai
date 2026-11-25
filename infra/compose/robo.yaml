@@ -7,9 +7,10 @@
 # Regras de segurança deste arquivo:
 # - Todo serviço tem "profiles": um "docker compose up" sem nome de serviço não sobe NADA.
 #   Assim nada mexe no robô por engano; cada serviço é chamado pelo nome (SEG-03).
-# - teleop e patrulha movem o robô: só rodam com "docker compose run" (terminal interativo)
+# - teleop, patrulha e llm (com o freio solto) movem o robô: só rodam com "docker compose run" (terminal interativo)
 #   e pedem que se digite SIM (SEG-04). A patrulha ainda exige o validar_pontos APROVADA (SEG-05).
-# - Nenhum serviço faz dock/undock nem mexe na rede ou na configuração do robô (SEG-06).
+# - Nenhum serviço mexe na rede ou na configuração do robô. Dock e undock só pela patrulha e pelo
+#   llm com o freio solto (specs/llm-integracao/PLANO.md); os demais não os enviam (SEG-06).
 # - Sem "build:": o Compose nunca constrói imagem sozinho (o build não tem teto de memória).
 #   As imagens vêm do infra/docker/construir_imagem.sh.
 # - O entrypoint da imagem carrega o ROS da distro dela: nenhum comando aqui escreve a distro.
@@ -161,3 +162,57 @@ services:
         [ "$$resposta" = SIM ] || { echo 'Cancelado.'; exit 1; }
         exec ros2 launch patrulha_tb4 patrulha.launch.py config:="$$CONFIG" pasta_log:=/logs \
           namespace:=${ROBO_NS-/robot1}
+
+  # Linguagem natural (llm_tb4). Com PARKING_BRAKE=false o robô REAL SE MOVE a cada pedido, sem
+  # aprovação por ação: só roda pelo lab.sh robo llm, e pede SIM. O padrão é o freio ligado.
+  # Precisa de localizacao e nav2 rodando (2D Pose Estimate feito) e do Ollama no PC, que o
+  # contêiner alcança em 127.0.0.1 (network_mode host). Sequência completa:
+  # docs/guias/llm-linguagem-natural.md
+  llm:
+    <<: *ros
+    profiles: [llm]
+    stdin_open: true
+    tty: true
+    mem_limit: 512m
+    memswap_limit: 512m
+    stop_grace_period: 15s    # tempo para o nó cancelar a meta antes de o contêiner morrer
+    environment:
+      DISPLAY: ${DISPLAY:-}
+      COMPILAR_WS: patrulha_tb4,llm_tb4
+    command:
+      - bash
+      - -c
+      - |
+        FREIO='${PARKING_BRAKE:-true}'
+        if [ "$$FREIO" != true ]; then
+          echo 'ATENÇÃO: freio desligado. O robô REAL vai andar a cada pedido, SEM confirmação.'
+          echo 'Confirme: pessoa ao lado pronta para parar, área livre, localizacao e nav2 no ar,'
+          echo '2D Pose Estimate feito, nenhuma patrulha rodando e o terminal "falar" aberto.'
+          read -r -p 'Digite SIM para continuar: ' resposta
+          [ "$$resposta" = SIM ] || { echo 'Cancelado.'; exit 1; }
+          [ "$$FREIO" = false ] || { echo 'PARKING_BRAKE só aceita true ou false.'; exit 1; }
+        fi
+        # O nó é executado direto, sem ros2 launch: num "docker stop" ou terminal fechado o sinal
+        # chega só ao processo principal, e o launch morria sem dar tempo de cancelar a meta.
+        NS='${ROBO_NS-/robot1}'
+        exec "$$(ros2 pkg prefix llm_tb4)/lib/llm_tb4/natural_language_nav" --ros-args \
+          $${NS:+-r __ns:=$$NS} -p parking_brake:=$$FREIO
+
+  # Terminal de conversa com o nó llm: cada linha vira um pedido; Enter vazio envia "pare".
+  falar:
+    <<: *ros
+    profiles: [llm]
+    stdin_open: true
+    tty: true
+    mem_limit: 256m
+    memswap_limit: 256m
+    environment:
+      DISPLAY: ${DISPLAY:-}
+      COMPILAR_WS: patrulha_tb4,llm_tb4
+    command:
+      - bash
+      - -c
+      - |
+        NS='${ROBO_NS-/robot1}'
+        exec ros2 run llm_tb4 falar --ros-args $${NS:+-r __ns:=$$NS}
+
