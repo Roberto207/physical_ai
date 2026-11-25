@@ -1,6 +1,6 @@
 # SPEC: skill `preflight-robo`
 
-**Status:** Aprovada em 2026-11-25 (portão da skill `/sdd`). Implementar no PC do laboratório.
+**Status:** Aprovada em 2026-11-25 (portão da skill `/sdd`). Implementada em 25/11 em `.claude/skills/preflight-robo/`; **falta validar com o robô** (passos 2 e 3 e critérios P1, P2, P4 a P6). Relatório em `docs/tarefas/2026-11-25-skills-e-preflight.md`.
 **Rigor:** spec leve (decisão do Roberto).
 
 ## 1. Objetivo
@@ -82,12 +82,12 @@ Tabela item, resultado, evidência; veredito; caminho do relatório. Com `APROVA
 
 ## 6. Passos de implementação
 
-- [ ] Registrar a V5 como declarada pelo Roberto. Os avisos de "não use o `lab.sh robo`" saíram no commit `88450bd`; resta a menção à V5 na tabela de níveis de `specs/patrol-inf/DESIGN.md`
+- [x] Registrar a V5 como declarada pelo Roberto. Os avisos de "não use o `lab.sh robo`" saíram no commit `88450bd`; resta a menção à V5 na tabela de níveis de `specs/patrol-inf/DESIGN.md`
 - [ ] Robô desligado: testar cada comando das Fases A e C e anotar a saída real
 - [ ] Robô ligado e na doca: conferir os comandos na documentação oficial ([Navigation](https://turtlebot.github.io/turtlebot4-user-manual/tutorials/navigation.html), [Discovery Server](https://turtlebot.github.io/turtlebot4-user-manual/setup/discovery_server.html), [Docking](https://iroboteducation.github.io/create3_docs/api/docking/)) e rodar um a um
-- [ ] Escrever `scripts/checar.sh` e `SKILL.md`
+- [x] Escrever `scripts/checar.sh` e `SKILL.md`
 - [ ] Rodar os critérios da seção 7
-- [ ] Documento em `docs/tarefas/`, linha na tabela e `python3 infra/ferramentas/checar_caminhos.py`
+- [x] Documento em `docs/tarefas/`, linha na tabela e `python3 infra/ferramentas/checar_caminhos.py`
 
 ## 7. Critérios de pronto
 

@@ -77,7 +77,7 @@ Comece pelo `README.md`. Caminhos relativos à raiz do repositório.
 |---|---|
 | Como rodar (índice dos guias) | `docs/guias/como-rodar.md` |
 | O que está em aberto | `docs/contexto/pendencias.md` |
-| Skills do Claude Code (instalar no PC do lab) | `docs/contexto/skills/README.md` |
+| Skills e subagentes do Claude Code | `.claude/README.md` |
 | Como acessar o robô | `docs/guias/acesso-ao-robo.md` |
 | Escopo, briefing e missões | `docs/contexto/projeto.md` |
 | Máquinas, rede e papel de cada uma | `docs/contexto/maquinas.md` |

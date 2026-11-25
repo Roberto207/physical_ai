@@ -165,6 +165,10 @@ implemente o código **exatamente conforme o `DESIGN.md` aprovado** e produza um
 Nunca expanda o escopo além do que foi aprovado no portão — se surgir a tentação, isso é
 uma nova spec, não um adendo silencioso a esta.
 
+**Neste PC:** o `python3` do sistema não tem `pytest`. Rode os testes na imagem do projeto,
+sem rede: `docker run --rm --network none -v "$PWD:/repo:ro" -w /repo/<pasta>
+physical-ai:base python3 -m pytest -q -p no:cacheprovider`.
+
 **Robô físico:** aprovar a spec não autoriza mover nem configurar o robô. Cada ação crítica
 continua pedindo permissão na hora (`docs/contexto/AGENTES.md`, seção 1), e o critério é
 verificado no simulador antes do hardware.
@@ -203,9 +207,7 @@ recusa a rodar (é um componente interno guardado, não um agente de propósito 
 Se o artefato aprovado exige configurar hooks, permissões, `settings.json`, ou qualquer
 automação recorrente, a Fase 4 **não configura isso diretamente**. Recomende a skill
 `update-config` para configuração estática, ou `schedule`/`loop` para automação
-recorrente — e, se a automação for não-trivial (mais de um passo, ou envolve autonomia
-sem supervisão) e a skill `loop-engineering` estiver instalada, sugira rodá-la primeiro
-para desenhar o loop antes de configurá-lo.
+recorrente.
 
 ## Recursos
 

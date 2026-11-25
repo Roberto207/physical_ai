@@ -42,6 +42,7 @@ esperado — só edite direto.
      prompt atual + pelo menos um exemplo real de saída que falhou).
    - **Neste projeto**, leia `docs/contexto/AGENTES.md` antes. Prompt cuja saída move o
      robô é sempre **produção**, é testado sem o robô, e a saída passa por um validador.
+     Leia também `references/neste_projeto.md` (modelo, arquivos e como medir).
    - **Exploratório** (rascunho pra testar uma ideia na conversa) vs. **produção** (vai
      virar código) — isso afeta o rigor da Fase 5.
 2. **Defina o critério de sucesso explicitamente antes de continuar.** "O que 'bom'
@@ -149,14 +150,14 @@ orquestra esta skill, com base no achado.
 Se a mudança de prompt é uma decisão arquiteturalmente difícil de reverter (ex.: trocar
 zero-shot por tool-use agentic, mudar de classificador único para roteamento em
 camadas), considere registrar via skill `sdd` (trilha ADR). Se o prompt em questão é o
-de um agente **verificador** dentro de um loop desenhado pela skill `loop-engineering`,
-a Fase 3 deve incluir explicitamente um exemplo negativo de "o que conta como aprovado
-incorretamente" — é o ponto de contato entre as duas skills.
+de um agente **verificador**, a Fase 3 deve incluir explicitamente um exemplo negativo de
+"o que conta como aprovado incorretamente".
 
 ## Recursos
 
 | Arquivo | Ler quando |
 |---|---|
+| `references/neste_projeto.md` | Fase 0, sempre que o prompt for do robô |
 | `references/anatomia_e_vocabulario.md` | Fase 2 |
 | `references/tecnicas_ladder.md` | Fase 2 |
 | `references/tecnicas_avancadas.md` | Fase 2, quando o caso exige raciocínio complexo |

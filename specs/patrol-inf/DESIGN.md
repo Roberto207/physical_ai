@@ -318,7 +318,7 @@ Origem: `specs/migracao-humble/` (DOC-03), ADR-001 (tudo em Humble) e ADR-002 (G
 | L0 | pytest da lógica, sem ROS | Notebook, PC e CI (imagem `ros:humble-ros-base`) | `python3 -m pytest` no `patrulha_tb4` e no `lab_tb4` |
 | L1 | Simulador leve: `nav2_loopback_sim` vendorizado (`workspace/meu_ws/src/terceiros/`) e base falsa, com os 11 cenários de injeção de falhas | PC do laboratório (`physical-ai:sim`) | `infra/docker/teste_l1.sh <cenario>`, que sobe o `lab_tb4/launch/l1.launch.py` |
 | L3 | Gazebo (Ignition Fortress) sem janela, com a Create 3 simulada e o AMCL de verdade. **O simulador principal** desde o ADR-002 | PC do laboratório | `infra/docker/lab.sh sim subir gazebo ...` (`lab_tb4/launch/gazebo.launch.py`) |
-| L4 | Robô real | PC do laboratório + TurtleBot 4 | `infra/docker/lab.sh robo ...`, só depois da V5 da spec `migracao-humble` |
+| L4 | Robô real | PC do laboratório + TurtleBot 4 | `infra/docker/lab.sh robo ...`, com permissão (V5 declarada aprovada pelo Roberto em 25/11, sem registro da medição) |
 
 O que mudou em relação ao texto acima:
 

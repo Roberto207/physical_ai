@@ -4,7 +4,8 @@ Todo prompt de subagente tem estes campos, nesta ordem:
 
     OBJETIVO: 1 frase
     ENTRADAS: só caminhos de arquivo (proibido colar mais de 20 linhas de texto)
-    NÃO FAÇA: executar comando que alcance o robô físico; chamar outros agentes; <específico da tarefa>
+    NÃO FAÇA: executar comando que alcance o robô físico; editar o repositório (se for avaliação);
+              chamar outros agentes; <específico da tarefa>
     SAÍDA: grava o resultado em <caminho>
     RETORNO: status | caminho | até 10 linhas de achados | lacunas (máx. ~1.500 tokens; o detalhe fica no arquivo)
     PRONTO QUANDO: <critério verificável>

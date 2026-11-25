@@ -7,6 +7,11 @@ description: Use antes de delegar a subagentes ou de tarefas com pesquisa ampla,
 
 Objetivo: gastar o mínimo do limite do plano do Claude (janela de 5 h + limite semanal, compartilhados com o claude.ai). Esta skill decide COMO executar. Ela não cria hooks nem cron e não edita settings.
 
+## Regra deste ambiente
+
+Subagente só é criado quando o usuário pede (por exemplo, "rode avaliadores"). Sem o pedido,
+execute direto e, se a delegação compensar, proponha em 1 linha e espere a resposta.
+
 ## Passo 0: é território de outra skill?
 
 | Pedido | Indique |
@@ -15,7 +20,7 @@ Objetivo: gastar o mínimo do limite do plano do Claude (janela de 5 h + limite 
 | escrever ou testar prompt | prompt-engineering |
 | settings.json, hooks, variáveis de ambiente, permissões | update-config |
 | revisar o diff em busca de bugs | code-review |
-| automação recorrente, cron, "rodar sozinho" | schedule ou loop (e loop-engineering antes, se instalada) |
+| automação recorrente, cron, "rodar sozinho" | schedule ou loop |
 
 Se o pedido cair aqui, diga em 1 linha qual skill usar e pare.
 
@@ -52,6 +57,9 @@ Todo prompt de subagente segue `references/briefing.md`: entradas por caminho de
 
 Subagente não executa comando que alcance o TurtleBot 4 (`ssh`, publicação em tópico, action, serviço, `lab.sh robo`). Essas ações ficam na conversa principal, onde o Roberto autoriza cada uma (`docs/contexto/AGENTES.md`, seção 1). Todo briefing leva essa proibição no campo NÃO FAÇA.
 
+Para avaliar código sem alcançar o robô: repositório só para leitura, scripts do subagente fora
+do projeto e `docker run --network none`. Peça que informe o que não conseguiu verificar.
+
 ## Saída da skill
 
 Antes de executar, mostre em até 5 linhas:
@@ -62,7 +70,8 @@ Antes de executar, mostre em até 5 linhas:
     ORÇAMENTO: N subagentes, profundidade P
     MOTIVO: 1 frase com o critério
 
-Depois execute sem esperar resposta, exceto no ramo recusar/adiar ou quando estourar o orçamento.
+Se o usuário já pediu subagentes, execute sem esperar resposta, exceto no ramo recusar/adiar ou
+quando estourar o orçamento. Se não pediu, vale a regra do topo.
 
 ## Fora do escopo
 
