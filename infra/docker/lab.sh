@@ -5,6 +5,7 @@
 #
 #   ./lab.sh <sim|robo> subir <serviço...>   sobe em segundo plano (ex.: subir gazebo slam rviz)
 #   ./lab.sh robo checar-rede                só lê: rotas, e /scan, /tf e /odom do robô chegam ao PC?
+#   ./lab.sh robo usar [nome]                escolhe o robô, ajusta as rotas do PC (sudo) e testa a rede
 #   ./lab.sh sim undock                      tira o robô SIMULADO da doca
 #   ./lab.sh <modo> teleop                   dirige pelo teclado (no robo, pede SIM)
 #   ./lab.sh <modo> patrulha                 a nossa patrulha (validar_pontos antes; no robo, pede SIM)
@@ -19,7 +20,8 @@
 #
 # Serviços: gazebo e leve (só sim), slam, localizacao, nav2, rviz, teleop, patrulha, undock (só
 # sim), llm e falar (só robo), ferramentas. Variáveis: MAPA, CONFIG, SYNC, VEL, GIRO, NAV2_PARAMS, MEM_GAZEBO, MUNDO,
-# ROBO_NS (namespace do robô real; padrão /robot1, ROBO_NS= vazio para nenhum).
+# ROBO (qual robô real: perfil em infra/lab/robos/; sem ele, o do último "usar", ou robot1).
+# ROBO_NS troca o namespace do perfil (ROBO_NS= vazio para nenhum). Um robô por vez neste PC.
 # No modo robo, toda ação confere antes se as imagens são Humble, a distro do robô (SEG-01).
 # Explicação: docs/tarefas/2026-11-16-compose-e-alvos.md,
 # docs/tarefas/2026-11-16-robo-real-rede-e-namespace.md e specs/migracao-humble/
@@ -29,7 +31,7 @@ cd "$(dirname "$ESTE")/../.."   # raiz do projeto (raiz do repositório)
 # Pastas montadas nos containers: criadas aqui para não nascerem como root.
 mkdir -p workspace/mapas workspace/logs
 
-uso() { sed -n 2,25p "$ESTE"; }
+uso() { sed -n 2,27p "$ESTE"; }
 
 if [ "${1:-}" = conferir ]; then
   [ -n "${2:-}" ] || { echo "Uso: ./lab.sh conferir <mapa.yaml>"; exit 1; }
@@ -50,6 +52,19 @@ rodando()   { [ -n "$(docker compose -f "infra/compose/$1.yaml" ps -q 2>/dev/nul
 # Roda um comando ROS num container de passagem do serviço ferramentas. O entrypoint da imagem
 # já carregou o ROS.
 ferramenta() { dc run --rm -T ferramentas bash -c "$1"; }
+
+# "usar <nome>" vale sobre o ROBO e o ROBO_NS herdados do terminal.
+ROBO_DO_TERMINAL=${ROBO:-}
+if [ "$MODO" = robo ] && [ "$ACAO" = usar ] && [ $# -gt 0 ]; then
+  ROBO=$1; unset ROBO_NS
+fi
+
+if [ "$MODO" = robo ]; then
+  # shellcheck source=../lab/robo_ativo.sh
+  . infra/lab/robo_ativo.sh
+  # No stderr, para não entrar na saída que outros scripts leem.
+  echo "Robô: $ROBO (${ROBO_ENDERECO:-sem servidor de descoberta}, namespace ${ROBO_NS:-nenhum})" >&2
+fi
 
 # SEG-01: o robô do lab é Humble, e nós de outra distro na rede dele já o derrubaram (16/11:
 # o Humble lê mal a ParticipantEntitiesInfo do Jazzy e o serviço turtlebot4 morre sem memória).
@@ -83,20 +98,38 @@ exigir_sozinho() {
   fi
 }
 
+# Os contêineres do modo robo têm o mesmo nome de projeto para qualquer robô. Com serviços de um
+# robô no ar, uma ação para outro (um terminal sem o ROBO=...) é recusada. Contêiner sem o
+# rótulo é anterior aos perfis, quando só havia o robot1.
+exigir_mesmo_robo() {
+  local no_ar
+  no_ar=$(docker ps --filter label=com.docker.compose.project=tb4-robo \
+            --format '{{.Label "tb4.robo"}}') || { echo "Não consegui consultar o Docker."; exit 1; }
+  [ -n "$(docker ps -q --filter label=com.docker.compose.project=tb4-robo)" ] || return 0
+  no_ar=$(sed 's/^$/robot1/' <<<"$no_ar" | grep -vx "$ROBO" | sort -u | tr '\n' ' ' || true)
+  [ -z "$no_ar" ] || {
+    echo "Há serviços de outro robô no ar (${no_ar% }), e você pediu $ROBO."
+    echo "Use ROBO=${no_ar%% *} ou desligue antes: ./lab.sh robo parar"; exit 1
+  }
+}
+
 # Com o Discovery Server, o DDS do robô anuncia TODOS os endereços dele: o do Wi-Fi, o do cabo
 # (192.168.185.3) e o da USB com a Create 3 (192.168.186.x). O PC responde em todos. Sem rota
 # para esses dois pelo robô, as respostas saem pelo roteador, se perdem, e o PC nunca completa
 # a descoberta (medido em 2026-11-16 com tcpdump: 545 pacotes para cada um, 33 para o Wi-Fi).
 # O manual pede a rota da 192.168.186.0/24 pelo IP do robô (setup/discovery_server.html).
 checar_rotas() {
-  local ip rota dev con faltam=""
-  ip=$(sed -nE 's/^ROS_DISCOVERY_SERVER=;*([0-9.]+):.*/\1/p' infra/lab/rede_lab.env)
+  local ip=$ROBO_ENDERECO rota via padrao dev con faltam="" antigas=""
   [ -n "$ip" ] || return 0   # Simple Discovery: não há servidor nem rota a conferir
   for alvo in 192.168.186.2 192.168.185.3; do
     rota=$(ip route get "$alvo" 2>/dev/null || true)
     # Ligado direto (o cabo na enp86s0, sem "via") ou pelo robô: ok. Pelo roteador: falta.
     if grep -q " via " <<<"$rota" && ! grep -q " via $ip " <<<"$rota"; then
       faltam+=" ${alvo%.*}.0/24"
+      # Se o "via" não é o roteador padrão, é a rota de outro robô nesta mesma conexão.
+      via=$(grep -oE ' via [0-9.]+' <<<"$rota" | awk '{print $2}')
+      padrao=$(ip route show default | awk '{print $3}')
+      grep -qx "$via" <<<"$padrao" || antigas+="${antigas:+, }${alvo%.*}.0/24 $via 500"
     fi
   done
   [ -n "$faltam" ] || return 0
@@ -105,6 +138,9 @@ checar_rotas() {
   echo "REDE REPROVADA: o PC não tem rota pelo robô ($ip) para:$faltam."
   echo "O DDS do robô anuncia esses endereços, e sem a rota o PC não completa a descoberta."
   echo "Rode uma vez (fica salvo na conexão $con; explicação em docs/guias/acesso-ao-robo.md):"
+  if [ -n "$antigas" ]; then   # as duas rotas para a mesma sub-rede não podem conviver
+    echo "  sudo nmcli connection modify \"$con\" -ipv4.routes \"$antigas\""
+  fi
   echo "  sudo nmcli connection modify \"$con\" +ipv4.routes \"192.168.186.0/24 $ip 500, 192.168.185.0/24 $ip 500\""
   echo "  sudo nmcli connection up \"$con\""
   return 2
@@ -114,7 +150,7 @@ checar_rede() {
   # Só leitura (manual, setup/simple_discovery.html: "ros2 topic list" no PC e no robô).
   # Junta 4 listagens com 4 s entre elas: pelo Discovery Server, a descoberta leva alguns
   # segundos (no próprio robô, cerca de 10 s até os 31 tópicos aparecerem).
-  local ns=${ROBO_NS-/robot1} topicos erro faltando=""
+  local ns=$ROBO_NS topicos erro faltando=""
   checar_rotas || return 2
   erro=$(mktemp)
   # Se o container nem sobe (imagem faltando, Docker sem permissão), o erro aparece aqui, e
@@ -128,11 +164,64 @@ checar_rede() {
     grep -qx "$ns/$t" <<<"$topicos" && echo "  ok   $ns/$t" || echo "  aviso: $ns/$t não apareceu (a patrulha vai precisar)"
   done
   if [ -n "$faltando" ]; then
-    echo "REDE REPROVADA: faltam$faltando. Confira ROS_DOMAIN_ID, RMW e o discovery em infra/lab/rede_lab.env,"
-    echo "e o namespace do robô (ROBO_NS, hoje '${ns:-nenhum}')."
+    echo "REDE REPROVADA: faltam$faltando. Confira ROS_DOMAIN_ID e o discovery em $ROBO_ENV,"
+    echo "o RMW em infra/lab/rede_lab.env e o namespace do robô (hoje '${ns:-nenhum}')."
     return 2
   fi
   echo "REDE OK: $ns/scan, $ns/tf e $ns/odom do robô chegam ao PC."
+}
+
+# Aponta para o robô escolhido as rotas das sub-redes internas, na conexão em uso. Muda SÓ o PC.
+# Confere tudo antes de pedir o sudo: com o robô fora de alcance, nada é alterado.
+usar_robo() {
+  local ip=$ROBO_ENDERECO rota dev con salvas rede nova remover="" incluir="" mudou=0 args=()
+  if [ -n "$ip" ]; then
+    rota=$(ip route get "$ip" 2>/dev/null || true)
+    if [ -z "$rota" ] || grep -q ' via ' <<<"$rota"; then
+      echo "$ROBO ($ip) não está na rede deste PC. Confira o Wi-Fi e o IP em $ROBO_ENV."
+      echo "Nada foi alterado."; return 2
+    fi
+    ping -c 3 -W 2 "$ip" >/dev/null 2>&1 || {
+      echo "$ROBO ($ip) não responde ao ping. Ele está ligado? O IP mudou ($ROBO_ENV)?"
+      echo "Nada foi alterado."; return 2
+    }
+    dev=$(grep -oE 'dev [^ ]+' <<<"$rota" | cut -d' ' -f2)
+    con=$(nmcli -g GENERAL.CONNECTION device show "$dev") && [ -n "$con" ] || {
+      echo "Não achei a conexão do NetworkManager em $dev. Nada foi alterado."; return 2
+    }
+    # Uma rota salva por linha, no formato "destino próximo-salto métrica".
+    salvas=$(nmcli -g ipv4.routes connection show "$con" | tr ',' '\n' | sed 's/^ *//; s/ *$//')
+    for rede in 192.168.186.0/24 192.168.185.0/24; do
+      nova="$rede $ip 500"
+      grep -qxF "$nova" <<<"$salvas" || incluir+="${incluir:+, }$nova"
+      while IFS= read -r rota; do   # a mesma sub-rede apontando para outro robô sai
+        [[ "$rota" != "$rede "* ]] || [ "$rota" = "$nova" ] || remover+="${remover:+, }$rota"
+      done <<<"$salvas"
+    done
+    [ -z "$remover" ] || args+=(-ipv4.routes "$remover")
+    [ -z "$incluir" ] || args+=(+ipv4.routes "$incluir")
+    if [ ${#args[@]} -gt 0 ]; then
+      echo "Conexão $con, rotas a alterar no PC (pede a senha do sudo):"
+      [ -z "$remover" ] || echo "  sai:   $remover"
+      [ -z "$incluir" ] || echo "  entra: $incluir"
+      sudo nmcli connection modify "$con" "${args[@]}"
+      mudou=1
+    fi
+    # Reaplica sem desconectar o Wi-Fi (o SSH aberto sobrevive); se não der, reconecta.
+    if [ "$mudou" = 1 ] || ! checar_rotas >/dev/null; then
+      sudo nmcli device reapply "$dev" || sudo nmcli connection up "$con"
+      sleep 2
+    else
+      echo "As rotas já apontam para $ROBO."
+    fi
+  fi
+  echo "$ROBO" > infra/lab/robos/.atual
+  echo "Robô em uso: $ROBO. Os próximos comandos valem para ele, sem precisar de ROBO=."
+  if [ -n "$ROBO_DO_TERMINAL" ] && [ "$ROBO_DO_TERMINAL" != "$ROBO" ]; then
+    echo "ATENÇÃO: este terminal tem ROBO=$ROBO_DO_TERMINAL, que continua valendo. Rode: unset ROBO"
+  fi
+  echo "Testando a rede (cerca de meio minuto)..."
+  checar_rede
 }
 
 liberar_tela() {
@@ -173,6 +262,7 @@ if [ "$MODO" = robo ]; then
     GUARDA_OK=0
     [ "$ACAO" = parar ] || exit 1
   fi
+  case "$ACAO" in parar|estado|logs) ;; *) exigir_mesmo_robo ;; esac
 fi
 
 case "$ACAO" in
@@ -193,6 +283,14 @@ case "$ACAO" in
   checar-rede)
     [ "$MODO" = robo ] || { echo "checar-rede é só do modo robo."; exit 1; }
     checar_rede
+    ;;
+  usar)
+    [ "$MODO" = robo ] || { echo "usar é só do modo robo."; exit 1; }
+    if [ $# -eq 0 ]; then
+      echo "Em uso: $ROBO. Perfis: $(cd infra/lab/robos && ls -- *.env | sed 's/\.env$//' | tr '\n' ' ')"
+    else
+      usar_robo
+    fi
     ;;
   teleop|patrulha|undock|llm|falar)
     [ "$ACAO" = undock ] && [ "$MODO" = robo ] && { echo "No robô real, o undock é à mão (kit de campo, etapa 3)."; exit 1; }
@@ -225,9 +323,9 @@ case "$ACAO" in
     # PAT-23: só chama o serviço do nó da patrulha (um comando de CLI de uma resposta). Quem
     # decide e move o robô é a patrulha (decisao.py): cancela o destino, vai à doca, encaixa e
     # encerra com o código 0. Não envia dock nem undock por conta própria (SEG-06).
-    ns=""; [ "$MODO" = robo ] && ns=${ROBO_NS-/robot1}
+    ns=""; [ "$MODO" = robo ] && ns=$ROBO_NS
     if [ "$MODO" = robo ]; then
-      echo "ATENÇÃO: a patrulha vai levar o robô REAL de volta à doca e encerrar."
+      echo "ATENÇÃO: a patrulha vai levar o robô REAL ($ROBO) de volta à doca e encerrar."
       read -r -p 'Pessoa de segurança ao lado? Digite SIM para continuar: ' resposta
       [ "$resposta" = SIM ] || { echo "Cancelado."; exit 1; }
     fi
@@ -253,7 +351,7 @@ case "$ACAO" in
     # map_subscribe_transient_local: o /map do slam_toolbox é transient_local, e sem isso o
     # map_saver perde o mapa já publicado. Grava direto em /mapas (= workspace/mapas/).
     # O exec não passa pelo entrypoint: carrega o ROS pela ROS_DISTRO do próprio container.
-    ns_mapa=""; [ "$MODO" = robo ] && ns_mapa=${ROBO_NS-/robot1}
+    ns_mapa=""; [ "$MODO" = robo ] && ns_mapa=$ROBO_NS
     saida=$(timeout 60 docker compose -f "$ARQ" exec -T slam bash -c "source /opt/ros/\$ROS_DISTRO/setup.bash; \
       ros2 run nav2_map_server map_saver_cli -f '/mapas/$nome' --ros-args \
       -r map:=${ns_mapa}/map -p map_subscribe_transient_local:=true -p save_map_timeout:=10.0" 2>&1 || true)
@@ -270,6 +368,7 @@ case "$ACAO" in
 mapa: $nome
 data: $(date '+%F %T %z')
 modo: $MODO
+robo: ${ROBO:-simulado}
 comecou_na_doca: $doca
 slam: turtlebot4_navigation slam.launch.py (sync=${SYNC:-true})
 git: $versao

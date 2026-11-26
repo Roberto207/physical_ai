@@ -11,7 +11,7 @@
 | Simulador L1 | `nav2_loopback_sim` **vendorizado** em `workspace/meu_ws/src/terceiros/nav2_loopback_sim`, com base, bateria e AMCL falsos, para injeção de falhas |
 | Patrulha no robô | `workspace/patrulha_oficial/` (adaptação do exemplo oficial) |
 | Patrulha com recarga | Pacote `patrulha_tb4` (lógica em Python puro, testada em L0), anterior |
-| Rede com o robô | Fast DDS com Discovery Server no robô, domínio 0, namespace `/robot1` (`docs/contexto/maquinas.md`) |
+| Rede com o robô | Fast DDS com Discovery Server no robô, domínio 0, um namespace por robô (perfis em `infra/lab/robos/`; `docs/contexto/maquinas.md`) |
 | LLM | **Ollama** com o modelo `qwen2.5:1.5b`, gratuito e local (decidido em 25/11) |
 | Segurança da LLM | `workspace/meu_ws/src/llm_tb4/llm_tb4/validar_acao.py`: a LLM escolhe ações discretas validadas, sem `exec` |
 

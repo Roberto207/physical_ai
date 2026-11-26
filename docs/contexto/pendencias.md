@@ -46,6 +46,12 @@ Plano em `specs/llm-integracao/PLANO.md`; código em `workspace/meu_ws/src/llm_t
 
 ## Robô e rede
 
+- [ ] `robot3`: a Create 3 chegou a 100% de processador com os serviços do PC no ar, e a odometria, a bateria e a doca pararam de aparecer (`docs/tarefas/2026-11-25-llm-robot3-correcoes.md`)
+- [ ] O `checar-rede` aprova pela lista de tópicos; falta conferir se os dados chegam
+- [ ] `robot3`: subir localização, RViz e Nav2 pelo PC
+- [ ] Testar o `lab.sh robo usar` numa troca real entre dois robôs
+- [ ] `robot3`: medir a posição da doca e o ponto de aproximação; os da patrulha (`patrol_loop.py`) são os mesmos para todos os robôs
+- [ ] `robot3`: reserva de DHCP para o `192.168.68.53`
 - [ ] Reserva de DHCP para o `192.168.7.7` e reconexão do Wi-Fi após reiniciar
 - [ ] Rede `PixelLab-5GHz` não aparece no robô (`docs/guias/acesso-ao-robo.md`)
 - [ ] O robô usa a senha padrão do usuário `ubuntu`

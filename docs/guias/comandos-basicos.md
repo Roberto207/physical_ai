@@ -1,5 +1,7 @@
 # Comandos básicos do projeto
 
+> **Outro robô:** os exemplos usam o `robot1`. Para outro, rode antes `infra/docker/lab.sh robo usar <nome>` e, nos comandos digitados, troque `/robot1` e o IP pelos dele (`docs/guias/acesso-ao-robo.md`, seção "Vários robôs").
+
 Cola rápida. Todos os comandos partem da raiz do projeto, no PC do laboratório (`cd ~/physical_ai`). Índice dos guias: `docs/guias/como-rodar.md`.
 
 Sequências prontas: `docs/guias/patrulha-volta-a-doca.md` e `docs/guias/patrulha-loop-continuo.md`.
@@ -14,8 +16,9 @@ ping -c 5 192.168.7.7                             # o robô responde pelo Wi-Fi?
 ssh robo-wifi                                     # entra no robô pelo Wi-Fi
 ssh robo                                          # entra no robô pelo cabo
 ip -br addr                                       # IPs e placas de rede (no PC ou no robô)
+infra/docker/lab.sh robo usar robot3              # troca de robô: rotas do PC (sudo) e teste
 nmcli -t -f NAME,DEVICE connection show --active  # qual rede o PC está usando
-cat infra/lab/rede_lab.env                        # domínio ROS, RMW e IP do Discovery Server
+cat infra/lab/rede_lab.env infra/lab/robos/robot1.env   # rede comum; domínio, discovery e namespace do robô
 ```
 
 Dentro do robô (depois do `ssh`):
@@ -144,29 +147,28 @@ infra/docker/lab.sh sim parar                     # desliga o simulador
 
 Os modos `sim` e `robo` não rodam juntos: pare um antes de subir o outro.
 
-## LLM no robô
+## LLM (linguagem natural)
+
+Sequência completa, na ordem: `docs/guias/llm-linguagem-natural.md`.
 
 ```bash
+# NO ROBÔ (antes: localizacao, 2D Pose Estimate e nav2; bateria a partir de 0.20)
 infra/docker/lab.sh robo llm                      # nó com o freio ligado (não move)
 PARKING_BRAKE=false infra/docker/lab.sh robo llm  # [move] pede SIM
 infra/docker/lab.sh robo falar                    # enviar pedidos; Enter vazio: pare
-```
 
-## LLM isolada (não move o robô)
-
-Sequência completa: `docs/guias/llm-linguagem-natural.md`.
-
-```bash
-ollama list                                       # modelos baixados
-systemctl status ollama                           # serviço ativo?
-docker compose -f infra/compose/llm.yaml up -d    # inicia o nó, isolado do robô
+# SEM ROBÔ (nunca move: não alcança o robô)
+docker compose -f infra/compose/llm.yaml up -d    # inicia o ensaio
 docker compose -f infra/compose/llm.yaml logs -f llm      # decisões do nó
-# envia um pedido ao nó
 docker compose -f infra/compose/llm.yaml exec llm bash -c \
   'source /opt/ros/humble/setup.bash; ros2 topic pub --once -w 1 /robot1/user_input std_msgs/msg/String "data: vai pra janela"'
-docker compose -f infra/compose/llm.yaml down     # encerra o nó
+docker compose -f infra/compose/llm.yaml down     # encerra o ensaio
+
+# modelo
+ollama list                                       # modelos baixados
+systemctl status ollama                           # serviço ativo?
 (cd workspace/meu_ws/src/llm_tb4 && python3 -m llm_tb4.interpretador "vai pra geladeira")   # sem ROS
-(cd workspace/meu_ws/src/llm_tb4 && python3 -m llm_tb4.avaliar)   # mede acertos e tempo com o modelo real
+(cd workspace/meu_ws/src/llm_tb4 && python3 -m llm_tb4.avaliar)   # mede acertos e tempo
 ```
 
 ## Imagens e testes

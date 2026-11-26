@@ -35,13 +35,13 @@ Consequências:
 - O `python3` do sistema não tem `pytest` (25/11): os testes rodam no notebook, no CI ou dentro das imagens.
 - O `lab.sh` recusa imagem de outra distro no modo robô (SEG-01).
 
-## 3. Robô TurtleBot 4 e rede (conferido no robô em 2026-11-16)
+## 3. Robô TurtleBot 4 e rede: `robot1` (conferido no robô em 2026-11-16)
 
 | Item | Valor |
 |---|---|
 | Distro | ROS 2 Humble, Ubuntu 22.04. O PC precisa falar Humble com ele |
 | Modo de descoberta | **Discovery Server**: o servidor roda no próprio robô (`fast-discovery-server -i 1 -p 11811`) |
-| No PC | `ROS_DISCOVERY_SERVER=;<IP do robô>:11811;` (o `;` antes do IP põe o servidor na posição 1, que é o id) e `FASTDDS_BUILTIN_TRANSPORTS=UDPv4`, em `infra/lab/rede_lab.env`. O `ROS_SUPER_CLIENT=True` fica só no serviço `ferramentas` de `infra/compose/robo.yaml` |
+| No PC | `ROS_DISCOVERY_SERVER=;<IP do robô>:11811;` (o `;` antes do IP põe o servidor na posição 1, que é o id) e `FASTDDS_BUILTIN_TRANSPORTS=UDPv4`, no perfil do robô (`infra/lab/robos/robot1.env`; o comum a todos em `infra/lab/rede_lab.env`). O `ROS_SUPER_CLIENT=True` fica só no serviço `ferramentas` de `infra/compose/robo.yaml` |
 | `ROS_DOMAIN_ID` | 0 nos dois lados |
 | Namespace | `/robot1` em todos os nós: `/robot1/scan`, `/robot1/battery_state`, `/robot1/dock_status` etc. O compose usa `ROBO_NS` (padrão `/robot1`) |
 | `cmd_vel` | `geometry_msgs/msg/Twist`, sem carimbo de tempo |
@@ -53,7 +53,6 @@ Detalhes e a medição que originou esses fatos: `docs/tarefas/2026-11-16-robo-r
 
 Itens em aberto: `docs/contexto/pendencias.md`.
 
-### Segundo robô (21/11) - HÁ DE SE VERIFICAR ESSA INFORMAÇÃO, CUIDADO!!
+### Segundo robô, `robot3` (conferido no robô em 2026-11-25)
 
-Número de série `1000000044bad95f`. Pelo cabo: `eth0` 192.168.185.3 e `usb0` 192.168.186.3; `wlan0` desligada na leitura. Registro: `docs/tarefas/2026-11-21-acesso-segundo-turtlebot-cabo.md`. O número de série do primeiro robô não foi anotado.
-
+Número de série `1000000044bad95f`. ROS 2 Humble, namespace `/robot3`, domínio 0, Discovery Server com id 3, FastDDS. `wlan0` 192.168.68.53 no Wi-Fi `Robotica_Deco`, `usb0` 192.168.186.3, `eth0` desligada na leitura. Perfil do PC: `infra/lab/robos/robot3.env`. O número de série do primeiro robô (`robot1`) não foi anotado. Com as rotas no PC, o `checar-rede` deu `REDE OK` em 25/11. Ainda não verificado: navegação e movimento a partir do PC.

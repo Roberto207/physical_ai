@@ -108,3 +108,26 @@ sudo nmcli connection up "PixelLab-2.4GHz"
 - **Desfazer:** troque `+ipv4.routes` por `-ipv4.routes` no mesmo comando.
 
 Depois, o teste é `infra/docker/lab.sh robo checar-rede`, que confere as rotas antes de testar o DDS e, se faltarem, mostra este mesmo comando.
+
+## Vários robôs
+
+Cada robô tem um perfil em `infra/lab/robos/`, com namespace, domínio e servidor de descoberta. O que é igual para todos fica em `infra/lab/rede_lab.env`. Para trocar de robô:
+
+```
+infra/docker/lab.sh robo parar          # se houver serviços de outro robô no ar
+infra/docker/lab.sh robo usar robot3    # ajusta as rotas do PC (sudo) e testa a rede
+infra/docker/lab.sh robo usar           # mostra o robô em uso e os perfis
+```
+
+Depois do `usar`, o `lab.sh robo`, o `rodar.sh` e o preflight valem para o robô escolhido. A escolha fica em um arquivo local deste PC (ignorado pelo git). A variável `ROBO=<nome>`, quando definida no terminal, vale sobre ela. Sem as duas, vale o `robot1`.
+
+O `usar` altera só as rotas das sub-redes `192.168.186.0/24` e `192.168.185.0/24` da conexão em uso, e só se o robô responder ao ping. Se as rotas já estiverem certas, não pede `sudo`. Ele não troca o Wi-Fi do PC.
+
+| Perfil | Wi-Fi | IP (DHCP) | Servidor de descoberta | Série do Raspberry Pi |
+|---|---|---|---|---|
+| `robot1` | `PixelLab-2.4GHz` | `192.168.7.7` | id 1 | não anotado |
+| `robot3` | `Robotica_Deco` | `192.168.68.53` | id 3 | `1000000044bad95f` |
+
+- **Um robô por vez neste PC.** Com serviços de um robô no ar, o `lab.sh` recusa ações para outro.
+- **Rotas:** todos os robôs usam as mesmas sub-redes internas, e uma conexão do PC só tem um caminho para cada uma. Por isso o `usar` troca as rotas ao alternar entre robôs do mesmo Wi-Fi.
+- **Robô novo:** no robô, leia `cat /etc/turtlebot4/setup.bash`, `ip -br addr` e `grep '^Serial' /proc/cpuinfo`. No PC, copie um perfil existente e preencha. A quantidade de `;` antes do IP é o id do servidor: o mesmo que aparece no `ROS_DISCOVERY_SERVER` do robô.

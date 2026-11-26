@@ -1,46 +1,165 @@
 # Linguagem natural (LLM): como rodar
 
-Pacote `workspace/meu_ws/src/llm_tb4`: o nó recebe um pedido em português, interpreta com o Ollama (`qwen2.5:1.5b`) e, se o freio estiver solto, **move o robô**.
+> **Outro robô:** os exemplos usam o `robot1`. Para outro, rode antes `infra/docker/lab.sh robo usar <nome>` e, nos comandos digitados, troque `/robot1` e o IP pelos dele (`docs/guias/acesso-ao-robo.md`, seção "Vários robôs").
 
-| Modo | Como se inicia | Move o robô? |
+Pacote `workspace/meu_ws/src/llm_tb4`: o nó recebe um pedido em português, interpreta com o Ollama (`qwen2.5:1.5b`) e, no robô com o freio solto, **move o robô**.
+
+## Qual comando usar
+
+| Quero | Comando que inicia o nó | O robô se move? |
 |---|---|---|
-| Ensaio isolado (partes A) | `infra/compose/llm.yaml` | **Não.** Não alcança o robô |
-| Robô, freio ligado (parte B) | `lab.sh robo llm` | **Não.** Só interpreta, usando a bateria real |
-| Robô, freio solto (parte C) | `PARKING_BRAKE=false lab.sh robo llm` | **SIM**, a cada pedido, sem confirmação |
+| **Mandar o robô andar** (parte 1, passo 7) | `PARKING_BRAKE=false infra/docker/lab.sh robo llm` | **SIM**, a cada pedido, sem confirmação |
+| Conferir no robô sem andar (parte 1, passo 6) | `infra/docker/lab.sh robo llm` | Não (freio ligado) |
+| Treinar frases sem robô (parte 2) | `docker compose -f infra/compose/llm.yaml up -d` | **Nunca**: não alcança o robô |
 
-> **O código de execução ainda não rodou no simulador nem no robô.** Foi ensaiado só com um robô falso. `docs/contexto/AGENTES.md` manda validar no simulador antes do robô.
+Se o log mostra `[freio: não executado]`, o robô não vai andar: o freio está ligado ou é o ensaio sem robô.
+
+> O código de movimento foi ensaiado só com um robô falso. Nos primeiros testes, uma pessoa ao lado, pronta para parar o robô. `docs/contexto/AGENTES.md` recomenda validar no simulador antes.
 
 Todos os comandos rodam no PC do laboratório. Os blocos estão na ordem de execução.
 
-# A. Ensaio isolado
+## Qual robô
 
-## 1. Conferir o modelo
-
-```bash
-cd ~/physical_ai                                  # raiz do projeto
-systemctl is-active ollama                        # precisa responder "active"
-ollama list                                       # precisa listar qwen2.5:1.5b
-ollama pull qwen2.5:1.5b                          # só se não estiver na lista (cerca de 986 MB)
-```
-
-## 2. Iniciar o nó
+Os comandos abaixo valem para o `robot1`, o padrão. Para outro robô com perfil em `infra/lab/robos/`, escolha-o **em cada terminal**, antes de tudo, e troque `/robot1` nos nomes de tópico (passo 2):
 
 ```bash
-docker compose -f infra/compose/llm.yaml up -d          # compila o pacote e inicia
-docker compose -f infra/compose/llm.yaml logs -f llm    # deixar neste terminal; Ctrl+C só fecha o log
+export ROBO=robot3                                # vale só neste terminal; repita nos terminais 2 e 3
 ```
 
-Pronto quando aparecer `FREIO DE ESTACIONAMENTO: nada será executado.` e, alguns segundos depois, o nó aceitar pedidos. Um erro `o modelo ... não respondeu` indica o Ollama parado.
+# Parte 1: no robô
 
-## 3. Enviar pedidos (em outro terminal)
+## 1. Preparar
+
+Robô **na doca**, área livre.
+
+```bash
+cd ~/physical_ai                                        # raiz do projeto
+docker compose -f infra/compose/llm.yaml down           # encerra o ensaio sem robô, se estiver no ar
+infra/docker/lab.sh robo parar                          # derruba sobras do robô
+systemctl is-active ollama                              # precisa responder "active"
+ollama list                                             # precisa listar qwen2.5:1.5b
+infra/docker/lab.sh robo checar-rede                    # precisa terminar em "REDE OK"
+```
+
+## 2. Conferir a bateria
+
+```bash
+# 0.20 ou mais para o robô sair da doca (0.78 = 78%)
+infra/docker/lab.sh robo compose run --rm -T ferramentas \
+    ros2 topic echo --once /robot1/battery_state sensor_msgs/msg/BatteryState --qos-profile sensor_data --field percentage
+```
+
+Abaixo de `0.20`, deixe o robô carregando: o nó recusa sair.
+
+## 3. Subir a localização e o RViz
+
+```bash
+MAPA=/mapas/mapa_lab_novo.yaml infra/docker/lab.sh robo subir localizacao   # AMCL + mapa
+infra/docker/lab.sh robo subir rviz                                         # janela do RViz
+```
+
+No RViz: **2D Pose Estimate** na posição e direção reais do robô. O laser deve cair sobre as paredes.
+
+## 4. Subir o Nav2
+
+```bash
+MAPA=/mapas/mapa_lab_novo.yaml infra/docker/lab.sh robo subir nav2          # navegação
+```
+
+## 5. Conferir o Nav2 (espere cerca de 1 minuto)
+
+```bash
+# Esperado: "Managed nodes are active", sem "CRITICAL" nem "Aborting" depois
+docker logs tb4-robo-nav2-1 2>&1 | grep -E "Managed nodes are active|Aborting bringup|CRITICAL"
+```
+
+Se abortou, recrie só o Nav2: `infra/docker/lab.sh robo compose rm -sf nav2` e `infra/docker/lab.sh robo subir nav2`. A skill `/preflight-robo` confere os passos 1 a 5.
+
+## 6. Nó com o freio ligado (não move)
+
+```bash
+infra/docker/lab.sh robo llm                      # TERMINAL 2: o nó
+```
+
+```bash
+infra/docker/lab.sh robo falar                    # TERMINAL 3: escrever os pedidos
+```
+
+Escreva um pedido no terminal 3 e confira a linha `DECISAO` no terminal 2. Depois, **`Ctrl+C` no terminal 2**. O terminal 3 pode ficar aberto.
+
+## 7. Nó com o freio solto (MOVE O ROBÔ)
+
+**Antes:** pessoa ao lado, área livre, nenhuma patrulha rodando.
+
+```bash
+PARKING_BRAKE=false infra/docker/lab.sh robo llm  # TERMINAL 2: digite SIM
+```
+
+1. Espere aparecer `FREIO DESLIGADO` e, alguns segundos depois, `[nó pronto]` no terminal 3.
+2. **Só então** refaça o **2D Pose Estimate** no RViz: o nó precisa receber a localização depois de ligado.
+3. No terminal 3 (`infra/docker/lab.sh robo falar`), faça o primeiro teste nesta ordem:
+
+| Pedido | O que observar |
+|---|---|
+| `vá ao ponto 1` | Sai da doca e vai ao ponto 1 |
+| `vá ao ponto 4` e, no caminho, só Enter | Para em cerca de um segundo. **Teste isto antes dos outros pedidos** |
+| `vá ao ponto 4` e, no caminho, `vá ao ponto 1` | Cancela e muda de destino |
+| `volte para a doca` | Aproxima e encaixa |
+
+## Parar o robô
+
+| Como | Efeito |
+|---|---|
+| Só Enter no terminal 3 | Envia "pare" |
+| `Ctrl+C` no terminal 2, ou fechar esse terminal | Cancela a meta e encerra o nó |
+
+**Fechar o terminal 3 não para o robô.** Se o PC cair ou o processo for morto à força, o Nav2 segue até o destino: a parada física é a garantia.
+
+**Regras com o robô andando**
+
+- **Qualquer mensagem cancela o trajeto**, mesmo que não seja um comando; se não for, o robô fica parado.
+- Durante o dock e a saída da doca, a manobra termina e a última mensagem é obedecida. "pare" cancela na hora.
+- Não há confirmação: uma interpretação errada move o robô até chegar outra mensagem.
+
+## 8. Encerrar (sempre)
+
+```bash
+# terminal 2: Ctrl+C     terminal 3: Ctrl+D
+infra/docker/lab.sh robo parar                    # encerra o nó (se sobrou) e depois o resto
+docker ps                                         # não deve restar "tb4-robo-..."
+```
+
+## O robô não se mexe
+
+| O que aparece | Causa e o que fazer |
+|---|---|
+| `[freio: não executado]` | Freio ligado ou ensaio sem robô: use o passo 7 |
+| `bateria abaixo de 20%` | Carregar. Só "volte para a doca" é aceito |
+| `localização nunca recebida` ou `sem map→odom recente` | Refazer o 2D Pose Estimate (o nó espera 20 s) |
+| `sem estado recente da doca` ou `sem leitura recente da bateria` | `infra/docker/lab.sh robo checar-rede` |
+| `servidor de ação indisponível` | Conferir o Nav2 (passo 5) |
+| `há uma meta ativa de outro programa` | Encerrar o outro programa, ou "pare" |
+| `o cancelamento não foi confirmado` | Conferir o robô; "pare" repete o cancelamento |
+| `DECISAO ... recusar` | O pedido não foi entendido como comando; reescreva |
+| `NINGUÉM RECEBEU` (terminal 3) | O nó não está no ar, ou ainda está iniciando |
+| `Caractere inválido ignorado` (terminal 3) | Sobrou metade de uma letra acentuada; confira o texto mostrado, que é o enviado |
+
+# Parte 2: ensaio sem robô (não move)
+
+Serve para treinar frases. Usa bateria simulada e uma rede ROS própria: **o robô nunca recebe nada**.
 
 ```bash
 cd ~/physical_ai
+docker compose -f infra/compose/llm.yaml up -d          # compila e inicia
+docker compose -f infra/compose/llm.yaml logs -f llm    # deixar neste terminal; Ctrl+C só fecha o log
+```
+
+Em outro terminal, troque o texto depois de `data:`:
+
+```bash
 docker compose -f infra/compose/llm.yaml exec llm bash -c \
   'source /opt/ros/humble/setup.bash; ros2 topic pub --once -w 1 /robot1/user_input std_msgs/msg/String "data: vai pra janela"'
 ```
-
-Troque o texto depois de `data:`. A resposta aparece no terminal do log, em uma linha `DECISAO: ...`.
 
 | Experimente | Esperado no log |
 |---|---|
@@ -52,94 +171,24 @@ Troque o texto depois de `data:`. A resposta aparece no terminal do log, em uma 
 | `volte para a doca` | `voltar_para_base` |
 | `pare` | `parar` |
 
-Os locais e seus nomes estão em `workspace/meu_ws/src/llm_tb4/config/destinos.json`.
+```bash
+docker compose -f infra/compose/llm.yaml down           # encerrar
+```
 
-## 4. Testar sem o nó, uma frase por vez
+Uma frase por vez, sem nó, e medição do modelo:
 
 ```bash
 (cd workspace/meu_ws/src/llm_tb4 && python3 -m llm_tb4.interpretador "vai pra mesa central")   # mostra a decisão
-(cd workspace/meu_ws/src/llm_tb4 && python3 -m llm_tb4.avaliar)    # mede acertos e tempo em todas as frases de teste
+(cd workspace/meu_ws/src/llm_tb4 && python3 -m llm_tb4.avaliar)    # acertos e tempo nas frases de teste
 ```
 
-## 5. Encerrar (sempre)
+Os locais e seus nomes estão em `workspace/meu_ws/src/llm_tb4/config/destinos.json`.
+
+# Depois de mudar código, prompt ou destinos
+
+O nó do robô recompila a cada `lab.sh robo llm`; o do ensaio, a cada `down` e `up -d`.
 
 ```bash
-docker compose -f infra/compose/llm.yaml down           # para e remove o contêiner do nó
-docker ps                                               # não deve restar "tb4-llm-..."
-```
-
-# B. No robô, com o freio ligado (não move)
-
-```bash
-cd ~/physical_ai
-infra/docker/lab.sh robo parar                    # derruba sobras
-infra/docker/lab.sh robo checar-rede              # precisa terminar em "REDE OK"
-MAPA=/mapas/mapa_lab_novo.yaml infra/docker/lab.sh robo subir localizacao
-infra/docker/lab.sh robo subir rviz               # no RViz: 2D Pose Estimate na pose real
-MAPA=/mapas/mapa_lab_novo.yaml infra/docker/lab.sh robo subir nav2
-```
-
-A skill `/preflight-robo` confere esses passos e o estado dos nós.
-
-```bash
-infra/docker/lab.sh robo llm                      # terminal 2: o nó (freio ligado)
-infra/docker/lab.sh robo falar                    # terminal 3: escrever os pedidos
-```
-
-Confira no terminal 2 que as frases viram a `DECISAO` esperada. Encerre o nó com `Ctrl+C` antes de seguir.
-
-# C. No robô, movendo
-
-**Antes:** pessoa ao lado capaz de parar o robô, área livre, nenhuma patrulha rodando, serviços da parte B no ar.
-
-**Terminal 2: o nó**
-
-```bash
-PARKING_BRAKE=false infra/docker/lab.sh robo llm  # MOVE O ROBÔ: pede SIM
-```
-
-Espere `FREIO DESLIGADO` e, em seguida, o nó ficar pronto. **Só então** refaça o **2D Pose Estimate** no RViz: o nó precisa receber a localização depois de ligado.
-
-**Terminal 3: os pedidos**
-
-```bash
-infra/docker/lab.sh robo falar                    # Enter vazio envia "pare"
-```
-
-| Primeiro teste, nesta ordem | O que observar |
-|---|---|
-| `vá ao ponto 1` | Sai da doca e vai ao ponto 1 |
-| `vá ao ponto 4` e, no caminho, Enter vazio | Para em cerca de um segundo. **Teste isto antes de confiar nos outros pedidos** |
-| `vá ao ponto 4` e, no caminho, `vá ao ponto 1` | Cancela e muda de destino |
-| `volte para a doca` | Aproxima e encaixa |
-
-**Regras do nó com o robô andando**
-
-- **Qualquer mensagem cancela o trajeto**, mesmo que não seja um comando; se não for, o robô fica parado.
-- Durante o dock e a saída da doca, a manobra termina e a última mensagem é obedecida. "pare" cancela na hora.
-- Não há confirmação: uma interpretação errada move o robô até chegar outra mensagem.
-
-**Para parar:** Enter vazio no `falar`; `Ctrl+C` no terminal do nó; fechar esse terminal. Os três cancelam a meta. **Fechar o `falar` não para o robô.** Se o processo morrer à força (queda do PC, falta de memória), o Nav2 segue até o destino: a parada física continua sendo a garantia.
-
-| Mensagem no log | O que fazer |
-|---|---|
-| `aguardando ... sem map→odom recente` ou `localização nunca recebida` | Refazer o 2D Pose Estimate (o nó espera 20 s) |
-| `há uma meta ativa de outro programa` | Encerrar o outro programa, ou "pare" |
-| `bateria abaixo de 20%` | Só "volte para a doca" é aceito |
-| `o cancelamento não foi confirmado` | Conferir o robô; "pare" repete o cancelamento |
-
-**Encerrar (sempre)**
-
-```bash
-# terminal 2: Ctrl+C     terminal 3: Ctrl+D
-infra/docker/lab.sh robo parar                    # encerra o nó (se sobrou) e depois o resto
-docker ps                                         # não deve restar "tb4-robo-..."
-```
-
-## Depois de mudar código, prompt ou destinos
-
-```bash
-docker compose -f infra/compose/llm.yaml down && docker compose -f infra/compose/llm.yaml up -d   # recompila
 docker run --rm --network none -v "$PWD:/repo:ro" -w /repo/workspace/meu_ws/src/llm_tb4 \
   physical-ai:base python3 -m pytest -q -p no:cacheprovider                                       # testes sem modelo
 docker run --rm --network none -e COMPILAR_WS=patrulha_tb4,llm_tb4 -e ROS_DOMAIN_ID=43 -e ROS_LOCALHOST_ONLY=1 \

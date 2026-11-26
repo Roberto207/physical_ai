@@ -1,5 +1,7 @@
 # Como rodar
 
+> **Outro robô:** os exemplos usam o `robot1`. Para outro, rode antes `infra/docker/lab.sh robo usar <nome>` e, nos comandos digitados, troque `/robot1` e o IP pelos dele (`docs/guias/acesso-ao-robo.md`, seção "Vários robôs").
+
 Tudo roda em **ROS 2 Humble**, a mesma distro do robô (ADR-001, `docs/decisoes/`). O **PC do laboratório** simula e comanda o robô. O **notebook** só edita código e roda os testes sem ROS. A versão Jazzy está na tag git `jazzy-final`.
 
 Os caminhos partem da raiz do repositório (`~/physical_ai` no PC do lab, `~/dev/physical_ai` no notebook).

@@ -1,6 +1,6 @@
 # Patrulha pelo exemplo oficial Humble, no TurtleBot 4 Standard
 
-Programas adaptados do [`patrol_loop.py` oficial](https://github.com/turtlebot/turtlebot4_tutorials/blob/humble/turtlebot4_python_tutorials/turtlebot4_python_tutorials/patrol_loop.py) (ramo `humble`, licença Apache-2.0) para o `mapa_lab_novo` e o namespace `/robot1`. Usam o `TurtleBot4Navigator` ([manual](https://turtlebot.github.io/turtlebot4-user-manual/tutorials/turtlebot4_navigator.html)).
+Programas adaptados do [`patrol_loop.py` oficial](https://github.com/turtlebot/turtlebot4_tutorials/blob/humble/turtlebot4_python_tutorials/turtlebot4_python_tutorials/patrol_loop.py) (ramo `humble`, licença Apache-2.0) para o `mapa_lab_novo`. O robô é escolhido pela variável `ROBO` (padrão `robot1`; `docs/guias/acesso-ao-robo.md`). Usam o `TurtleBot4Navigator` ([manual](https://turtlebot.github.io/turtlebot4-user-manual/tutorials/turtlebot4_navigator.html)).
 
 ## Arquivos
 

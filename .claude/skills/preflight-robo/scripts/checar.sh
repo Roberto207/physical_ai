@@ -7,16 +7,18 @@
 #   checar.sh C4 [relatorio.md]   verificação do programa de patrulha, sem movimento
 #
 # Sai com 0 se tudo passou, 1 se algum item foi reprovado ou não pôde ser verificado, 2 em uso
-# errado. ROBO_IP troca só o endereço do ping (para testar o caso "robô desligado").
+# errado. ROBO escolhe o robô (infra/lab/robos/; padrão robot1). ROBO_IP troca só o endereço
+# do ping (para testar o caso "robô desligado").
 set -uo pipefail
 cd "$(git -C "$(dirname "$(readlink -f "$0")")" rev-parse --show-toplevel)" || exit 2
 
 FASE=${1:-}
-case "$FASE" in A|C|C4) ;; *) sed -n 2,11p "$0"; exit 2 ;; esac
+case "$FASE" in A|C|C4) ;; *) sed -n 2,12p "$0"; exit 2 ;; esac
 REL=${2:-workspace/logs/preflight_$(date +%F_%H-%M-%S).md}
 mkdir -p "$(dirname "$REL")"
 LAB=infra/docker/lab.sh
-NS=/robot1
+. infra/lab/robo_ativo.sh
+NS=$ROBO_NS
 NOS="map_server amcl controller_server smoother_server planner_server behavior_server
      bt_navigator waypoint_follower velocity_smoother"
 RUINS=0
@@ -55,7 +57,7 @@ $extras"; fi
   if grep -q '^UTILIZÁVEL' <<<"$out"; then resultado A3 PASSOU 'mapa_lab_novo UTILIZÁVEL' "$out"
   else resultado A3 REPROVOU 'o mapa não foi aprovado' "$out"; fi
 
-  ip=${ROBO_IP:-$(sed -nE 's/^ROS_DISCOVERY_SERVER=;*([0-9.]+):.*/\1/p' infra/lab/rede_lab.env)}
+  ip=${ROBO_IP:-$ROBO_ENDERECO}
   out=$(LC_ALL=C timeout 30 ping -c 5 -W 2 "$ip" 2>&1)
   if grep -q ' 0% packet loss' <<<"$out"; then
     resultado A4 PASSOU "$ip sem perda; $(grep '^rtt' <<<"$out")" "$out"
@@ -137,7 +139,7 @@ fase_c() {
 fase_c4() {
   local out rc
   out=$(ferr 180 timeout 120 python3 /workspace/patrulha_oficial/patrol_loop.py \
-        --verificar-localizacao --ros-args -r "__ns:=$NS")
+        --verificar-localizacao --ros-args ${NS:+-r "__ns:=$NS"})
   rc=$?
   case $rc in
     0) resultado C4 PASSOU 'localização e ações verificadas, sem movimento' "$out" ;;
@@ -148,7 +150,7 @@ fase_c4() {
   esac
 }
 
-[ -f "$REL" ] || printf '# Preflight da patrulha oficial, %s\n' "$(date '+%F %T')" > "$REL"
+[ -f "$REL" ] || printf '# Preflight da patrulha oficial, %s, %s\n' "$ROBO" "$(date '+%F %T')" > "$REL"
 case "$FASE" in A) fase_a ;; C) fase_c ;; C4) fase_c4 ;; esac
 echo "ITENS REPROVADOS OU NÃO VERIFICADOS NA FASE $FASE: $RUINS"
 echo "RELATÓRIO: $REL"

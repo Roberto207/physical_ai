@@ -1,5 +1,7 @@
 # Patrulha de ida e volta que termina na doca (robô real)
 
+> **Outro robô:** os exemplos usam o `robot1`. Para outro, rode antes `infra/docker/lab.sh robo usar <nome>` e, nos comandos digitados, troque `/robot1` e o IP pelos dele (`docs/guias/acesso-ao-robo.md`, seção "Vários robôs").
+
 Programa: `workspace/patrulha_oficial/patrol_loop2.py`. Rota: pontos **1 → 2 → 3 → 4 → 3 → 2 → 1** e encaixe na doca. Faz uma única passagem e encerra.
 
 Todos os comandos rodam no PC do laboratório, na raiz do projeto. Os blocos estão na ordem de execução.

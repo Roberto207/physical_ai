@@ -14,6 +14,8 @@ from rclpy.executors import SingleThreadedExecutor
 from rclpy.node import Node
 from std_msgs.msg import Bool, String
 
+from llm_tb4.entrada import limpar
+
 ESPERA_DESTINATARIO_S = 5.0
 
 
@@ -38,7 +40,11 @@ def main(args=None):
     print('Escreva o pedido e Enter. Só Enter envia "pare". Ctrl+D sai (não para o robô).')
     try:
         while True:
-            texto = input('> ').strip() or 'pare'
+            digitado = input('> ')
+            # Um caractere quebrado derrubava este terminal, e com ele o caminho do "pare".
+            texto = limpar(digitado).strip() or 'pare'
+            if limpar(digitado) != digitado:
+                print(f'Caractere inválido ignorado. Enviando: "{texto}"', flush=True)
             limite = time.monotonic() + ESPERA_DESTINATARIO_S
             while publicador.get_subscription_count() == 0 and time.monotonic() < limite:
                 time.sleep(0.05)

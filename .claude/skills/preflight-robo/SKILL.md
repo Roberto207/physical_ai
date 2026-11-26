@@ -10,13 +10,18 @@ Confere PC, rede, robô e Nav2 antes de a patrulha de `workspace/patrulha_oficia
 Fonte das regras: `specs/preflight-robo/SPEC.md`. Todos os comandos partem da raiz do repositório.
 Rode na conversa principal: nenhum subagente alcança o robô.
 
+**Qual robô:** pergunte antes de começar e ponha `ROBO=<nome>` (um perfil de `infra/lab/robos/`)
+na frente de **todo** `checar.sh`, `lab.sh robo` e `rodar.sh`. Sem ele vale o do último
+`lab.sh robo usar` (veja com `lab.sh robo usar`, sem nome), e depois o `robot1`. As
+coordenadas do A8 são as mesmas para todos: confirme a posição da doca do robô escolhido.
+
 ## Limites
 
 | Classe | Ações |
 |---|---|
 | Livre | Ler arquivos, o `scripts/checar.sh`, `ping`, `lab.sh robo checar-rede`, `lab.sh robo estado`, leitura de tópicos e logs |
 | Com OK, **um comando por vez** | `lab.sh robo compose stop slam`; `lab.sh robo subir localizacao`, `rviz`, `nav2`; recriar o Nav2; `lab.sh robo parar` (avise que derruba todos os serviços) |
-| Proibido | Controle manual, sair ou entrar na doca, patrulha da `patrulha_tb4`, voltar à doca, executar o `rodar.sh`, `lab.sh robo llm` ou `falar`, rodar `patrol_loop.py` sem `--verificar-localizacao`, `loop.py`, `patrol_loop2.py`, enviar meta ou publicar em tópico, entrar no robô, mudar rede ou configuração do robô, `sudo`, reiniciar ou pausar contêiner pelo `docker` |
+| Proibido | Controle manual, sair ou entrar na doca, patrulha da `patrulha_tb4`, voltar à doca, executar o `rodar.sh`, `lab.sh robo llm` ou `falar`, rodar `patrol_loop.py` sem `--verificar-localizacao`, `loop.py`, `patrol_loop2.py`, enviar meta ou publicar em tópico, `lab.sh robo usar <nome>`, entrar no robô, mudar rede ou configuração do robô, `sudo`, reiniciar ou pausar contêiner pelo `docker` |
 
 Se a correção for no robô ou pedir `sudo`, mostre o comando e a página oficial
 ([Navigation](https://turtlebot.github.io/turtlebot4-user-manual/tutorials/navigation.html),
@@ -80,7 +85,7 @@ Pergunte, sem presumir:
 
 1. Há uma pessoa ao lado do robô capaz de pará-lo?
 2. A área está livre?
-3. Qual dos dois TurtleBots está ligado (etiqueta ou número de série)?
+3. O TurtleBot ligado é o do perfil escolhido (etiqueta ou número de série)?
 4. O trajeto de volta à doca está livre no costmap do RViz?
 
 ## Saída

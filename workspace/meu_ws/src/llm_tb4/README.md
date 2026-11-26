@@ -14,26 +14,18 @@ ollama pull qwen2.5:1.5b         # baixar (cerca de 986 MB)
 systemctl status ollama          # o serviço está ativo?
 ```
 
-## Rodar o nó (isolado do robô)
+## Rodar
 
-Passo a passo em `docs/guias/llm-linguagem-natural.md`. Resumo, na raiz do repositório:
+Sequência completa, na ordem: `docs/guias/llm-linguagem-natural.md`. Resumo, na raiz do repositório (no robô, depois de localização, 2D Pose Estimate e Nav2):
 
 ```bash
-docker compose -f infra/compose/llm.yaml up -d            # compila e inicia
-docker compose -f infra/compose/llm.yaml logs -f llm      # decisões (Ctrl+C só fecha o log)
+infra/docker/lab.sh robo llm                              # no robô, freio ligado: não move
+PARKING_BRAKE=false infra/docker/lab.sh robo llm          # no robô, MOVE: pede SIM
+infra/docker/lab.sh robo falar                            # outro terminal: pedidos; Enter vazio: pare
 
-# enviar um pedido
-docker compose -f infra/compose/llm.yaml exec llm bash -c \
-  'source /opt/ros/humble/setup.bash; ros2 topic pub --once -w 1 /robot1/user_input std_msgs/msg/String "data: vai pra janela"'
-
-# aceita novo pedido? (só publica quando muda)
-docker compose -f infra/compose/llm.yaml exec llm bash -c \
-  'source /opt/ros/humble/setup.bash; ros2 topic echo /robot1/ready_for_input'
-
-docker compose -f infra/compose/llm.yaml down             # encerrar
+docker compose -f infra/compose/llm.yaml up -d            # ensaio sem robô (nunca move)
+docker compose -f infra/compose/llm.yaml down
 ```
-
-Depois de mudar o código, `down` e `up -d` de novo.
 
 ## Tópicos e parâmetros
 

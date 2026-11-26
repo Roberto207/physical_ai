@@ -2,6 +2,8 @@
 # Executar a adaptação do tutorial Humble no TurtleBot 4 real, pelo PC.
 set -euo pipefail
 cd "$(dirname "$0")/../.."
+# Qual robô: ROBO=robot3 workspace/patrulha_oficial/rodar.sh 1
+. infra/lab/robo_ativo.sh
 
 VOLTAS=${1:-1}
 [[ "$VOLTAS" =~ ^[0-9]+$ ]] || { echo 'Uso: workspace/patrulha_oficial/rodar.sh [voltas]; 0 = contínuo'; exit 2; }
@@ -23,6 +25,7 @@ done
     exit 2
 }
 
+echo "ROBÔ: $ROBO (namespace ${ROBO_NS:-nenhum})"
 echo 'ATENÇÃO: o TurtleBot REAL fará undock e navegará sozinho.'
 echo 'AGORA, antes de SIM: use 2D Pose Estimate no RViz na pose real da doca.'
 echo 'Confira laser alinhado, área livre e pessoa ao lado.'
@@ -32,4 +35,4 @@ read -r -p 'Digite SIM para iniciar: ' CONFIRMACAO
 
 infra/docker/lab.sh robo compose run --rm -T ferramentas \
     python3 /workspace/patrulha_oficial/patrol_loop.py --voltas "$VOLTAS" \
-    --ros-args -r __ns:=/robot1
+    --ros-args ${ROBO_NS:+-r "__ns:=$ROBO_NS"}

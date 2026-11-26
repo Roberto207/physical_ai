@@ -1,5 +1,7 @@
 # Patrulha em loop contínuo (robô real)
 
+> **Outro robô:** os exemplos usam o `robot1`. Para outro, rode antes `infra/docker/lab.sh robo usar <nome>` e, nos comandos digitados, troque `/robot1` e o IP pelos dele (`docs/guias/acesso-ao-robo.md`, seção "Vários robôs").
+
 Programa: `workspace/patrulha_oficial/loop.py`. Faz undock, vai ao ponto 1 e repete **1 → 3 → 4 → 3 → 1** sem fim. O ponto 2 não é usado. Para sozinho nestes casos: bateria abaixo de 20% ou sem leitura (tenta voltar à doca), falha em um destino (para onde está) ou `Ctrl+C` (para onde está).
 
 Todos os comandos rodam no PC do laboratório, na raiz do projeto. Os blocos estão na ordem de execução.

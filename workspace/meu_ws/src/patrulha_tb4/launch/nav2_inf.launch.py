@@ -19,8 +19,8 @@ def generate_launch_description():
         DeclareLaunchArgument('params_file'),
         GroupAction([
             PushRosNamespace(namespace),
-            SetRemap('/robot1/global_costmap/scan', '/robot1/scan'),
-            SetRemap('/robot1/local_costmap/scan', '/robot1/scan'),
+            SetRemap([namespace, '/global_costmap/scan'], [namespace, '/scan']),
+            SetRemap([namespace, '/local_costmap/scan'], [namespace, '/scan']),
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(navegacao),
                 launch_arguments={
