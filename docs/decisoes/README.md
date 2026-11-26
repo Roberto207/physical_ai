@@ -7,7 +7,10 @@ Registro do que foi decidido e por quê. Atualizar quando algo mudar.
 | ADR | Decisão | Data |
 |---|---|---|
 | [ADR-001](ADR-001-ros2-humble.md) | Todas as imagens em ROS 2 Humble. O Jazzy fica na tag git `jazzy-final` e nas imagens `physical-ai:jazzy-<alvo>` | 2026-11-18 |
-| [ADR-002](ADR-002-gazebo-principal-no-pc-do-lab.md) | O Gazebo (Ignition Fortress) sem janela no PC do lab é o simulador principal. O `nav2_loopback_sim` é vendorizado e continua como L1 de injeção de falhas | 2026-11-18 |
+| [ADR-002](ADR-002-gazebo-principal-no-pc-do-lab.md) | ~~Gazebo no PC do lab como simulador principal~~. Substituído pelo ADR-003 | 2026-11-18 |
+| [ADR-003](ADR-003-sem-simulacao-ate-a-task2.md) | Sem simulação até a task 2; validação nos testes e no robô | 2026-11-26 |
+| [ADR-004](ADR-004-estrutura-plana-sem-colcon.md) | Scripts Python soltos e `docker run`, sem pacotes colcon nem compose | 2026-11-26 |
+| [ADR-005](ADR-005-llm-escolhe-acao-em-json.md) | O LLM escolhe uma ação em JSON; nada do modelo é executado | 2026-11-26 |
 
 ## Decisões de 2026-11-25
 
@@ -17,12 +20,12 @@ Registro do que foi decidido e por quê. Atualizar quando algo mudar.
 | LLM: usar os clientes de ação do `TurtleBot4Navigator`, sem os atalhos que bloqueiam | Para o "pare" sempre ser atendido |
 | LLM sem aprovação humana por ação | Decisão do operador; segue o tutorial |
 | LLM: mensagem durante o trajeto cancela a meta e vira a ordem principal | Decisão do operador |
-| A LLM segue o tutorial: coordenadas livres, `dock`, `undock` e ignorar pedidos quando ocupado, exceto "parar" | Decisão do operador |
+| A LLM segue o tutorial: coordenadas livres, `dock`, `undock` e ignorar pedidos quando ocupado, exceto "parar" | Decisão do operador. Coordenadas livres retiradas em 2026-11-26 (ADR-005) |
 | Skills e subagentes do Claude Code em `.claude/` no repositório | O usuário do PC do laboratório é compartilhado; assim valem só neste projeto e vão pelo git |
 | LLM: Ollama com `qwen2.5:1.5b` | Gratuito e local |
 | O manual do TurtleBot 4 (Resources) e o `turtlebot4_tutorials` são a primeira consulta ao planejar | O tutorial oficial foi a base da patrulha que funcionou |
-| A patrulha no robô usa os programas de `workspace/patrulha_oficial/` e o `mapa_lab_novo` | São os que vêm sendo usados. Os mapas antigos foram apagados |
-| Os pontos são os de `workspace/mapas/pontos_mapa_lab_novo.md`, sem os graus | Graus não confirmados |
+| A patrulha no robô usa os programas de `workspace/patrulha_oficial/` (desde 2026-11-26, `patrulha.py`) e o `mapa_lab_novo` | São os que vêm sendo usados. Os mapas antigos foram apagados |
+| Os pontos são os de `mapas/pontos_mapa_lab_novo.md` (no código: `robo.py`), sem os graus | Graus não confirmados |
 | Retirada a regra que proibia o `lab.sh robo` até a verificação V5 | Decisão do Roberto. As demais regras de segurança continuam (`docs/contexto/AGENTES.md`, seção 1) |
 
 ## Decisões antigas (2026-11-05 a 2026-11-10)

@@ -1,6 +1,6 @@
 # ADR-002: Gazebo no PC do laboratório como simulador principal
 
-**Status:** Aceito em 2026-11-18 (portão da spec `specs/migracao-humble/`)
+**Status:** Substituído pelo ADR-003 em 2026-11-26 (aceito em 2026-11-18)
 **Data:** 2026-11-18
 **Substitui:** a decisão de 2026-11-09, revista em 2026-11-10 (`docs/decisoes/README.md`), que punha o simulador leve como principal
 
