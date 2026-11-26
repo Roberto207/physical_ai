@@ -15,3 +15,5 @@ infra/lab/robos/.atual
 
 # Logs da patrulha gravados pelos containers (copie o que importa para docs/tarefas/ ou docs/historico/)
 workspace/logs/
+
+images/
