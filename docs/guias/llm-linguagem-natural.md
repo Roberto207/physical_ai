@@ -20,11 +20,32 @@ Todos os comandos rodam no PC do laboratório. Os blocos estão na ordem de exec
 
 ## Qual robô
 
-Os comandos abaixo valem para o `robot1`, o padrão. Para outro robô com perfil em `infra/lab/robos/`, escolha-o **em cada terminal**, antes de tudo, e troque `/robot1` nos nomes de tópico (passo 2):
+**Este guia vale para qualquer robô com perfil em `infra/lab/robos/`.** A escolha fica salva no PC e vale para todos os terminais, então **confira qual está salva antes de começar**:
 
 ```bash
-export ROBO=robot3                                # vale só neste terminal; repita nos terminais 2 e 3
+infra/docker/lab.sh robo usar                     # mostra o robô em uso e os perfis
+infra/docker/lab.sh robo parar                    # antes de trocar: derruba os serviços do robô anterior
+infra/docker/lab.sh robo usar <nome>              # <nome> = robot1, robot3...: rotas do PC e teste da rede
 ```
+
+A primeira linha de cada comando do `lab.sh robo` mostra o robô, o IP e o namespace: leia antes de digitar `SIM`.
+
+A variável `ROBO` (em maiúsculas) só é necessária para valer sobre essa escolha em um terminal. Sem escolha nenhuma, vale o `robot1`. Nos comandos digitados com nome de tópico, troque `/robot1` pelo robô em uso.
+
+## Antes do primeiro pedido: esperar e marcar a pose
+
+Suba uma coisa de cada vez e **só avance quando o sinal da coluna da direita aparecer**:
+
+| Ordem | O que fazer | Esperar |
+|---|---|---|
+| 1 | Subir a localização e o RViz (passo 3) | `Managed nodes are active` no log da localização; mapa na tela |
+| 2 | **2D Pose Estimate** no RViz | O laser sobre as paredes |
+| 3 | Subir o Nav2 (passos 4 e 5) | `Managed nodes are active` no log do Nav2 |
+| 4 | Iniciar o nó (passo 6 ou 7) | `FREIO DESLIGADO` (ou o aviso do freio ligado) |
+| 5 | **2D Pose Estimate de novo** | O laser sobre as paredes |
+| 6 | **Só agora** abrir o `falar` e escrever o pedido | |
+
+Essa ordem veio dos testes de 2026-11-25: os pedidos funcionaram respeitando as esperas e marcando a pose antes do `falar`.
 
 # Parte 1: no robô
 
@@ -60,6 +81,12 @@ infra/docker/lab.sh robo subir rviz                                         # ja
 
 No RViz: **2D Pose Estimate** na posição e direção reais do robô. O laser deve cair sobre as paredes.
 
+Espere a localização antes de marcar a pose (pode levar cerca de 1 minuto):
+
+```bash
+docker logs tb4-robo-localizacao-1 2>&1 | grep "Managed nodes are active"
+```
+
 ## 4. Subir o Nav2
 
 ```bash
@@ -92,12 +119,12 @@ Escreva um pedido no terminal 3 e confira a linha `DECISAO` no terminal 2. Depoi
 **Antes:** pessoa ao lado, área livre, nenhuma patrulha rodando.
 
 ```bash
-PARKING_BRAKE=false infra/docker/lab.sh robo llm  # TERMINAL 2: digite SIM
+PARKING_BRAKE=false infra/docker/lab.sh robo llm   # TERMINAL 2: digite SIM
 ```
 
-1. Espere aparecer `FREIO DESLIGADO` e, alguns segundos depois, `[nó pronto]` no terminal 3.
-2. **Só então** refaça o **2D Pose Estimate** no RViz: o nó precisa receber a localização depois de ligado.
-3. No terminal 3 (`infra/docker/lab.sh robo falar`), faça o primeiro teste nesta ordem:
+1. Espere aparecer `FREIO DESLIGADO` no terminal 2.
+2. **Só então** refaça o **2D Pose Estimate** no RViz e confira o laser sobre as paredes: o nó precisa receber a localização depois de ligado.
+3. **Depois da pose**, abra o terminal 3 (`infra/docker/lab.sh robo falar`) e faça o primeiro teste nesta ordem:
 
 | Pedido | O que observar |
 |---|---|
@@ -124,8 +151,8 @@ PARKING_BRAKE=false infra/docker/lab.sh robo llm  # TERMINAL 2: digite SIM
 ## 8. Encerrar (sempre)
 
 ```bash
-# terminal 2: Ctrl+C     terminal 3: Ctrl+D
-infra/docker/lab.sh robo parar                    # encerra o nó (se sobrou) e depois o resto
+# terminal 2: Ctrl+C     terminal 3: Ctrl+D (se ficarem abertos, o "parar" os encerra)
+infra/docker/lab.sh robo parar                    # encerra o nó, o falar e os serviços
 docker ps                                         # não deve restar "tb4-robo-..."
 ```
 
@@ -167,7 +194,7 @@ docker compose -f infra/compose/llm.yaml exec llm bash -c \
 | `vai pra geladeira` | `ir_para:ponto_2` |
 | `vá para x -3.5 y -3.0` | `ir_para_coordenadas:-3.5,-3` |
 | `vá para x 100 y 100` | `recusar` (fora do mapa) |
-| `undock` | `sair_da_base` |
+| `undock` | `sair_da_base` |llm
 | `volte para a doca` | `voltar_para_base` |
 | `pare` | `parar` |
 

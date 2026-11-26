@@ -46,3 +46,16 @@ O agente rodou `infra/docker/lab.sh robo parar`, o que encerrou o nó LLM que es
 ## Efeito prático
 
 Antes de subir os serviços, o robô precisa voltar a publicar `odom`, doca e bateria. Depois, subir um serviço por vez, acompanhando o processador da Create 3.
+
+## Acréscimo de 2026-11-26: o LLM funcionou no `robot3`
+
+Relato do Roberto, sem log conferido pelo agente: "vá para o ponto 1", "vá para a geladeira" e "vá para a doca" funcionaram. Para isso foi preciso esperar cada sistema subir e marcar o 2D Pose Estimate antes de abrir o `falar`. O `docs/guias/llm-linguagem-natural.md` passou a mostrar essa ordem, com o sinal a esperar em cada passo. O que fez os dados da Create 3 voltarem não foi registrado, e a saturação continua em aberto.
+
+Também foi observado que o `lab.sh robo parar` não encerra o contêiner do `falar`. Reproduzido em um projeto de teste: o `docker compose down` remove os contêineres criados por `up`, e só remove os criados por `run` com `--remove-orphans`. O `parar` não usa essa opção, então `falar`, `teleop`, `patrulha` e `ferramentas` continuavam abertos (o nó LLM era encerrado à parte). **Corrigido em 26/11:** o `parar` encerra primeiro o nó LLM, depois os demais contêineres de `compose run`, e por fim roda o `down --remove-orphans`.
+
+### Também em 26/11
+
+- `parar` verificado nos modos `sim` e `robo` com um contêiner de `compose run` aberto: encerrado nos dois. Não verificado com `teleop`, `patrulha` ou `falar` em uso.
+- Apelido `robot3` criado no `~/.ssh/config` do PC.
+- Interpretador sem ROS: "ande 2 segundos para o sul", "ande 1 metro para frente", "gire 90 graus" e "vá para o sul" foram recusados. O prompt do tutorial oficial (`turtlebot4_api.txt`, ramo humble) não tem exemplo de movimento por tempo ou distância.
+- Procedimento para mudar o `robot1` de Wi-Fi em `docs/guias/acesso-ao-robo.md` (não executado).

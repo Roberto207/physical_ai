@@ -383,20 +383,27 @@ EOF
     dc logs --tail 40 "$@"
     ;;
   parar)
-    # O nó llm sai primeiro, com o Nav2 ainda no ar, para conseguir cancelar a meta ativa.
-    if [ "$MODO" = robo ]; then
-      ids=$(docker ps -q --filter label=com.docker.compose.project=tb4-robo \
-            --filter label=com.docker.compose.service=llm)
-      if [ -n "$ids" ]; then
-        # shellcheck disable=SC2086
-        docker stop -t 15 $ids >/dev/null && echo "Nó llm encerrado."
-      fi
+    # Os contêineres de "compose run" (llm, patrulha, teleop, falar, ferramentas) não são
+    # removidos pelo "down". Saem antes, com o Nav2 ainda no ar: o nó llm primeiro, para
+    # conseguir cancelar a meta ativa; depois os demais, que também podem comandar o robô.
+    filtro=(--filter "label=com.docker.compose.project=tb4-$MODO")
+    ids=$(docker ps -q "${filtro[@]}" --filter label=com.docker.compose.service=llm)
+    if [ -n "$ids" ]; then
+      # shellcheck disable=SC2086
+      docker stop -t 15 $ids >/dev/null && echo "Nó llm encerrado."
+    fi
+    ids=$(docker ps -q "${filtro[@]}" --filter label=com.docker.compose.oneoff=True)
+    if [ -n "$ids" ]; then
+      echo "Encerrando também: $(docker ps "${filtro[@]}" --filter label=com.docker.compose.oneoff=True \
+        --format '{{.Label "com.docker.compose.service"}}' | sort -u | tr '\n' ' ')"
+      # shellcheck disable=SC2086
+      docker stop -t 15 $ids >/dev/null || true
     fi
     # Devolve ao usuário o que os containers (root) gravaram nas pastas montadas.
     if [ "$GUARDA_OK" = 1 ]; then
       ferramenta "chown -R $(id -u):$(id -g) /workspace/mapas /workspace/logs" >/dev/null 2>&1 || true
     fi
-    dc --profile '*' down
+    dc --profile '*' down --remove-orphans   # sobras paradas de "compose run"
     xhost -SI:localuser:root >/dev/null 2>&1 || true
     echo "Parado (modo $MODO)."
     ;;

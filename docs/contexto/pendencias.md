@@ -46,6 +46,7 @@ Plano em `specs/llm-integracao/PLANO.md`; código em `workspace/meu_ws/src/llm_t
 
 ## Robô e rede
 
+- [ ] Futuro: vários robôs ao mesmo tempo, com patrulha conjunta em que cada um sabe a posição dos outros
 - [ ] `robot3`: a Create 3 chegou a 100% de processador com os serviços do PC no ar, e a odometria, a bateria e a doca pararam de aparecer (`docs/tarefas/2026-11-25-llm-robot3-correcoes.md`)
 - [ ] O `checar-rede` aprova pela lista de tópicos; falta conferir se os dados chegam
 - [ ] `robot3`: subir localização, RViz e Nav2 pelo PC

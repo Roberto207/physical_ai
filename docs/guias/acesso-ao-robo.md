@@ -109,6 +109,24 @@ sudo nmcli connection up "PixelLab-2.4GHz"
 
 Depois, o teste é `infra/docker/lab.sh robo checar-rede`, que confere as rotas antes de testar o DDS e, se faltarem, mostra este mesmo comando.
 
+## Mudar um robô de Wi-Fi sem afetar os outros
+
+Cada robô guarda a própria configuração: mudar o Wi-Fi de um não altera os demais. Altere **um por vez**, com autorização da equipe. O procedimento abaixo repete o que funcionou no `robot1` em 16/11, mas **não foi executado para o `Robotica_Deco`**.
+
+1. No PC: `infra/docker/lab.sh robo parar`.
+2. Ligue o cabo **só** no robô a mudar e entre com `ssh robo` (o `192.168.185.3` é o mesmo em todos os robôs).
+3. Confirme que é o robô certo e anote o número de série: `grep '^Serial' /proc/cpuinfo; grep ROBOT_NAMESPACE /etc/turtlebot4/setup.bash`.
+4. Acrescente a rede sem apagar a anterior (a senha não fica neste documento):
+   ```
+   sudo nmcli device wifi connect "Robotica_Deco" password '<senha>' ifname wlan0
+   sudo nmcli connection modify "Robotica_Deco" connection.autoconnect-priority 10
+   ```
+5. Reinicie o robô (`sudo reboot`), para os programas anunciarem o endereço novo. Volte pelo cabo e leia `ip -br addr show wlan0`.
+6. No PC, atualize o IP em `infra/lab/robos/<nome>.env` e no apelido do `~/.ssh/config`. Não mude o id do servidor (a quantidade de `;`).
+7. No PC: `infra/docker/lab.sh robo usar <nome>`, que precisa terminar em `REDE OK`.
+
+Não copie o `/etc/turtlebot4/setup.bash` de um robô para outro: namespace e id do servidor são diferentes. O aviso sobre o `turtlebot4-setup` recriar o netplan (seção do Wi-Fi) continua valendo. Peça reserva de DHCP para cada robô.
+
 ## Vários robôs
 
 Cada robô tem um perfil em `infra/lab/robos/`, com namespace, domínio e servidor de descoberta. O que é igual para todos fica em `infra/lab/rede_lab.env`. Para trocar de robô:
