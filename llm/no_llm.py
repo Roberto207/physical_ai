@@ -22,7 +22,8 @@ from rclpy.qos import qos_profile_sensor_data
 from sensor_msgs.msg import BatteryState
 from std_msgs.msg import Bool, String
 
-from interpretar import LOCAIS, MODELO, interpretar, perguntar_ao_ollama, resumo
+from interpretar import (LOCAIS, MODELO, interpretar, normalizar, pede_para_parar,
+                         perguntar_ao_ollama, resumo)
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import robo  # noqa: E402  (robo.py fica na raiz do repositório)
@@ -35,35 +36,52 @@ def estado_doca(navegador):
     return getattr(navegador, 'is_docked', None)
 
 
-def executar(navegador, decisao, deve_parar, log):
+def manobra(navegador, nome, pede_pare, log):
+    """dock ou undock sem bloquear. Só "pare" cancela; outra mensagem espera a manobra
+    terminar (decisão de 2026-11-25). O dock() do TurtleBot4Navigator bloquearia até o fim."""
+    if nome == 'dock':
+        navegador.dock_send_goal()
+        completo, alca = navegador.isDockComplete, 'dock_goal_handle'
+    else:
+        navegador.undock_send_goal()
+        completo, alca = navegador.isUndockComplete, 'undock_goal_handle'
+    while not completo():
+        if pede_pare():
+            futuro = getattr(navegador, alca).cancel_goal_async()
+            rclpy.spin_until_future_complete(navegador, futuro, timeout_sec=2)
+            log.warn(f'{nome} cancelado')
+            return False
+    if not robo.esperar_doca(navegador, nome == 'dock'):
+        log.error(f'{nome} não confirmado pelo dock_status')
+        return False
+    return True
+
+
+def executar(navegador, decisao, mensagem_nova, pede_pare, log):
+    """mensagem_nova(): qualquer mensagem cancela o trajeto; pede_pare(): só "pare" cancela
+    dock e undock."""
     acao, doca = decisao['acao'], estado_doca(navegador)
     if doca is None:
         log.error('estado da doca desconhecido (dock_status não chegou): nada enviado')
-        return
-    if acao == 'encaixar':
-        if doca:
-            log.info('já encaixado')
-        else:
-            navegador.dock()
-            if not robo.esperar_doca(navegador, True):
-                log.error('dock não confirmado')
+    elif acao in ('encaixar', 'voltar_para_base') and doca:
+        log.info('já encaixado')
+    elif acao == 'encaixar':
+        manobra(navegador, 'dock', pede_pare, log)
+    elif acao == 'sair_da_base' and not doca:
+        log.info('já está fora da doca')
     elif acao == 'sair_da_base':
-        if doca:
-            robo.sair_da_doca(navegador)
-        else:
-            log.info('já está fora da doca')
+        manobra(navegador, 'undock', pede_pare, log)
     elif acao == 'voltar_para_base':
-        if doca:
-            log.info('já encaixado')
-        else:
-            robo.voltar_doca(navegador, deve_parar)
+        if robo.navegar(navegador, robo.APROXIMACAO_DOCA, robo.DOCA, 'aproximação da doca',
+                        mensagem_nova):
+            manobra(navegador, 'dock', pede_pare, log)
     elif acao == 'ir_para':
-        if doca and not robo.sair_da_doca(navegador):
+        if doca and not manobra(navegador, 'undock', pede_pare, log):
             return
         numero = LOCAIS[decisao['local']][0]
         # Como na patrulha: chega olhando para o ponto seguinte.
         alvo, proximo = robo.PONTOS[numero - 1], robo.PONTOS[numero % len(robo.PONTOS)]
-        robo.navegar(navegador, alvo, proximo, f'ponto {numero}', deve_parar)
+        robo.navegar(navegador, alvo, proximo, f'ponto {numero}', mensagem_nova)
 
 
 def main():
@@ -72,8 +90,15 @@ def main():
     freio = no.declare_parameter('freio', True).value
     log = no.get_logger()
     fila = queue.Queue()
+    pare = threading.Event()
     bateria = [None]
-    no.create_subscription(String, 'user_input', lambda m: fila.put(m.data), 10)
+
+    def ao_receber(mensagem):
+        if pede_para_parar(normalizar(mensagem.data)):
+            pare.set()
+        fila.put(mensagem.data)
+
+    no.create_subscription(String, 'user_input', ao_receber, 10)
     no.create_subscription(BatteryState, 'battery_state',
                            lambda m: bateria.__setitem__(0, m.percentage),
                            qos_profile_sensor_data)
@@ -103,6 +128,7 @@ def main():
             except queue.Empty:
                 continue
             pronto.publish(Bool(data=False))
+            pare.clear()   # um "pare" já atendido não cancela o próximo pedido
             carga = bateria[0]
             if carga is None and freio:
                 carga = 1.0   # sem robô: bateria simulada, só para ver a interpretação
@@ -115,7 +141,7 @@ def main():
             else:
                 log.info(f'ACEITO: {texto}')
                 if decisao['acao'] != 'parar':   # parar: a meta já foi cancelada
-                    executar(navegador, decisao, lambda: not fila.empty(), log)
+                    executar(navegador, decisao, lambda: not fila.empty(), pare.is_set, log)
         return 0
     except KeyboardInterrupt:
         if navegador is not None:

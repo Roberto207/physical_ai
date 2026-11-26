@@ -2,9 +2,7 @@
 
 | Pasta | Assunto | Estado |
 |---|---|---|
-| `specs/preflight-robo/` | Checagens antes de a patrulha mover o robô (skill `preflight-robo`) | Aprovada e implementada em 25/11; falta validar com o robô |
-| `specs/llm-integracao/` | Integração com LLM (Ollama) | Execução escrita e ensaiada com robô falso; falta simulador e robô |
-| `specs/patrol-inf/` | Patrulha com recarga (`patrulha_tb4`) | Aprovada em 10/11. O DESIGN é lido por um teste (`test/checar_rastreio.py`). O `kit-de-campo.md` é anterior ao uso atual do robô |
-| `specs/migracao-humble/` | Migração das imagens para ROS 2 Humble | Aprovada em 18/11. Código feito; os IDs (SEG, IMG, SIM) são citados no código. Parte das verificações não tem registro |
+| `specs/reformulacao-task1/` | Reformulação enxuta do repositório depois da task 1 | Aprovada e implementada em 26/11; falta a validação no robô (seção 6) |
+| `specs/multi-robos/` | Task 2: busca colaborativa com três TurtleBots 4 | BRAINSTORM (26/11); a fase Define vem a seguir |
 
-A spec do enxugamento (18/11), já executada, está em `docs/historico/spec-enxugamento.md`. Para operar o robô hoje, use `docs/guias/como-rodar.md`.
+As specs anteriores (patrulha v1, migração para Humble, plano do LLM, preflight) estão na tag `task1-concluida`. As decisões que continuam valendo estão em `docs/decisoes/`.

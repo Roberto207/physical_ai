@@ -55,7 +55,7 @@ Todo prompt de subagente segue `references/briefing.md`: entradas por caminho de
 
 ## Robô físico
 
-Subagente não executa comando que alcance o TurtleBot 4 (`ssh`, publicação em tópico, action, serviço, `lab.sh robo`). Essas ações ficam na conversa principal, onde o Roberto autoriza cada uma (`docs/contexto/AGENTES.md`, seção 1). Todo briefing leva essa proibição no campo NÃO FAÇA.
+Subagente não executa comando que alcance o TurtleBot 4 (`ssh`, publicação em tópico, action, serviço, `scripts/*.sh`). Essas ações ficam na conversa principal, onde o Roberto autoriza cada uma (`docs/contexto/AGENTES.md`, seção 1). Todo briefing leva essa proibição no campo NÃO FAÇA.
 
 Para avaliar código sem alcançar o robô: repositório só para leitura, scripts do subagente fora
 do projeto e `docker run --network none`. Peça que informe o que não conseguiu verificar.

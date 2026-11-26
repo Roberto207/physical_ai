@@ -2,7 +2,7 @@
 
 Este arquivo reúne as regras que o Roberto já definiu para o Claude Code na máquina dele e que agentes de IA em outra máquina também precisam seguir. Leia inteiro antes de agir. Se uma regra aqui conflitar com um pedido, pare e pergunte ao Roberto.
 
-Origem: memória do Claude Code do Roberto, copiada em 2026-11-16 e revisada em 2026-11-18 (enxugamento, `docs/historico/spec-enxugamento.md`). Se a memória mudar, este arquivo pode ficar desatualizado.
+Origem: memória do Claude Code do Roberto, copiada em 2026-11-16 e revisada em 2026-11-18 e em 2026-11-26 (`specs/reformulacao-task1/SPEC.md`). Se a memória mudar, este arquivo pode ficar desatualizado.
 
 ## 1. Guardrails do TurtleBot 4 físico (obrigatórios)
 
@@ -18,7 +18,7 @@ Como aplicar:
 
 - Antes de qualquer comando que toque o robô físico, cite a página da documentação oficial que o embasa.
 - Se não houver documentação, ou se a ação for crítica, pare e peça autorização. São críticos: movimento, velocidades altas, docking e undocking, atualização de firmware, mudança de rede ou DDS, apagar dados.
-- Valide no simulador antes de ir ao robô (ver seção 3).
+- Valide sem mover antes de mover (ver seção 3).
 
 ## 2. Projeto e prazo
 
@@ -29,13 +29,10 @@ Como aplicar:
 - Priorize o que serve a essas duas missões e deixe o resto para depois.
 - Pendência em aberto: "pronto" significa em simulação ou no robô real? Não assuma.
 
-## 3. Simulador e distro (ADR-001 e ADR-002)
+## 3. Distro e simulação (ADR-001 e ADR-003)
 
-- Todas as imagens são **ROS 2 Humble** (`docs/decisoes/ADR-001-ros2-humble.md`). O Jazzy fica só na tag git `jazzy-final`.
-- O simulador principal é o **Gazebo Fortress sem janela no PC do laboratório** (`docs/decisoes/ADR-002-gazebo-principal-no-pc-do-lab.md`). O pacote `lab_tb4` o configura.
-- O `nav2_loopback_sim` (vendorizado) continua como **L1**: injeção de falhas e teste da lógica do nó. Bateria, doca e AMCL dele são falsos.
-- O Gazebo `warehouse` com Nav2 continua fora.
-- Não rode a medição M-GZ (plano em `specs/patrol-inf/DESIGN.md`, seção 3) sem pedido explícito do Roberto.
+- Tudo é **ROS 2 Humble**, o mesmo do robô (`docs/decisoes/ADR-001-ros2-humble.md`).
+- Não há simulação no repositório até a task 2 (`docs/decisoes/ADR-003-sem-simulacao-ate-a-task2.md`). Valida-se com `tests/` e no robô, primeiro sem mover: `scripts/patrulha.sh --verificar-localizacao` e `scripts/llm.sh` com freio.
 - Papel de cada máquina: `docs/contexto/maquinas.md`.
 
 ## 4. Limite de memória
@@ -46,7 +43,6 @@ O limite abaixo vale **só para o notebook do Roberto** (7,4 GiB de RAM e GPU In
 - Use `docker run --memory=X --memory-swap=X`. Para instalar pacotes, use `docker commit` em vez de `docker build`.
 - Acompanhe a RAM livre e pare o container se ela cair demais.
 - Avise antes de abrir janelas gráficas e testes longos.
-- Scripts seguros ficam em `infra/docker/`.
 - Em outra máquina, confira primeiro quanta RAM há e ajuste o teto. Na dúvida, use o limite acima.
 
 ## 5. Como explicar e planejar para o Roberto
@@ -64,10 +60,10 @@ Ele é iniciante em robótica. Um plano com termos soltos e sem links já foi cr
 Pedido do Roberto, que vale para toda tarefa, nesta máquina e no PC do laboratório:
 
 - **Documento por tarefa.** Ao fim de cada tarefa, crie `docs/tarefas/AAAA-MM-DD-<nome>.md` com a data e a explicação detalhada do pipeline: o que foi feito, em qual arquivo, para que serve, como foi verificado e o que não foi. Abra com a resposta direta, e termine com o efeito prático. Sem analogias.
-- **Registro.** O `docs/historico/registro-de-mudancas.md` está congelado. O registro agora é uma linha por tarefa (data, tarefa, documento) na tabela de `docs/tarefas/README.md`. O que mudou fica no documento da tarefa; a tabela só aponta.
+- **Registro.** Uma linha por tarefa (data, tarefa, documento) na tabela de `docs/tarefas/README.md`. O que mudou fica no documento da tarefa; a tabela só aponta.
 - **Código comentado na medida certa.** Comente o porquê das escolhas e o que não é óbvio. Não comente o que o código já diz.
 - **Documentação oficial.** Siga a documentação oficial (TurtleBot 4, ROS 2, Nav2, Create 3, slam_toolbox) e cite a página no código ou no documento quando um comando vier dela.
-- **Caminhos citados.** Todo caminho entre crases em documento vivo precisa existir: `python3 infra/ferramentas/checar_caminhos.py` confere (e roda no CI).
+- **Caminhos citados.** Todo caminho entre crases em documento vivo precisa existir. Ao mover ou apagar um arquivo, procure quem o cita com `git grep`.
 
 ## 7. Onde achar o resto
 
@@ -84,5 +80,5 @@ Comece pelo `README.md`. Caminhos relativos à raiz do repositório.
 | Stack e fontes | `docs/contexto/stack.md` |
 | Decisões (ADRs e antigas) | `docs/decisoes/README.md` |
 | O que foi feito, por tarefa | `docs/tarefas/README.md` |
-| Histórico congelado | `docs/historico/` |
+| Histórico anterior a 26/11 | a tag `task1-concluida` |
 | Specs | `specs/README.md` |

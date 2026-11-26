@@ -1,163 +1,122 @@
-# Como rodar
+# Como rodar no robô real
 
-> **Outro robô:** os exemplos usam o `robot1`. Para outro, rode antes `infra/docker/lab.sh robo usar <nome>` e, nos comandos digitados, troque `/robot1` e o IP pelos dele (`docs/guias/acesso-ao-robo.md`, seção "Vários robôs").
+Todos os comandos rodam no PC do laboratório, na raiz do repositório. O robô é escolhido por `ROBO` (`robot1`, o padrão, ou `robot3`). Os IPs e servidores de descoberta de cada um ficam em `scripts/env.sh`.
 
-Tudo roda em **ROS 2 Humble**, a mesma distro do robô (ADR-001, `docs/decisoes/`). O **PC do laboratório** simula e comanda o robô. O **notebook** só edita código e roda os testes sem ROS. A versão Jazzy está na tag git `jazzy-final`.
+**[move]** marca o que move o robô. Rode esses comandos só com uma pessoa ao lado, capaz de pará-lo.
 
-Os caminhos partem da raiz do repositório (`~/physical_ai` no PC do lab, `~/dev/physical_ai` no notebook).
+## 0. Uma vez por PC
 
-## Qual guia usar
+```bash
+docker build -t physical-ai docker/        # imagem: ROS 2 Humble + TurtleBot 4 + RViz
+systemctl is-active ollama                 # o LLM precisa do Ollama no PC: "active"
+ollama pull qwen2.5:1.5b                   # o modelo usado
+```
 
-| Quero | Guia |
+Rotas: o `scripts/checar.sh` avisa se o PC não tem as rotas 192.168.185.0/24 e 192.168.186.0/24 pelo IP do robô, e mostra o comando. O porquê está em `docs/guias/acesso-ao-robo.md`.
+
+## 1. Conferir a rede (não move)
+
+```bash
+export ROBO=robot3
+scripts/checar.sh                          # precisa terminar em APROVADO
+```
+
+A skill `/preflight-robo` do Claude Code faz este passo e os passos 2 e 3, item por item.
+
+## 2. Localização e pose
+
+Antes deste passo: robô na doca e área livre.
+
+```bash
+scripts/subir.sh                           # AMCL no mapas/mapa_lab_novo + RViz
+docker logs -f tb_localizacao              # espere "Managed nodes are active" (cerca de 1 min)
+```
+
+No RViz, use o **2D Pose Estimate** na posição e na direção reais do robô. O laser precisa cair sobre as paredes.
+
+## 3. Nav2
+
+```bash
+scripts/subir.sh nav2
+docker logs -f tb_nav2                     # espere "Managed nodes are active", sem "Aborting" depois
+```
+
+Esta é a ordem que funcionou no robô em 25/11: localização, pose, Nav2. Se o Nav2 abortar, rode `scripts/subir.sh nav2` de novo; ele recria só o Nav2.
+
+## 4. Patrulha **[move]**
+
+```bash
+scripts/patrulha.sh --verificar-localizacao voltas 1   # confere doca, pose e Nav2, sem mover
+scripts/patrulha.sh voltas 1               # undock, 1→2→3→4, doca  (0 = voltas até Ctrl+C)
+scripts/patrulha.sh ida-e-volta            # undock, 1,2,3,4,3,2,1, doca
+scripts/patrulha.sh continuo               # undock, 1, depois 3→4→3→1 até Ctrl+C ou bateria baixa
+scripts/patrulha.sh doca                   # só volta ao ponto 1 e encaixa (depois de uma interrupção)
+```
+
+**Antes de começar, a patrulha exige:**
+
+- o robô na doca (exceto em `doca`);
+- `map→odom` recente;
+- as ações de navegação, dock e undock disponíveis;
+- bateria de 20% ou mais.
+
+**Durante a patrulha:**
+
+- abaixo de 20% de bateria, ela volta à doca;
+- cada ponto tem 120 s, e um ponto que falha interrompe a patrulha onde o robô estiver;
+- `Ctrl+C` cancela a meta, mas não leva o robô de volta à doca.
+
+| Código de saída | Significado |
 |---|---|
-| **Patrulha no robô, ida e volta, terminando na doca** | `docs/guias/patrulha-volta-a-doca.md` |
-| **Patrulha no robô em loop contínuo** | `docs/guias/patrulha-loop-continuo.md` |
-| Lembrar um comando (rede, logs, sensores, subir, descer) | `docs/guias/comandos-basicos.md` |
-| Entrar no robô, rede e rotas | `docs/guias/acesso-ao-robo.md` |
-| **Linguagem natural (LLM): ensaiar e rodar no robô** | `docs/guias/llm-linguagem-natural.md` |
-| O que está em aberto | `docs/contexto/pendencias.md` |
-| Testes, imagens, simulador, mapa e a patrulha `patrulha_tb4` | este arquivo |
+| 0 | Rota concluída e dock confirmado (ou só verificação) |
+| 2 | Robô não confirmado na doca |
+| 3 | Bateria ausente ou abaixo de 20% |
+| 4 | Undock não confirmado |
+| 5 | Falha na volta à doca |
+| 6 | Um ponto falhou, foi recusado ou passou de 120 s |
+| 7 | Sem `map→odom` recente: refaça o 2D Pose Estimate |
+| 8 | Ações do Nav2, dock ou undock indisponíveis |
+| 130 | Interrompido (`Ctrl+C` ou `scripts/parar.sh`) |
 
-## Onde estamos (25/11/2026)
+Só `voltas` tem ensaio no robô. `ida-e-volta`, `continuo` e `doca` repetem rotas que nunca rodaram fisicamente.
 
-- **Programas em uso no robô:** os de `workspace/patrulha_oficial/`, adaptados do exemplo oficial do TurtleBot 4, no mapa `workspace/mapas/mapa_lab_novo.yaml`.
-- **Ensaiado:** o `patrol_loop.py` (via `rodar.sh 1`) já completou os quatro pontos uma vez; naquela execução a volta à doca falhou. Em 23/11 houve novas falhas no ponto 1, sem causa determinada (`docs/tarefas/2026-11-23-patrulha-oficial-mapa-lab-novo.md`).
-- **Sem registro de ensaio físico:** `patrol_loop2.py` e `loop.py`.
-- **LLM:** o nó `llm_tb4` interpreta e executa pedidos; o freio vem ligado. Execução ensaiada só com robô falso.
-- **Patrulha anterior (`patrulha_tb4`):** não é a usada hoje no robô. O pacote continua necessário (seção 6).
+## 5. Comandos por LLM
 
-## 1. Testes da lógica (sem ROS e sem Docker)
+Passo a passo e limites em `docs/guias/llm.md`. Em resumo:
 
-Precisam do `pytest`, que o `python3` do PC do lab não tinha em 25/11: rodar no notebook (o CI também roda).
+- `scripts/llm.sh` sobe o LLM com freio: interpreta e não move.
+- `scripts/llm.sh mover` **[move]** faz o robô andar a cada pedido.
+- Os pedidos são escritos em outro terminal, com `scripts/falar.sh`.
 
-```bash
-(cd workspace/meu_ws/src/patrulha_tb4 && python3 -m pytest -q)                 # lógica da patrulha_tb4 e conferidor de mapa
-(cd workspace/meu_ws/src/patrulha_tb4 && python3 test/checar_rastreio.py)      # todo requisito da spec patrol-inf tem teste?
-(cd workspace/meu_ws/src/lab_tb4 && python3 -m pytest -q)                      # cenários do simulador leve
-python3 infra/ferramentas/checar_caminhos.py                                   # caminhos citados nos documentos existem?
-```
+A patrulha e o LLM sem freio não rodam juntos: cada script recusa se o outro estiver no ar.
 
-## 2. Imagens (só no PC do laboratório)
+## 6. Encerrar (sempre)
 
 ```bash
-infra/docker/construir_imagem.sh base robo sim    # recusa com menos de 12 GiB de RAM
-docker images 'physical-ai'                       # lista as imagens
+scripts/parar.sh                           # cancela a meta do LLM e da patrulha e remove os contêineres
+docker ps                                  # não deve sobrar nenhum "tb_..."
 ```
 
-Construa `base` e `robo` juntas: o `lab.sh robo` recusa qualquer imagem que não seja Humble.
-
-## 3. Simulador (não alcança o robô real)
-
-Rede isolada, domínio 42. Os modos `sim` e `robo` não rodam juntos.
-
-### 3.1 Fazer um mapa no Gazebo
+## 7. Mapa novo
 
 ```bash
-infra/docker/lab.sh sim subir gazebo slam rviz    # espere cerca de 1 min (lab.sh sim logs gazebo)
-infra/docker/lab.sh sim undock                    # tira o robô simulado da doca
-infra/docker/lab.sh sim teleop                    # dirige pelo teclado
-infra/docker/lab.sh sim salvar teste_maze         # grava em workspace/mapas/ e confere
-infra/docker/lab.sh sim parar
+scripts/mapa.sh                            # SLAM + RViz (não move)
+scripts/teleop.sh                          # [move] outro terminal: dirigir a 0,15 m/s
+scripts/mapa.sh salvar lab_<data>          # grava mapas/lab_<data>.yaml e .pgm
 ```
 
-`MUNDO=depot` antes do comando de subir troca o mundo (`maze` é o padrão).
+Para usar o mapa novo: `MAPA=/work/mapas/lab_<data>.yaml scripts/subir.sh`. Os pontos da patrulha e do LLM precisam ser medidos de novo e trocados em `robo.py` (`DOCA` e `PONTOS`) e em `mapas/pontos_mapa_lab_novo.md`. O teste `test_pontos_iguais_aos_da_task1` vai falhar de propósito até ser atualizado.
 
-### 3.2 Cenários de falha no simulador leve
+## 8. Comandos avulsos (só leitura)
+
+O `scripts/ros.sh` abre um contêiner temporário, por isso demora alguns segundos.
 
 ```bash
-infra/docker/teste_l1.sh lista                    # cenários disponíveis
-infra/docker/teste_l1.sh ciclo                    # ciclo de recarga completo
-infra/docker/teste_l1.sh dock_falha               # o dock falha uma vez e a patrulha tenta de novo
+scripts/ros.sh ros2 topic list
+scripts/ros.sh ros2 topic echo --once /robot3/battery_state sensor_msgs/msg/BatteryState \
+    --qos-profile sensor_data --field percentage          # 0.78 = 78%
+scripts/ros.sh ros2 topic echo --once /robot3/dock_status irobot_create_msgs/msg/DockStatus \
+    --qos-profile sensor_data                             # is_docked, dock_visible
+scripts/ros.sh timeout 20 ros2 topic hz /robot3/scan      # cerca de 8 Hz em 25/11
+scripts/ros.sh ros2 topic echo /robot3/clicked_point      # coordenadas do Publish Point do RViz
 ```
-
-Resultados em `workspace/logs/l1/`. Parâmetros em `workspace/meu_ws/src/lab_tb4/config/cenarios_l1.yaml`.
-
-### 3.3 Patrulha `patrulha_tb4` no Gazebo
-
-```bash
-infra/docker/lab.sh sim parar                                  # mundo limpo, robô na doca
-infra/docker/lab.sh sim subir gazebo localizacao nav2 rviz     # sem slam junto
-infra/docker/lab.sh sim logs nav2                              # espere o Nav2 subir
-infra/docker/lab.sh sim patrulha                               # usa gazebo_maze.yaml; CONFIG=/mapas/x.yaml troca
-infra/docker/lab.sh sim voltar-doca                            # em outro terminal: volta à doca e encerra
-infra/docker/lab.sh sim parar
-```
-
-Não faça `undock` antes: a patrulha exige começar na doca. A sequência no Gazebo não tem registro de execução.
-
-## 4. Mapa no robô real
-
-```bash
-infra/docker/lab.sh robo checar-rede              # só lê; precisa dizer REDE OK
-infra/docker/lab.sh robo subir slam rviz          # mapeia (não move o robô); começar com ele na doca
-infra/docker/lab.sh robo teleop                   # MOVE O ROBÔ: pede SIM
-infra/docker/lab.sh robo salvar nome_do_mapa      # grava em workspace/mapas/ e confere
-infra/docker/lab.sh robo parar                    # derruba tudo
-```
-
-Mapa atual: `workspace/mapas/mapa_lab_novo.yaml`. Cerca de 59,8% dele é área não mapeada: escolha destinos só em área livre.
-
-## 5. Medir coordenadas no mapa
-
-Com a localização e o RViz no ar, escute os cliques e use **Publish Point** no mapa:
-
-```bash
-infra/docker/lab.sh robo compose exec -T rviz bash -lc \
-    'source /opt/ros/humble/setup.bash; ros2 topic echo /robot1/clicked_point geometry_msgs/msg/PointStamped'
-```
-
-Anote `point.x` e `point.y`. A ferramenta não fornece orientação, e a rotação da câmera do RViz faz "direita" e "cima" da tela não serem os eixos x e y. Os programas de `workspace/patrulha_oficial/` calculam a orientação pela direção do ponto seguinte.
-
-## 6. Patrulha `patrulha_tb4` (programa anterior)
-
-Nó próprio da equipe, em `workspace/meu_ws/src/patrulha_tb4`: lê um arquivo de configuração, anda pelos pontos, volta à doca com bateria baixa, carrega e sai de novo. Quem decide é o `decisao.py`; o `no_patrulha.py` liga a decisão ao ROS.
-
-**O pacote não pode ser apagado inteiro:** os serviços `localizacao` e `nav2` do robô usam os parâmetros e o launch dele, e o `lab.sh conferir` usa o conferidor de mapa dele.
-
-### 6.1 Configuração
-
-Copie `workspace/meu_ws/src/patrulha_tb4/config/inf_lab.yaml` para `workspace/mapas/` e preencha `mapa` (caminho relativo ao arquivo), `pose_inicial`, `aproximacao_doca` (de frente para a doca, de 0,5 a 1 m) e `pontos`. Exemplo preenchido: `workspace/mapas/patrulha_mapa_lab_novo.yaml`. Valide antes de qualquer movimento:
-
-```bash
-PYTHONPATH=workspace/meu_ws/src/patrulha_tb4 python3 -m patrulha_tb4.pontos workspace/mapas/patrulha_mapa_lab_novo.yaml
-```
-
-Precisa dizer `APROVADA`. A validação confere ocupação e margem de 0,25 m, não a rota.
-
-### 6.2 No robô real
-
-```bash
-infra/docker/lab.sh robo checar-rede
-MAPA=/mapas/mapa_lab_novo.yaml infra/docker/lab.sh robo subir localizacao
-MAPA=/mapas/mapa_lab_novo.yaml infra/docker/lab.sh robo subir nav2 rviz
-CONFIG=/mapas/patrulha_mapa_lab_novo.yaml infra/docker/lab.sh robo patrulha    # MOVE O ROBÔ: pede SIM
-infra/docker/lab.sh robo voltar-doca                                           # outro terminal; MOVE O ROBÔ: pede SIM
-infra/docker/lab.sh robo parar
-```
-
-Robô na doca e pessoa ao lado. Este programa **publica a própria `pose_inicial`**, sobrescrevendo uma marcação diferente feita no RViz. Não envie `dock` à mão enquanto ele roda. `Ctrl+C` para a patrulha onde o robô está. Nos ensaios de 21/11 o Nav2 abortou os destinos.
-
-### 6.3 Códigos de saída
-
-| Código | Significado | Onde olhar |
-|---|---|---|
-| 0 | Encerrado (`Ctrl+C` ou `voltar-doca`) | log `resumo` |
-| 2 | Configuração ou pose inválida | mensagem do `validar_pontos` |
-| 3 | Sem leitura de bateria | tópico `battery_state` |
-| 4 | Dock falhou em todas as tentativas | `aproximacao_doca`, `dock_status` |
-| 5 | Undock falhou | doca energizada, robô encaixado |
-| 6 | Começou fora da doca | encaixar o robô |
-| 7 | Três destinos falhos seguidos | logs do `nav2` e da `localizacao` |
-| 8 | Servidor de ação indisponível | Nav2 não subiu |
-| 9 | Sem relógio (`/clock`) | Gazebo (sim) ou `use_sim_time` (real) |
-
-Um log JSONL por execução fica em `workspace/logs/`.
-
-## Onde está a explicação
-
-| Assunto | Arquivo |
-|---|---|
-| Migração para Humble | `specs/migracao-humble/` |
-| Requisitos e testes da `patrulha_tb4` | `specs/patrol-inf/` |
-| Retorno à doca sob demanda | `docs/tarefas/2026-11-19-voltar-doca.md` |
-| O que mudou e quando | `docs/tarefas/README.md` |

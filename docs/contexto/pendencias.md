@@ -1,6 +1,6 @@
 # Pendências e dúvidas em aberto
 
-Atualizado em 25/11/2026. Só o que está aberto. A lista anterior (apagada no commit `97dcfc1`) pode ser lida com `git show 97dcfc1^:Roberto/docs/contexto/pendencias.md`.
+Atualizado em 26/11/2026. Só o que está aberto. A lista anterior (apagada no commit `97dcfc1`) pode ser lida com `git show 97dcfc1^:Roberto/docs/contexto/pendencias.md`.
 
 ## Perguntar ao coordenador
 
@@ -11,31 +11,31 @@ Sem resposta registrada no repositório.
 - [ ] Modelo do TurtleBot 4 (o log diz `OAK-D-PRO`, a câmera do modelo padrão)
 - [ ] Qual é a plataforma do gêmeo digital e quem a mantém?
 
+## Reformulação de 26/11 (`specs/reformulacao-task1/SPEC.md`, seção 6)
+
+- [ ] No PC do lab: `docker build -t physical-ai docker/`, `scripts/checar.sh`, `scripts/subir.sh` e `scripts/subir.sh nav2`
+- [ ] `bond_timeout` do Nav2 em 120 com o launch oficial (`ros2 param get <ns>/lifecycle_manager_navigation bond_timeout`); se não, voltar à cópia do `navigation_launch.py` da tag
+- [ ] `scripts/patrulha.sh voltas 1` e o LLM (`scripts/llm.sh`, depois `mover` com um ponto e um "pare") no robô
+- [ ] `python3 llm/avaliar.py` no PC, comparado aos números de 25/11
+- [ ] Cancelamento do dock e do undock pelo "pare" (código novo, sem ensaio)
+
 ## LLM
 
-Plano em `specs/llm-integracao/PLANO.md`; código em `workspace/meu_ws/src/llm_tb4/`.
+Código em `llm/`; guia em `docs/guias/llm.md`.
 
-- [ ] Confirmar antes da execução: validação no lugar de `exec()`, e sem dock e pose `[0, 0]` automáticos na partida (é o que o código faz hoje)
 - [ ] Perguntas, condições e afirmações ainda podem virar ação (51 de 265 do avaliador, em 25/11)
 - [ ] Pedidos de parar em formas novas não reconhecidos (10 de 20)
-- [ ] Execução no simulador (do operador); os contêineres do simulador não alcançam o Ollama
-- [ ] Primeiro teste no robô: freio ligado, depois o ponto 1 e o "pare" no trajeto
-- [ ] Verificar no robô: ações e estados pelo Discovery Server, cancelamento do dock na Create 3 e o terminal `falar`
-- [ ] Rodar o `ros2 launch` num `docker stop` não cancela a meta; no robô usar só `lab.sh robo llm`
-- [ ] Testar o simulador leve com o `mapa_lab_novo`
 - [ ] Medir o tempo de resposta com os contêineres do robô no ar
-- [ ] Coordenada com vírgula decimal entre parênteses separada por ", " não é lida (recusa)
 - [ ] `TEMPO_LIMITE_S` vale por operação de rede, não no total; o pedido ao Ollama obedece a `http_proxy`, se definido
-- [ ] `patrol_loop.py` e `loop.py` não tratam bateria `NaN` (a comparação com o limite é falsa)
+- [ ] `robo.py` não trata bateria `NaN` na patrulha (a comparação com o limite é falsa); o LLM recusa sair com `NaN`
 
 ## Patrulha no robô
 
-- [ ] Rodar no robô os três programas depois das mudanças de 25/11; `patrol_loop2.py` e `loop.py` não têm registro de ensaio físico
+- [ ] `patrulha.py ida-e-volta`, `continuo` e `doca` sem ensaio físico (as rotas vêm do `patrol_loop2.py` e do `loop.py`, que também não tinham)
 - [ ] Falhas do Nav2 no ponto 1 em 23/11: causa desconhecida (`docs/tarefas/2026-11-23-patrulha-oficial-mapa-lab-novo.md`)
 - [ ] Quedas do AMCL e do Nav2 por perda de heartbeat em 23/11: causa desconhecida
 - [ ] Volta à doca falhou no único ensaio que completou os quatro pontos
 - [ ] Nav2 descarta parte dos scans por atraso; comparar Wi-Fi e cabo (`docs/tarefas/2026-11-22-analise-problema-nomeado.md`)
-- [ ] `rodar.sh` exige o contêiner do RViz, que consome muita CPU; decidir se continua obrigatório
 - [ ] `mapa_lab_novo` tem cerca de 59,8% de área não mapeada
 
 ## Skill `preflight-robo`
@@ -50,18 +50,15 @@ Plano em `specs/llm-integracao/PLANO.md`; código em `workspace/meu_ws/src/llm_t
 - [ ] `robot3`: a Create 3 chegou a 100% de processador com os serviços do PC no ar, e a odometria, a bateria e a doca pararam de aparecer (`docs/tarefas/2026-11-25-llm-robot3-correcoes.md`)
 - [ ] O `checar-rede` aprova pela lista de tópicos; falta conferir se os dados chegam
 - [ ] `robot3`: subir localização, RViz e Nav2 pelo PC
-- [ ] Testar o `lab.sh robo usar` numa troca real entre dois robôs
-- [ ] `robot3`: medir a posição da doca e o ponto de aproximação; os da patrulha (`patrol_loop.py`) são os mesmos para todos os robôs
+- [ ] Hipótese H1: o PC recebe os dados do robô sem as rotas 192.168.185/186 (`specs/multi-robos/BRAINSTORM.md`)
+- [ ] `robot3`: medir a posição da doca e o ponto de aproximação; os da patrulha (`robo.py`) são os mesmos para todos os robôs
 - [ ] `robot3`: reserva de DHCP para o `192.168.68.53`
 - [ ] Reserva de DHCP para o `192.168.7.7` e reconexão do Wi-Fi após reiniciar
 - [ ] Rede `PixelLab-5GHz` não aparece no robô (`docs/guias/acesso-ao-robo.md`)
 - [ ] O robô usa a senha padrão do usuário `ubuntu`
 - [ ] Tela do TurtleBot 4 com ruído (12/11): não investigado
 
-## Repositório e simulação
+## Repositório
 
-- [ ] `test_o_modulo_de_validacao_nao_importa_ros` falha na suíte completa dentro da imagem do ROS e passa sozinho. Provável causa, não confirmada: `test_envio_base_assincrono.py` roda antes e carrega o `rclpy`
-- [ ] Teste de fumaça do Gazebo e os cenários L1 em Humble: sem registro de execução
-- [ ] Medição M-GZ: só com pedido do Roberto (`specs/patrol-inf/DESIGN.md`, seção 3)
 - [ ] Ramos remotos `feat_gotodock` e `v2-patrol-oficial`: decidir se integram ou saem
-- [ ] A `patrulha_tb4` continua mantida ou será aposentada? (o Nav2 e a localização usam arquivos do pacote)
+- [ ] Task 2 (três robôs): fase Define a partir de `specs/multi-robos/BRAINSTORM.md`

@@ -3,19 +3,18 @@
 | Item | Onde |
 |---|---|
 | Modelo | Ollama local, `qwen2.5:1.5b`, em `127.0.0.1:11434` |
-| Prompt | `workspace/meu_ws/src/llm_tb4/prompts/comandos.txt` |
-| Destinos que entram no prompt | `workspace/meu_ws/src/llm_tb4/config/destinos.json` |
-| Chamada (esquema, temperatura 0, tempo limite) | `workspace/meu_ws/src/llm_tb4/llm_tb4/interpretador.py` |
-| Validador | `workspace/meu_ws/src/llm_tb4/llm_tb4/validar_acao.py` |
-| Casos de teste com o modelo real | `workspace/meu_ws/src/llm_tb4/test/frases/*.json` |
-| Plano e medições | `specs/llm-integracao/PLANO.md` |
+| Prompt | `llm/prompt.txt` |
+| Locais que entram no prompt | `LOCAIS` em `llm/interpretar.py` |
+| Chamada (esquema, temperatura 0, tempo limite) e regras em código | `llm/interpretar.py` |
+| Casos de teste com o modelo real | `llm/frases.json` (388 frases em 8 grupos) |
+| Decisão de desenho | `docs/decisoes/ADR-005-llm-escolhe-acao-em-json.md` |
 
 ## Medir antes e depois de mudar o prompt
 
 ```bash
-(cd workspace/meu_ws/src/llm_tb4 && python3 -m llm_tb4.avaliar)                          # todos os conjuntos, com o modelo real
-(cd workspace/meu_ws/src/llm_tb4 && python3 -m llm_tb4.avaliar test/frases/reserva.json) # um conjunto
-docker run --rm --network none -v "$PWD:/repo:ro" -w /repo/workspace/meu_ws/src/llm_tb4 physical-ai:base python3 -m pytest -q -p no:cacheprovider
+python3 llm/avaliar.py              # todos os grupos, com o modelo real
+python3 llm/avaliar.py reserva      # um grupo
+python3 -m pytest tests             # parte pura, sem modelo
 ```
 
 - Compare o número de frases que moveriam o robô errado e os pedidos de parar não reconhecidos,
@@ -23,4 +22,4 @@ docker run --rm --network none -v "$PWD:/repo:ro" -w /repo/workspace/meu_ws/src/
 - Um conjunto usado para ajustar o prompt deixa de medir generalização: escreva um conjunto novo
   **antes** de ajustar e rode-o uma vez.
 - O subagente `prompt-critico` simula respostas; ele complementa a medição e não a substitui.
-- Parar, negação, bateria, coordenadas e `dock`/`undock` são decididos em código; não os transfira para o prompt.
+- Parar, negação, sequência, bateria e `dock`/`undock` são decididos em código; não os transfira para o prompt.

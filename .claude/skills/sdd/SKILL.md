@@ -181,7 +181,7 @@ verificado no simulador antes do hardware.
   novo, isso vira um `BRAINSTORM.md` novo, não um remendo neste.
 - **Em todas**: crie `docs/tarefas/AAAA-MM-DD-<nome>.md` (o que foi feito, em qual
   arquivo, para que serve, como foi verificado e o que não foi), acrescente a linha na
-  tabela de `docs/tarefas/README.md` e rode `python3 infra/ferramentas/checar_caminhos.py`.
+  tabela de `docs/tarefas/README.md` e confira com `git grep` que nenhum documento cita arquivo apagado.
 
 ## Subagente: `sdd-ears-critico` (opcional, só na trilha completa)
 

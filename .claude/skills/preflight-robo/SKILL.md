@@ -16,7 +16,7 @@ Comandos a partir da raiz do repositório, na conversa principal (nenhum subagen
 | Classe | Ações |
 |---|---|
 | Livre | Ler arquivos, `scripts/checar.sh`, `ping`, `docker ps`, `docker logs`, leitura de tópicos |
-| Com OK, um por vez | `scripts/subir.sh rviz`, `scripts/parar.sh` (avise que derruba tudo) |
+| Com OK, um por vez | `scripts/subir.sh`, `scripts/subir.sh nav2`, `scripts/parar.sh` (avise que derruba tudo) |
 | Proibido | `patrulha.sh` sem `--verificar-localizacao`, `llm.sh mover`, `teleop.sh`, `falar.sh`, dock/undock, publicar em tópico, `sudo`, mudar rede ou configuração do robô, entrar no robô |
 
 Correção no robô ou com `sudo`: mostre o comando e a página oficial
@@ -28,10 +28,11 @@ quem roda é o operador. Item reprovado ou não verificado → **REPROVADO**. Re
 
 1. **Rede e robô:** `ROBO=<nome> scripts/checar.sh` precisa dar `APROVADO`. Se faltarem tópicos,
    o operador pode rodar **no robô**: `ros2 daemon stop; ros2 daemon start; ros2 topic list`.
-2. **Subir, com OK** (pule se `checar.sh` já mostra `tb_localizacao` e `tb_nav2` no ar):
-   `ROBO=<nome> scripts/subir.sh rviz`. Espere `Managed nodes are active` em
-   `docker logs tb_nav2` e em `docker logs tb_localizacao`.
+2. **Localização, com OK** (pule se `checar.sh` já mostra `tb_localizacao` e `tb_nav2` no ar):
+   `ROBO=<nome> scripts/subir.sh`. Espere `Managed nodes are active` em `docker logs tb_localizacao`.
 3. **Pare.** O operador faz o 2D Pose Estimate na pose real da doca e confirma o laser nas paredes.
+   Depois, com OK: `ROBO=<nome> scripts/subir.sh nav2` e espere `Managed nodes are active` em
+   `docker logs tb_nav2`.
 4. **Estabilidade (1 min):** para `c` em `tb_nav2` e `tb_localizacao`,
    `docker logs --since 1m $c 2>&1 | grep -iE "heartbeat|IS DOWN"` não pode mostrar queda de nó. `bond_timeout` em 120:
    `docker exec tb_nav2 bash -c "source /opt/ros/humble/setup.bash; ros2 param get

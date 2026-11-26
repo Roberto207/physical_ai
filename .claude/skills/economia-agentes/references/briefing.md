@@ -14,7 +14,7 @@ Todo prompt de subagente tem estes campos, nesta ordem:
 Exemplo (leitura de log):
 
     OBJETIVO: achar a primeira falha do Nav2 no log da patrulha.
-    ENTRADAS: workspace/logs/<arquivo>.log
+    ENTRADAS: /tmp/<arquivo>.log (saída de docker logs tb_nav2)
     NÃO FAÇA: executar comando que alcance o robô físico; chamar outros agentes; editar código; subir simulação.
     SAÍDA: grava o resultado em /tmp/diagnostico_nav2.md
     RETORNO: status | caminho | até 10 linhas: horário, nó, mensagem de erro e o que veio antes

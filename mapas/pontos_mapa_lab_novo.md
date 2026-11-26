@@ -1,8 +1,8 @@
 # Pontos no `mapa_lab_novo`
 
-Medidos no referencial `map`, em metros. Os graus (`yaw`) anotados **não são usados** pelos programas de `workspace/patrulha_oficial/`, que calculam a orientação pela direção do ponto seguinte. Os valores usados no código ficam em `workspace/patrulha_oficial/patrol_loop.py` (`PONTOS`): ao mudar um, mude nos dois.
+Medidos no referencial `map`, em metros. Os graus (`yaw`) anotados **não são usados**: a patrulha e o LLM calculam a orientação pela direção do ponto seguinte. Os valores usados no código ficam em `robo.py` (`DOCA` e `PONTOS`): ao mudar um, mude nos dois.
 
-Os nomes pelos quais a LLM reconhece cada ponto estão em `workspace/meu_ws/src/llm_tb4/config/destinos.json` (25/11).
+Os nomes pelos quais a LLM reconhece cada ponto estão em `LOCAIS`, no `llm/interpretar.py`.
 
 ```text
 ponto inicial

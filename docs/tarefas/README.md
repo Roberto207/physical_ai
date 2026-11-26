@@ -1,11 +1,12 @@
 # Registro de tarefas
 
-Uma linha por tarefa: data, tarefa, documento. O que mudou, onde, por quê e como foi verificado fica no documento da tarefa; esta tabela só aponta. A tabela substitui o `docs/historico/registro-de-mudancas.md`, congelado em 2026-11-18.
+Uma linha por tarefa: data, tarefa, documento. O que mudou, onde, por quê e como foi verificado fica no documento da tarefa; esta tabela só aponta. A tabela substitui o antigo `registro-de-mudancas.md`, congelado em 2026-11-18.
 
 A entrada mais nova fica em cima. Ao fechar uma tarefa, crie `AAAA-MM-DD-<nome>.md` nesta pasta e acrescente a linha aqui.
 
 | Data | Tarefa | Documento |
 |---|---|---|
+| 2026-11-26 | Tag `task1-concluida` e reformulação enxuta do repositório; brainstorm da task 2 | `2026-11-26-reformulacao-task1.md` |
 | 2026-11-25 | LLM no `robot3`: correções do `falar` e da localização, e saturação da Create 3 | `2026-11-25-llm-robot3-correcoes.md` |
 | 2026-11-25 | Teste de localização e Nav2 dentro do `robot3` | `2026-11-25-teste-nav2-no-robo.md` |
 | 2026-11-25 | Perfis para vários robôs (`ROBO=<nome>`) e dados do `robot3` | `2026-11-25-varios-robos.md` |
@@ -40,4 +41,4 @@ A entrada mais nova fica em cima. Ao fechar uma tarefa, crie `AAAA-MM-DD-<nome>.
 | 2026-11-16 | Compose e alvos | `2026-11-16-compose-e-alvos.md` |
 | 2026-11-16 | Modo SLAM | `2026-11-16-modo-slam.md` |
 
-Antes de 2026-11-16, o registro está no `docs/historico/registro-de-mudancas.md`.
+Antes de 2026-11-16, o registro está no `docs/historico/registro-de-mudancas.md` da tag `task1-concluida`. Os documentos desta pasta citam caminhos da época: a estrutura anterior a 26/11 está nessa tag.

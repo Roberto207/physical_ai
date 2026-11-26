@@ -95,7 +95,7 @@ docs/  specs/  .claude/  .github/
 **No PC do lab (o Roberto; ação que move o robô só com o OK dele):**
 
 4. `docker build -t physical-ai docker/`, e depois `scripts/checar.sh` dá APROVADO.
-5. `scripts/subir.sh rviz`. Depois, `ros2 param get <ns>/lifecycle_manager_navigation bond_timeout` dá 120.0. Se não der, `launch/nav2.launch.py` volta a incluir a cópia do `navigation_launch.py` (na tag).
+5. `scripts/subir.sh`, 2D Pose Estimate e `scripts/subir.sh nav2`. Depois, `ros2 param get <ns>/lifecycle_manager_navigation bond_timeout` dá 120.0. Se não der, `launch/nav2.launch.py` volta a incluir a cópia do `navigation_launch.py` (na tag).
 6. `scripts/patrulha.sh --verificar-localizacao voltas 1`, e depois `scripts/patrulha.sh voltas 1`.
 7. `scripts/llm.sh` com 5 frases no `scripts/falar.sh`. Depois, `scripts/llm.sh mover`, um ponto e um "pare" no trajeto.
 8. `python3 llm/avaliar.py` no PC, comparado aos números de 25/11 (`docs/tarefas/2026-11-25-llm-fase-1.md`).

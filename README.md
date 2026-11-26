@@ -1,59 +1,51 @@
 # Physical AI: patrulha e LLM no TurtleBot 4
 
-Projeto AKCIT (INF-UFG) de Physical AI com gêmeos digitais. A equipe tem duas missões: **patrol control** (patrulha autônoma do TurtleBot 4 com recarga na doca) e **integração de uma LLM** ao robô. Tudo roda em ROS 2 Humble, em containers Docker.
+Projeto AKCIT (INF-UFG). A equipe tem duas missões no TurtleBot 4 real, com ROS 2 Humble:
 
-## Papel de cada máquina
+- **patrulha**: rondar os pontos do mapa e voltar à doca;
+- **comandos por LLM**: o robô vai aonde o pedido em português manda.
 
-| Máquina | Papel |
-|---|---|
-| Notebook do Roberto | Edição, documentação e testes L0 (Python puro, sem ROS). Limite de 7,4 GiB de RAM |
-| PC do laboratório | Simula (Gazebo Fortress sem janela, Nav2, L1 de injeção de falhas) |
-| TurtleBot 4 do INF | Teste no hardware real, só com permissão (`docs/contexto/AGENTES.md`, seção 1) |
+Tudo roda no PC do laboratório, em Docker, e conversa com o robô pelo Wi-Fi. O estado em que a task 1 foi entregue está na tag `task1-concluida`.
 
-Detalhes, rede e endereços: `docs/contexto/maquinas.md`.
+## Como rodar (no PC do lab)
 
-## Comece por aqui
+```bash
+docker build -t physical-ai docker/       # uma vez (ou depois de mudar o Dockerfile)
+export ROBO=robot3                         # robot1 (padrão) ou robot3
+scripts/checar.sh                          # rede e tópicos do robô: precisa dar APROVADO
+scripts/subir.sh                           # localização + RViz → 2D Pose Estimate na doca
+scripts/subir.sh nav2                      # Nav2
+scripts/patrulha.sh voltas 1               # MOVE O ROBÔ: patrulha (ou ida-e-volta, continuo, doca)
+scripts/llm.sh                             # LLM com freio (não move); "scripts/llm.sh mover" move
+scripts/falar.sh                           # outro terminal: escrever os pedidos ao LLM
+scripts/parar.sh                           # encerra tudo
+```
 
-| Quero | Arquivo |
-|---|---|
-| Rodar a patrulha que termina na doca | `docs/guias/patrulha-volta-a-doca.md` |
-| Rodar a patrulha em loop contínuo | `docs/guias/patrulha-loop-continuo.md` |
-| Lembrar um comando | `docs/guias/comandos-basicos.md` |
-| Todo o resto (testes, imagens, simulador, mapa) | `docs/guias/como-rodar.md` |
-| Rodar a linguagem natural (LLM) | `docs/guias/llm-linguagem-natural.md` |
-| Trabalhar no código da LLM | `workspace/meu_ws/src/llm_tb4/README.md` |
-| Saber o que está em aberto | `docs/contexto/pendencias.md` |
-| Regras para agentes de IA (leia antes de agir) | `docs/contexto/AGENTES.md` |
+Passo a passo, sinais de que cada etapa subiu e o que fazer quando falha: `docs/guias/como-rodar.md`. O LLM tem guia próprio: `docs/guias/llm.md`.
 
 ## Mapa das pastas
 
 ```text
-physical_ai/
-├── docs/
-│   ├── contexto/     projeto, máquinas e rede, stack, regras, pendências
-│   ├── guias/        como fazer agora (comandos)
-│   ├── decisoes/     por que é assim (ADRs)
-│   ├── tarefas/      o que foi feito, uma tarefa por arquivo
-│   └── historico/    registros antigos, não atualizados
-├── .claude/          skills e subagentes do Claude Code (ver .claude/README.md)
-├── specs/            requisitos e desenho (ver specs/README.md)
-├── infra/
-│   ├── compose/      serviços do robô (robo.yaml) e do simulador (sim.yaml)
-│   ├── docker/       imagens, lab.sh e teste_l1.sh
-│   ├── lab/          rede do PC com o robô (rede_lab.env)
-│   └── ferramentas/  checador de caminhos dos documentos
-└── workspace/
-    ├── patrulha_oficial/   patrulha em uso no robô
-    ├── mapas/              mapa em uso e pontos
-    ├── meu_ws/src/         pacotes ROS: llm_tb4, patrulha_tb4, lab_tb4, terceiros
-    └── logs/               saídas das execuções (fora do git)
+robo.py             pontos do mapa (DOCA, PONTOS) e o núcleo comum: doca, localização, navegar
+patrulha.py         a patrulha: voltas N | ida-e-volta | continuo | doca
+llm/                nó do LLM (no_llm.py), regras e Ollama (interpretar.py), terminal (falar.py),
+                    prompt.txt e avaliação (avaliar.py, frases.json)
+scripts/            um script por tarefa no PC do lab; env.sh escolhe o robô
+launch/ config/     localização e Nav2: os launches oficiais com os ajustes do lab
+mapas/              mapa em uso e os pontos medidos
+docker/             a imagem (ROS 2 Humble + TurtleBot 4 + RViz)
+tests/              testes sem ROS (CI)
+docs/               contexto, guias, decisões (ADRs) e um documento por tarefa
+specs/              specs (ver specs/README.md)
+.claude/            skills e subagentes do Claude Code
 ```
 
-## Níveis de teste
+## Testes
 
-| Nível | O que prova | Onde roda |
-|---|---|---|
-| L0 | A lógica em Python puro (`pytest`) | Notebook e CI |
-| L1 | O nosso nó com o Nav2 de verdade, com base, bateria e AMCL falsos (`infra/docker/teste_l1.sh`) | PC do lab |
-| Gazebo | Doca, bateria e AMCL simulados | PC do lab |
-| Robô | O hardware real | INF, com permissão |
+| Onde | O quê |
+|---|---|
+| Notebook e CI | `ruff check .` e `python3 -m pytest tests` (sem ROS) |
+| PC do lab, sem mover | `scripts/patrulha.sh --verificar-localizacao voltas 1`; `scripts/llm.sh` (freio) |
+| Robô | O resto, sempre com uma pessoa ao lado (`docs/contexto/AGENTES.md`, seção 1) |
+
+Regras para agentes de IA: `docs/contexto/AGENTES.md`. Em aberto: `docs/contexto/pendencias.md`.
