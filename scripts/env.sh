@@ -7,7 +7,7 @@
 REPO=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 ROBO=${ROBO:-robot1}
 case "$ROBO" in
-  robot1) IP=192.168.7.7;   DS=";$IP:11811;" ;;     # Wi-Fi PixelLab-2.4GHz, id 1
+  robot1) IP=192.168.68.54; DS=";$IP:11811;" ;;     # Wi-Fi Robotica_Deco, id 1
   robot3) IP=192.168.68.53; DS=";;;$IP:11811;" ;;   # Wi-Fi Robotica_Deco, id 3
   *) echo "ROBO desconhecido: '$ROBO' (robot1 ou robot3)" >&2; exit 1 ;;
 esac

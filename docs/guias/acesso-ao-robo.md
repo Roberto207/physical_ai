@@ -135,7 +135,7 @@ Cada robô é um `case` em `scripts/env.sh`, com IP, id do servidor de descobert
 
 | Robô | Wi-Fi | IP (DHCP) | Servidor de descoberta | Série do Raspberry Pi |
 |---|---|---|---|---|
-| `robot1` | `PixelLab-2.4GHz` | `192.168.7.7` | id 1 | não anotado |
+| `robot1` | `Robotica_Deco` (desde 26/11; `PixelLab-2.4GHz` salvo como reserva) | `192.168.68.54` | id 1 | não anotado |
 | `robot3` | `Robotica_Deco` | `192.168.68.53` | id 3 | `1000000044bad95f` |
 
 **Um robô por vez neste PC.** Todos os robôs usam as mesmas sub-redes internas, e uma conexão do PC só tem um caminho para cada uma. Para trocar entre robôs do mesmo Wi-Fi, troque as rotas, removendo a antiga com `-ipv4.routes` e incluindo a nova com `+ipv4.routes`, como na seção das rotas. A hipótese H1 acima pode eliminar essa troca, e ela é o primeiro passo da task 2.
