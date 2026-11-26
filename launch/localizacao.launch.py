@@ -1,6 +1,6 @@
 """Localização oficial do TurtleBot 4 Humble com o timeout de bond do laboratório.
 
-O bond_timeout escrito no localization_inf.yaml não chega ao gerente de ciclo de vida: o
+O bond_timeout escrito no config/localizacao.yaml não chega ao gerente de ciclo de vida: o
 localization_launch.py do Nav2 não lhe passa o arquivo de parâmetros, e ele ficava com o padrão
 de 4 s. No robô, em 2026-11-25, o AMCL foi derrubado por isso ("after not receiving a heartbeat
 for 4000 ms"). O SetParameter entrega o valor a todos os nós do grupo, gerente incluído.
@@ -21,7 +21,7 @@ def generate_launch_description():
         [DeclareLaunchArgument('namespace', default_value='')]
         + [DeclareLaunchArgument(nome) for nome in argumentos[1:]]
         + [GroupAction([
-            SetParameter('bond_timeout', 120.0),  # o mesmo do Nav2 (navigation_inf.launch.py)
+            SetParameter('bond_timeout', 120.0),  # o mesmo do Nav2 (nav2.launch.py)
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(oficial),
                 launch_arguments={n: LaunchConfiguration(n) for n in argumentos}.items()),
