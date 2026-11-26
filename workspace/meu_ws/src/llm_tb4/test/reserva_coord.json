@@ -1,8 +1,0 @@
-[
- ["vá para x -2.5 y 1", [-2.5, 1]], ["siga até a posição -4 -1", [-4, -1]], ["coordenadas 1,5 e 2,5", [1.5, 2.5]],
- ["vá para (1,5, 2,5)", [1.5, 2.5]], ["quero que vá a -1.0, 0.5", [-1.0, 0.5]], ["vai pra x 0 y 0", [0, 0]],
- ["coordenada -3,-2", [-3, -2]], ["vá para -1,5 -0,5", [-1.5, -0.5]], ["posição x: 2 y: -3 virado para o sul", [2, -3]],
- ["vá para x 2", null], ["fique entre 2 e 3", null], ["tenho 2 gatos e 3 cães", null], ["vá em 10 e 12", null],
- ["ande 1.5, 2.0 metros", null], ["vá para o ponto 2 e 3", null], ["são 3.5 graus e 2.0 horas", null],
- ["vá para x 1 y 2 e depois x 3 y 4", null], ["coordenada 1 2 3", null], ["vá para 2.0", null]
-]

@@ -7,7 +7,7 @@ Uma **skill** é uma pasta com um `SKILL.md` (instruções) e arquivos de apoio 
 | `skills/sdd/` | Escrever a spec ou o ADR antes de codar, com portão de aprovação. É o formato de `specs/` |
 | `skills/economia-agentes/` | Decidir se uma tarefa vai para subagente; proíbe subagente de tocar o robô |
 | `skills/prompt-engineering/` | Escrever e testar prompts com casos adversariais (missão da LLM) |
-| `skills/preflight-robo/` | Conferir PC, rede, robô e Nav2 antes de a patrulha mover o robô (`specs/preflight-robo/SPEC.md`) |
+| `skills/preflight-robo/` | Conferir PC, rede, robô e Nav2 antes de a patrulha ou o LLM moverem o robô (usa `scripts/checar.sh`) |
 | `agents/prompt-critico.md` | Subagente usado pela `prompt-engineering` para tentar quebrar o prompt |
 | `agents/sdd-ears-critico.md` | Subagente usado pela `sdd` para atacar critérios de aceite ambíguos |
 

@@ -1,19 +1,8 @@
-#Pastas pessoais
+# Pastas pessoais
 estudo/
-
-# Saída do colcon: refeita em cada máquina (tem caminhos de quem compilou)
-workspace/meu_ws/build/
-workspace/meu_ws/install/
-workspace/meu_ws/log/
+images/
 
 # Cache do Python e do pytest
 __pycache__/
 .pytest_cache/
 
-# Robô escolhido neste PC pelo "lab.sh robo usar"
-infra/lab/robos/.atual
-
-# Logs da patrulha gravados pelos containers (copie o que importa para docs/tarefas/ ou docs/historico/)
-workspace/logs/
-
-images/
